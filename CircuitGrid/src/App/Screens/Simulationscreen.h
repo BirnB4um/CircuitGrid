@@ -20,7 +20,10 @@ private:
 	Button item_button;
 	int item_gui_texture_width;
 
+	//Inventory gui
 	bool show_inventory;
+	sf::RectangleShape inventory_bg_rect;
+	//TODO: buttons for all the items + text
 
 	//stuff to render board
 	sf::Shader board_shader;
