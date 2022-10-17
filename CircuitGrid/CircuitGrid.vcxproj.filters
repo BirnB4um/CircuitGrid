@@ -91,9 +91,6 @@
     <None Include="TODO.todo" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Changelog.log" />
-  </ItemGroup>
-  <ItemGroup>
     <Font Include="res\fonts\arial.ttf" />
   </ItemGroup>
 </Project>
