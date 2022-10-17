@@ -12,8 +12,6 @@
 #include "Tools/Timer.h"
 using namespace std;
 
-//halloooo
-
 int main() {
 	//Timer timer;
 	//int w = 4096;
