@@ -1,0 +1,10 @@
+
+#???
+-grundgerüst (visualisierung, navigation, code-aufbau)
+
+#08.10.2022
+-added drawing (POINT, LINE, RECT)
+-added basics for updating pixels
+
+#09.10.2022
+-added pausebutton
