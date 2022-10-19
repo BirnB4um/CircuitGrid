@@ -11,4 +11,9 @@ struct Utils {
 	static bool point_vs_rect(float px, float py, float r_x, float r_y, float r_w, float r_h) {
 		return px > r_x && px < r_x + r_w && py>r_y && py < r_y + r_h;
 	}
+
+	//Log something to file
+	static void log(std::string log_text) {
+
+	}
 };

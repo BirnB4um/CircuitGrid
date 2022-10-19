@@ -5,6 +5,7 @@ Application::Application() {
 
 Application::~Application() {
 	delete GUI_Item::gui_texture;
+	delete font;
 }
 
 void Application::init() {
@@ -13,7 +14,8 @@ void Application::init() {
 	GUI_Item::gui_texture->loadFromFile("res/images/gui_texture.png");
 
 	//load Font
-	if (!font.loadFromFile("res/fonts/arial.ttf")) {
+	font = new sf::Font();
+	if (!font->loadFromFile("res/fonts/arial.ttf")) {
 		std::cout << "ERROR: couldnt load font 'arial.ttf'" << std::endl;
 	}
 

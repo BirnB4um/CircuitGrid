@@ -23,7 +23,19 @@ private:
 	//Inventory gui
 	bool show_inventory;
 	sf::RectangleShape inventory_bg_rect;
-	//TODO: buttons for all the items + text
+	sf::Text inventory_text;
+	sf::Text inv_air_text;
+	sf::Text inv_wire_text;
+	sf::Text inv_out_text;
+	sf::Text inv_battery_text;
+	sf::Text inv_amplifier_text;
+	sf::Text inv_bridge_text;
+	Button inv_air_button;
+	Button inv_wire_button;
+	Button inv_out_button;
+	Button inv_battery_button;
+	Button inv_amplifier_button;
+	Button inv_bridge_button;
 
 	//stuff to render board
 	sf::Shader board_shader;
@@ -67,9 +79,10 @@ private:
 	//update functions
 	bool update_air(uint32_t& i);
 	bool update_wire(uint32_t& i);
-	bool update_battery(uint32_t& i);
-	bool update_in(uint32_t& i);
 	bool update_out(uint32_t& i);
+	bool update_battery(uint32_t& i);
+	bool update_amplifier(uint32_t& i);
+	bool update_bridge(uint32_t& i);
 	bool update_not(uint32_t& i);
 	bool update_or(uint32_t& i);
 	bool update_xor(uint32_t& i);
@@ -80,5 +93,4 @@ private:
 	bool update_button(uint32_t& i);
 	bool update_switch(uint32_t& i);
 	bool update_lamp(uint32_t& i);
-	bool update_repeater(uint32_t& i);
 };

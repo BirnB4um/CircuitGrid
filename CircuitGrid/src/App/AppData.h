@@ -19,7 +19,7 @@ extern int screen_id;
 extern enum SCREEN_ID {
 	HOMESCREEN, SIMULATION
 };
-extern sf::Font font;
+extern sf::Font* font;
 
 //========== SIMULATION SCREEN ==========
 
@@ -42,7 +42,7 @@ extern uint32_t selected_item;
 extern uint32_t* item_list;
 extern uint8_t item_count;
 extern enum ITEM {
-	AIR, WIRE, BATTERY, IN, OUT, NOT, OR, XOR, NOR, XNOR, AND, NAND, BUTTON, SWITCH, LAMP, REPEATER
+	AIR, WIRE, OUT, BATTERY, AMPLIFIER, BRIDGE, NOT, OR, XOR, NOR, XNOR, AND, NAND, BUTTON, SWITCH, LAMP
 };
 extern std::string* item_names;
 

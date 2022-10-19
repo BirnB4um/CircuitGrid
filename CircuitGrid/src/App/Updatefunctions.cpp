@@ -2,21 +2,20 @@
 /*
 	0  -  Air
 	1  -  Wire
-	2  -  Battery
-	3  -  In
-	4  -  Out
-	5  -  Not
-	6  -  Or
-	7  -  Xor
-	8  -  Nor
-	9  -  Xnor
-	10 -  And
-	11 -  Nand
-	12 -  Button
-	13 -  Switch
-	14 -  Lamp
-	15 -  Repeater
-
+	2  -  Out
+	3  -  Battery
+	4  -  Amplifier
+	5  -  Bridge
+	6  -  Not
+	7  -  Or
+	8  -  Xor
+	9  -  Nor
+	10 -  Xnor
+	11 -  And
+	12 -  Nand
+	13 -  Button
+	14 -  Switch
+	15 -  Lamp
 */
 
 bool Simulationscreen::update_air(uint32_t& i) {
@@ -95,15 +94,19 @@ bool Simulationscreen::update_wire(uint32_t& i) {
 	return true;
 }
 
+bool Simulationscreen::update_out(uint32_t& i) {
+	return false;
+}
+
 bool Simulationscreen::update_battery(uint32_t& i) {
 	return false;
 }
 
-bool Simulationscreen::update_in(uint32_t& i) {
+bool Simulationscreen::update_amplifier(uint32_t& i) {
 	return false;
 }
 
-bool Simulationscreen::update_out(uint32_t& i) {
+bool Simulationscreen::update_bridge(uint32_t& i) {
 	return false;
 }
 
@@ -144,9 +147,5 @@ bool Simulationscreen::update_switch(uint32_t& i) {
 }
 
 bool Simulationscreen::update_lamp(uint32_t& i) {
-	return false;
-}
-
-bool Simulationscreen::update_repeater(uint32_t& i) {
 	return false;
 }

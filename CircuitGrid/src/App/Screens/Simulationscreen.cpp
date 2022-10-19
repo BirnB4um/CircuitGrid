@@ -46,61 +46,62 @@ void Simulationscreen::init_update_functions() {
 	item_list[1] = 0x00000001;
 	item_names[1] = "Wire";
 
-	update_functions.push_back(&Simulationscreen::update_battery);
-	item_list[2] = 0x00000102;
-	item_names[2] = "Battery";
-
-	update_functions.push_back(&Simulationscreen::update_in);
-	item_list[3] = 0x00000103;
-	item_names[3] = "In";
-
 	update_functions.push_back(&Simulationscreen::update_out);
-	item_list[4] = 0x00000104;
-	item_names[4] = "Out";
+	item_list[2] = 0x00000002;
+	item_names[2] = "Out";
+
+	update_functions.push_back(&Simulationscreen::update_battery);
+	item_list[3] = 0x0000FF03;
+	item_names[3] = "Battery";
+
+	update_functions.push_back(&Simulationscreen::update_amplifier);
+	item_list[4] = 0x00000004;
+	item_names[4] = "Amplifier";
+
+	update_functions.push_back(&Simulationscreen::update_bridge);
+	item_list[5] = 0x00000005;
+	item_names[5] = "Bridge";
 
 	update_functions.push_back(&Simulationscreen::update_not);
-	item_list[5] = 0x00000105;
-	item_names[5] = "NOT";
+	item_list[6] = 0x00000006;
+	item_names[6] = "NOT";
 
 	update_functions.push_back(&Simulationscreen::update_or);
-	item_list[6] = 0x00000106;
-	item_names[6] = "OR";
+	item_list[7] = 0x00000007;
+	item_names[7] = "OR";
 
 	update_functions.push_back(&Simulationscreen::update_xor);
-	item_list[7] = 0x00000107;
-	item_names[7] = "XOR";
+	item_list[8] = 0x00000008;
+	item_names[8] = "XOR";
 
 	update_functions.push_back(&Simulationscreen::update_nor);
-	item_list[8] = 0x00000108;
-	item_names[8] = "NOR";
+	item_list[9] = 0x00000009;
+	item_names[9] = "NOR";
 
 	update_functions.push_back(&Simulationscreen::update_xnor);
-	item_list[9] = 0x00000109;
-	item_names[9] = "XNOR";
+	item_list[10] = 0x0000000A;
+	item_names[10] = "XNOR";
 
 	update_functions.push_back(&Simulationscreen::update_and);
-	item_list[10] = 0x0000010A;
-	item_names[10] = "AND";
+	item_list[11] = 0x0000000B;
+	item_names[11] = "AND";
 
 	update_functions.push_back(&Simulationscreen::update_nand);
-	item_list[11] = 0x0000010B;
-	item_names[11] = "NAND";
+	item_list[12] = 0x0000000C;
+	item_names[12] = "NAND";
 
 	update_functions.push_back(&Simulationscreen::update_button);
-	item_list[12] = 0x0000000C;
-	item_names[12] = "Button";
+	item_list[13] = 0x0000000D;
+	item_names[13] = "Button";
 
 	update_functions.push_back(&Simulationscreen::update_switch);
-	item_list[13] = 0x0000000D;
-	item_names[13] = "Switch";
+	item_list[14] = 0x0000000E;
+	item_names[14] = "Switch";
 
 	update_functions.push_back(&Simulationscreen::update_lamp);
-	item_list[14] = 0x0000000E;
-	item_names[14] = "Lamp";
+	item_list[15] = 0x0000000F;
+	item_names[15] = "Lamp";
 
-	update_functions.push_back(&Simulationscreen::update_repeater);
-	item_list[15] = 0x0001010F;//light, repeatervalue, electricity, id
-	item_names[15] = "Repeater";
 }
 
 void Simulationscreen::init() {
@@ -150,8 +151,105 @@ void Simulationscreen::init() {
 
 	item_button.init();
 	item_button.set_function([&]() {
+		show_inventory = !show_inventory;
 		});
 	update_item_button_texture();
+
+	//init inventory GUI
+	inventory_bg_rect.setFillColor(sf::Color(10,10,10,255));
+	inventory_bg_rect.setOutlineColor(sf::Color(100,100,100,255));
+
+	//texts
+	inventory_text.setFont(*font);
+	inventory_text.setString("Inventory");
+	inventory_text.setFillColor(sf::Color(255,255,255,255));
+	inventory_text.setOutlineThickness(0);
+
+	inv_air_text.setFont(*font);
+	inv_air_text.setString("Air");
+	inv_air_text.setFillColor(sf::Color(255,255,255,255));
+	inv_air_text.setOutlineThickness(0);
+
+	inv_wire_text.setFont(*font);
+	inv_wire_text.setString("Wire");
+	inv_wire_text.setFillColor(sf::Color(255,255,255,255));
+	inv_wire_text.setOutlineThickness(0);
+
+	inv_out_text.setFont(*font);
+	inv_out_text.setString("Output");
+	inv_out_text.setFillColor(sf::Color(255,255,255,255));
+	inv_out_text.setOutlineThickness(0);
+
+	inv_battery_text.setFont(*font);
+	inv_battery_text.setString("Battery");
+	inv_battery_text.setFillColor(sf::Color(255,255,255,255));
+	inv_battery_text.setOutlineThickness(0);
+
+	inv_amplifier_text.setFont(*font);
+	inv_amplifier_text.setString("Amplifier");
+	inv_amplifier_text.setFillColor(sf::Color(255,255,255,255));
+	inv_amplifier_text.setOutlineThickness(0);
+
+	inv_bridge_text.setFont(*font);
+	inv_bridge_text.setString("Bridge");
+	inv_bridge_text.setFillColor(sf::Color(255,255,255,255));
+	inv_bridge_text.setOutlineThickness(0);
+
+	//buttons
+	inv_air_button.init();
+	inv_air_button.set_texture_inrect(240, 0, 16, 16);
+	inv_air_button.set_hoverover_texture_inrect(240, 0, 16, 16);
+	inv_air_button.set_pressed_texture_inrect(240, 0, 16, 16);
+	inv_air_button.set_function([&]() {
+		selected_item = item_list[AIR];
+		update_item_button_texture();
+		});
+
+	inv_wire_button.init();
+	inv_wire_button.set_texture_inrect(240, 16, 16, 16);
+	inv_wire_button.set_hoverover_texture_inrect(240, 16, 16, 16);
+	inv_wire_button.set_pressed_texture_inrect(240, 16, 16, 16);
+	inv_wire_button.set_function([&]() {
+		selected_item = item_list[WIRE];
+		update_item_button_texture();
+		});
+
+	inv_out_button.init();
+	inv_out_button.set_texture_inrect(240, 32, 16, 16);
+	inv_out_button.set_hoverover_texture_inrect(240, 32, 16, 16);
+	inv_out_button.set_pressed_texture_inrect(240, 32, 16, 16);
+	inv_out_button.set_function([&]() {
+		selected_item = item_list[OUT];
+		update_item_button_texture();
+		});
+
+	inv_battery_button.init();
+	inv_battery_button.set_texture_inrect(240, 48, 16, 16);
+	inv_battery_button.set_hoverover_texture_inrect(240, 48, 16, 16);
+	inv_battery_button.set_pressed_texture_inrect(240, 48, 16, 16);
+	inv_battery_button.set_function([&]() {
+		selected_item = item_list[BATTERY];
+		update_item_button_texture();
+		});
+
+	inv_amplifier_button.init();
+	inv_amplifier_button.set_texture_inrect(240, 64, 16, 16);
+	inv_amplifier_button.set_hoverover_texture_inrect(240, 64, 16, 16);
+	inv_amplifier_button.set_pressed_texture_inrect(240, 64, 16, 16);
+	inv_amplifier_button.set_function([&]() {
+		selected_item = item_list[AMPLIFIER];
+		update_item_button_texture();
+		});
+
+	inv_bridge_button.init();
+	inv_bridge_button.set_texture_inrect(240, 80, 16, 16);
+	inv_bridge_button.set_hoverover_texture_inrect(240, 80, 16, 16);
+	inv_bridge_button.set_pressed_texture_inrect(240, 80, 16, 16);
+	inv_bridge_button.set_function([&]() {
+		selected_item = item_list[BRIDGE];
+		update_item_button_texture();
+		});
+
 
 	resize();
 }
@@ -170,6 +268,7 @@ void Simulationscreen::resize() {
 
 	//GUI
 	int x, y, w, h;
+	int stroke_width;
 	w = gui_scale * SCREEN_WIDTH * 0.03f;
 	h = w;
 	x = 8;
@@ -179,13 +278,95 @@ void Simulationscreen::resize() {
 
 	w = gui_scale * SCREEN_WIDTH * 0.03f;
 	h = w;
-	x = SCREEN_WIDTH - w - 8;
-	y = 8;
+	x = SCREEN_WIDTH - w - 10;
+	y = 10;
 	item_button.set_position(x, y);
 	item_button.set_size(w, h);
 
 	//inventory GUI
-	//inventory_gui.resize();
+	stroke_width = 1;
+	y = item_button.rect.getPosition().y + item_button.rect.getSize().y + 10;
+	h = SCREEN_HEIGHT - y;
+	w = h * 0.3f;
+	x = SCREEN_WIDTH - w - stroke_width;
+	inventory_bg_rect.setPosition(x, y);
+	inventory_bg_rect.setSize(sf::Vector2f(w,h));
+
+	x = inventory_bg_rect.getPosition().x + 15;
+	y = inventory_bg_rect.getPosition().y + 10;
+	w = 0;
+	h = inventory_bg_rect.getSize().y * 0.045f;
+	inventory_text.setPosition(x,y);
+	inventory_text.setCharacterSize(h);
+
+	//item buttons
+	float perc_w = 0.25f;
+	w = inventory_bg_rect.getSize().x * perc_w;
+	h = w;
+	x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
+	y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * 0.1f;
+	inv_air_button.set_position(x, y);
+	inv_air_button.set_size(w, h);
+
+	x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
+	inv_wire_button.set_position(x, y);
+	inv_wire_button.set_size(w, h);
+
+	x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 3 + perc_w*2);
+	inv_out_button.set_position(x, y);
+	inv_out_button.set_size(w, h);
+
+	x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
+	y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * 0.1f + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
+	inv_battery_button.set_position(x, y);
+	inv_battery_button.set_size(w, h);
+
+	x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
+	inv_amplifier_button.set_position(x, y);
+	inv_amplifier_button.set_size(w, h);
+
+	x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 3 + perc_w*2);
+	inv_bridge_button.set_position(x, y);
+	inv_bridge_button.set_size(w, h);
+
+	//items texts
+	h = inv_air_button.rect.getSize().x * 0.4f;
+	x = inv_air_button.rect.getPosition().x;
+	y = inv_air_button.rect.getPosition().y - h * 1.3f;
+	inv_air_text.setPosition(x, y);
+	inv_air_text.setCharacterSize(h);
+
+	h = inv_wire_button.rect.getSize().x * 0.4f;
+	x = inv_wire_button.rect.getPosition().x;
+	y = inv_wire_button.rect.getPosition().y - h * 1.3f;
+	inv_wire_text.setPosition(x, y);
+	inv_wire_text.setCharacterSize(h);
+
+	h = inv_out_button.rect.getSize().x * 0.3f;
+	x = inv_out_button.rect.getPosition().x;
+	y = inv_out_button.rect.getPosition().y - h * 1.3f;
+	inv_out_text.setPosition(x, y);
+	inv_out_text.setCharacterSize(h);
+
+	h = inv_battery_button.rect.getSize().x * 0.3f;
+	x = inv_battery_button.rect.getPosition().x;
+	y = inv_battery_button.rect.getPosition().y - h * 1.3f;
+	inv_battery_text.setPosition(x, y);
+	inv_battery_text.setCharacterSize(h);
+
+	h = inv_amplifier_button.rect.getSize().x * 0.3f;
+	x = inv_amplifier_button.rect.getPosition().x;
+	y = inv_amplifier_button.rect.getPosition().y - h * 1.3f;
+	inv_amplifier_text.setPosition(x, y);
+	inv_amplifier_text.setCharacterSize(h);
+
+	h = inv_bridge_button.rect.getSize().x * 0.3f;
+	x = inv_bridge_button.rect.getPosition().x;
+	y = inv_bridge_button.rect.getPosition().y - h * 1.3f;
+	inv_bridge_text.setPosition(x, y);
+	inv_bridge_text.setCharacterSize(h);
+
+
 }
 
 void Simulationscreen::on_closing() {
@@ -245,7 +426,7 @@ void Simulationscreen::create_board(unsigned int width, unsigned int height) {
 }
 
 void Simulationscreen::add_to_update_list(uint32_t i) {
-	if (i < board_width || i > board_size - board_width)
+	if (i < board_width || i > board_size - board_width || this_board[i*4]==0)
 		return;
 
 	if (update_checklist[i] == 0) {
@@ -411,6 +592,9 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::Space) {//(un-)pause simulation
 			pause_button.func();
 		}
+		else if (ev.key.code == sf::Keyboard::E) {//open/close inventory
+			item_button.func();
+		}
 		else if (ev.key.code == sf::Keyboard::Up) {
 			int i = (selected_item & 0xFF) + 1;
 			i = i >= item_count ? 0 : i < 0 ? item_count - 1 : i;
@@ -460,7 +644,12 @@ void Simulationscreen::update() {
 	item_button.update(window_mouse.x, window_mouse.y);
 
 	if (show_inventory) {
-		//inventory_gui.update();
+		inv_air_button.update(window_mouse.x, window_mouse.y);
+		inv_wire_button.update(window_mouse.x, window_mouse.y);
+		inv_out_button.update(window_mouse.x, window_mouse.y);
+		inv_battery_button.update(window_mouse.x, window_mouse.y);
+		inv_amplifier_button.update(window_mouse.x, window_mouse.y);
+		inv_bridge_button.update(window_mouse.x, window_mouse.y);
 	}
 
 	//create drawinstruction list
@@ -532,6 +721,25 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	item_button.render(window);
 
 	if (show_inventory) {
-		//inventory_gui.render(window);
+		window.draw(inventory_bg_rect);
+		window.draw(inventory_text);
+
+		inv_air_button.render(window);
+		window.draw(inv_air_text);
+
+		inv_wire_button.render(window);
+		window.draw(inv_wire_text);
+
+		inv_out_button.render(window);
+		window.draw(inv_out_text);
+
+		inv_battery_button.render(window);
+		window.draw(inv_battery_text);
+
+		inv_amplifier_button.render(window);
+		window.draw(inv_amplifier_text);
+
+		inv_bridge_button.render(window);
+		window.draw(inv_bridge_text);
 	}
 }

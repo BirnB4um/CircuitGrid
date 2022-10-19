@@ -15,7 +15,7 @@ sf::Vector2i window_mouse;
 float gui_scale = 1.0f;
 int screen_id = 0;
 enum SCREEN_ID;
-sf::Font font;
+sf::Font* font;
 
 //========== SIMULATION SCREEN ==========
 
