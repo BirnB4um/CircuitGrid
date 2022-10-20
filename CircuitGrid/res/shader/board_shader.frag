@@ -16,7 +16,7 @@ void main(){
 
     if(new_coords.x > 0 && new_coords.x < 1 && new_coords.y > 0 && new_coords.y < 1){
         pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, new_coords).r,0));
-        if(texture2D(board_data_texture, new_coords).g > 1.1/255){//if electricity
+        if(texture2D(board_data_texture, new_coords).g > 0){//if electricity
             pixel.r += 0.3;
         }
     }

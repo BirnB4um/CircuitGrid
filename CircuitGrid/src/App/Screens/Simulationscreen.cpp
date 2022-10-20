@@ -55,45 +55,45 @@ void Simulationscreen::init_update_functions() {
 	item_list.push_back(0x00000004);
 	item_names.push_back("Amplifier");
 
-	update_functions.push_back(&Simulationscreen::update_bridge);
-	item_list.push_back(0x00000005);
-	item_names.push_back("Bridge");
-
-	update_functions.push_back(&Simulationscreen::update_not);
-	item_list.push_back(0x00000006);
-	item_names.push_back("NOT");
-
-	update_functions.push_back(&Simulationscreen::update_or);
-	item_list.push_back(0x00000007);
-	item_names.push_back("OR");
-
-	update_functions.push_back(&Simulationscreen::update_xor);
-	item_list.push_back(0x00000008);
-	item_names.push_back("XOR");
-
-	update_functions.push_back(&Simulationscreen::update_nor);
-	item_list.push_back(0x00000009);
-	item_names.push_back("NOR");
-
-	update_functions.push_back(&Simulationscreen::update_xnor);
-	item_list.push_back(0x0000000A);
-	item_names.push_back("XNOR");
-
-	update_functions.push_back(&Simulationscreen::update_and);
-	item_list.push_back(0x0000000B);
-	item_names.push_back("AND");
-
-	update_functions.push_back(&Simulationscreen::update_nand);
-	item_list.push_back(0x0000000C);
-	item_names.push_back("NAND");
-
 	update_functions.push_back(&Simulationscreen::update_button);
-	item_list.push_back(0x0000000D);
+	item_list.push_back(0x00000005);
 	item_names.push_back("Button");
 
 	update_functions.push_back(&Simulationscreen::update_switch);
-	item_list.push_back(0x0000000E);
+	item_list.push_back(0x00000006);
 	item_names.push_back("Switch");
+
+	update_functions.push_back(&Simulationscreen::update_bridge);
+	item_list.push_back(0x00000007);
+	item_names.push_back("Bridge");
+
+	update_functions.push_back(&Simulationscreen::update_not);
+	item_list.push_back(0x00000008);
+	item_names.push_back("NOT");
+
+	update_functions.push_back(&Simulationscreen::update_or);
+	item_list.push_back(0x00000009);
+	item_names.push_back("OR");
+
+	update_functions.push_back(&Simulationscreen::update_xor);
+	item_list.push_back(0x0000000A);
+	item_names.push_back("XOR");
+
+	update_functions.push_back(&Simulationscreen::update_nor);
+	item_list.push_back(0x0000000B);
+	item_names.push_back("NOR");
+
+	update_functions.push_back(&Simulationscreen::update_xnor);
+	item_list.push_back(0x0000000C);
+	item_names.push_back("XNOR");
+
+	update_functions.push_back(&Simulationscreen::update_and);
+	item_list.push_back(0x0000000D);
+	item_names.push_back("AND");
+
+	update_functions.push_back(&Simulationscreen::update_nand);
+	item_list.push_back(0x0000000E);
+	item_names.push_back("NAND");
 
 	update_functions.push_back(&Simulationscreen::update_lamp);
 	item_list.push_back(0x0000000F);
