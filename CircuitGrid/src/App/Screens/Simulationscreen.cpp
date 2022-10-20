@@ -35,72 +35,69 @@ void Simulationscreen::load_shader() {
 void Simulationscreen::init_update_functions() {
 	item_count = 16;
 
-	item_list = new uint32_t[item_count];
-	item_names = new std::string[item_count];
-
 	update_functions.push_back(&Simulationscreen::update_air);
-	item_list[0] = 0x00000000;
-	item_names[0] = "Air";
+	item_list.push_back(0x00000000);
+	item_names.push_back("Air");
 
 	update_functions.push_back(&Simulationscreen::update_wire);
-	item_list[1] = 0x00000001;
-	item_names[1] = "Wire";
+	item_list.push_back(0x00000001);
+	item_names.push_back("Wire");
 
 	update_functions.push_back(&Simulationscreen::update_out);
-	item_list[2] = 0x00000002;
-	item_names[2] = "Out";
+	item_list.push_back(0x00000002);
+	item_names.push_back("Out");
 
 	update_functions.push_back(&Simulationscreen::update_battery);
-	item_list[3] = 0x0000FF03;
-	item_names[3] = "Battery";
+	item_list.push_back(0x0000FF03);
+	item_names.push_back("Battery");
 
 	update_functions.push_back(&Simulationscreen::update_amplifier);
-	item_list[4] = 0x00000004;
-	item_names[4] = "Amplifier";
+	item_list.push_back(0x00000004);
+	item_names.push_back("Amplifier");
 
 	update_functions.push_back(&Simulationscreen::update_bridge);
-	item_list[5] = 0x00000005;
-	item_names[5] = "Bridge";
+	item_list.push_back(0x00000005);
+	item_names.push_back("Bridge");
 
 	update_functions.push_back(&Simulationscreen::update_not);
-	item_list[6] = 0x00000006;
-	item_names[6] = "NOT";
+	item_list.push_back(0x00000006);
+	item_names.push_back("NOT");
 
 	update_functions.push_back(&Simulationscreen::update_or);
-	item_list[7] = 0x00000007;
-	item_names[7] = "OR";
+	item_list.push_back(0x00000007);
+	item_names.push_back("OR");
 
 	update_functions.push_back(&Simulationscreen::update_xor);
-	item_list[8] = 0x00000008;
-	item_names[8] = "XOR";
+	item_list.push_back(0x00000008);
+	item_names.push_back("XOR");
 
 	update_functions.push_back(&Simulationscreen::update_nor);
-	item_list[9] = 0x00000009;
-	item_names[9] = "NOR";
+	item_list.push_back(0x00000009);
+	item_names.push_back("NOR");
 
 	update_functions.push_back(&Simulationscreen::update_xnor);
-	item_list[10] = 0x0000000A;
-	item_names[10] = "XNOR";
+	item_list.push_back(0x0000000A);
+	item_names.push_back("XNOR");
 
 	update_functions.push_back(&Simulationscreen::update_and);
-	item_list[11] = 0x0000000B;
-	item_names[11] = "AND";
+	item_list.push_back(0x0000000B);
+	item_names.push_back("AND");
 
 	update_functions.push_back(&Simulationscreen::update_nand);
-	item_list[12] = 0x0000000C;
-	item_names[12] = "NAND";
+	item_list.push_back(0x0000000C);
+	item_names.push_back("NAND");
 
 	update_functions.push_back(&Simulationscreen::update_button);
-	item_list[13] = 0x0000000D;
-	item_names[13] = "Button";
+	item_list.push_back(0x0000000D);
+	item_names.push_back("Button");
 
 	update_functions.push_back(&Simulationscreen::update_switch);
-	item_list[14] = 0x0000000E;
-	item_names[14] = "Switch";
+	item_list.push_back(0x0000000E);
+	item_names.push_back("Switch");
 
 	update_functions.push_back(&Simulationscreen::update_lamp);
-	item_list[15] = 0x0000000F;
-	item_names[15] = "Lamp";
+	item_list.push_back(0x0000000F);
+	item_names.push_back("Lamp");
 
 }
 

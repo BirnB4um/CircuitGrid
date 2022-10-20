@@ -35,10 +35,10 @@ sf::Vector2f last_board_mouse;
 float board_tps = 10;
 bool simulation_paused;
 uint32_t selected_item = 0;
-uint32_t* item_list = nullptr;
+std::vector<uint32_t> item_list;
 uint8_t item_count = 0;
 enum ITEM;
-std::string* item_names;
+std::vector<std::string> item_names;
 
 std::vector<uint32_t> update_list;
 bool* update_checklist = nullptr;

@@ -39,12 +39,12 @@ extern sf::Vector2f last_board_mouse;
 extern float board_tps;
 extern bool simulation_paused;
 extern uint32_t selected_item;
-extern uint32_t* item_list;
+extern std::vector<uint32_t> item_list;
 extern uint8_t item_count;
 extern enum ITEM {
 	AIR, WIRE, OUT, BATTERY, AMPLIFIER, BRIDGE, NOT, OR, XOR, NOR, XNOR, AND, NAND, BUTTON, SWITCH, LAMP
 };
-extern std::string* item_names;
+extern std::vector<std::string> item_names;
 
 extern std::vector<uint32_t> update_list;
 extern bool* update_checklist;

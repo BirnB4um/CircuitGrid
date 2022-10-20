@@ -29,66 +29,11 @@ bool Simulationscreen::update_wire(uint32_t& i) {
 	uint32_t i_left = (i - 1) * 4;
 	uint32_t i_right = (i + 1) * 4;
 
-	//if electricity 0 -> turn normal (1)
-	if (this_board[this_i + 1] == 0) {
-		next_board[this_i + 1] = 1;
-		return true;
-	}
+	uint32_t max_surrounding_electricity = 0;
 
 	//up
-	if (this_board[i_up] == WIRE) {
-		if (this_board[this_i + 1] > 1 && this_board[i_up + 1] == 0) {
-			next_board[this_i + 1] = 0;
-			return true;
-		}
-		if (this_board[this_i + 1] == 1 && this_board[i_up + 1] == 2) {
-			next_board[this_i + 1] = 2;
-		}
-	}
-	else if (this_board[i_up] == BATTERY) {
-		next_board[this_i + 1] = 2;
-	}
+	if (this_board[i_up] < BRIDGE) {
 
-	//left
-	if (this_board[i_left] == WIRE) {
-		if (this_board[this_i + 1] > 1 && this_board[i_left + 1] == 0) {
-			next_board[this_i + 1] = 0;
-			return true;
-		}
-		if (this_board[this_i + 1] == 1 && this_board[i_left + 1] == 2) {
-			next_board[this_i + 1] = 2;
-		}
-	}
-	else if (this_board[i_left] == BATTERY) {
-		next_board[this_i + 1] = 2;
-	}
-
-	//right
-	if (this_board[i_right] == WIRE) {
-		if (this_board[this_i + 1] > 1 && this_board[i_right + 1] == 0) {
-			next_board[this_i + 1] = 0;
-			return true;
-		}
-		if (this_board[this_i + 1] == 1 && this_board[i_right + 1] == 2) {
-			next_board[this_i + 1] = 2;
-		}
-	}
-	else if (this_board[i_right] == BATTERY) {
-		next_board[this_i + 1] = 2;
-	}
-
-	//down
-	if (this_board[i_down] == WIRE) {
-		if (this_board[this_i + 1] > 1 && this_board[i_down + 1] == 0) {
-			next_board[this_i + 1] = 0;
-			return true;
-		}
-		if (this_board[this_i + 1] == 1 && this_board[i_down + 1] == 2) {
-			next_board[this_i + 1] = 2;
-		}
-	}
-	else if (this_board[i_down] == BATTERY) {
-		next_board[this_i + 1] = 2;
 	}
 
 	return true;
