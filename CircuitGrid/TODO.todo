@@ -10,7 +10,7 @@ each pixel = 4 bytes
 
 ///// TODO /////
 -delete[] lists
--add switch GUI
+-reset_simulation() -> clear all elec. and put gates in updatelist
 -load configs from file (boardsize, tps, ...)
 -compile with CMAKE
 
