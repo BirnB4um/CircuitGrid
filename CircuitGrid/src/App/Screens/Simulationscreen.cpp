@@ -110,6 +110,7 @@ void Simulationscreen::init() {
 	simulation_paused = true;
 	board_tps = 10;
 	show_inventory = false;
+	one_simulations_step = false;
 
 	render_texture.create(1, 1);
 	render_rect.setPosition(0, 0);
@@ -134,6 +135,7 @@ void Simulationscreen::init() {
 	pause_button.set_pressed_texture_inrect(26, 18, 9, 9);
 	pause_button.set_function([&]() {
 		simulation_paused = !simulation_paused;
+		one_simulations_step = false;
 		if (simulation_paused) {
 			pause_button.set_texture_inrect(26, 0, 9, 9);
 			pause_button.set_hoverover_texture_inrect(26, 9, 9, 9);
@@ -782,7 +784,13 @@ void Simulationscreen::th_update_board() {
 		drawn_to_board = draw_to_board();
 
 		if (simulation_paused) {
-			if (!drawn_to_board) {
+			if (one_simulations_step) {
+				one_simulations_step = false;
+
+				update_board();
+
+				drawn_to_board = true;
+			}else if (!drawn_to_board) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));//wait with 10 tps
 				continue;
 			}
@@ -812,9 +820,10 @@ void Simulationscreen::update_board() {
 
 	memcpy(next_board, this_board, board_size * 4);//copy board
 
+	memset(update_list_copy, 0, update_count * 4);
 	memcpy(update_list_copy, &update_list[0], update_count * 4);//copy update_list
 	update_list.clear();
-	memset(update_checklist, 0, board_size);//clear checklist marks
+	memset(update_checklist, 0, board_size * sizeof(bool));//clear checklist marks
 
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < update_count; i++) {
@@ -828,7 +837,6 @@ void Simulationscreen::update_board() {
 		}
 	}
 
-	memset(update_list_copy, 0, update_count * 4);
 
 	//switch boards
 	uint8_t* temp = this_board;
@@ -857,6 +865,13 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		}
 		else if (ev.key.code == sf::Keyboard::E) {//open/close inventory
 			item_button.func();
+		}
+		else if (ev.key.code == sf::Keyboard::Right) {//one step
+			one_simulations_step = true;
+		}
+		else if (ev.key.code == sf::Keyboard::I) {//print info about pixel
+			uint32_t i = (int(board_mouse.x) + int(board_mouse.y) * board_width)*4;
+			std::cout << "id:" << int(this_board[i]) << ", elec:" << int(this_board[i + 1]) << ", 3rd:" << int(this_board[i + 2]) << ", light:" << int(this_board[i + 3]) << std::endl;
 		}
 		else if (ev.key.code == sf::Keyboard::Up) {
 			int i = (selected_item & 0xFF) + 1;

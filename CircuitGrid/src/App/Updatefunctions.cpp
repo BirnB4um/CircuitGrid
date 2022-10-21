@@ -58,18 +58,17 @@ bool Simulationscreen::update_wire(uint32_t& i) {
 		}
 	}
 
+
 	if (max_surrounding_electricity == 0)
 		return false;
 
-	next_board[i + 1] = max_surrounding_electricity - 1;
-	return true;
 
-	if (this_board[i+1] > max_surrounding_electricity) {
-		next_board[i + 1] = 0;
+	if (this_board[this_i+1] > max_surrounding_electricity) {
+		next_board[this_i + 1] = 0;
 		return true;
 	}
 	else {
-		next_board[i + 1] = max_surrounding_electricity - 1;
+		next_board[this_i + 1] = max_surrounding_electricity - 1;
 		return true;
 	}
 
@@ -127,7 +126,6 @@ bool Simulationscreen::update_and(uint32_t& i) {
 bool Simulationscreen::update_nand(uint32_t& i) {
 	return false;
 }
-
 
 bool Simulationscreen::update_lamp(uint32_t& i) {
 	return false;

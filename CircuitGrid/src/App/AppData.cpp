@@ -39,6 +39,7 @@ std::vector<uint32_t> item_list;
 uint8_t item_count = 0;
 enum ITEM;
 std::vector<std::string> item_names;
+bool one_simulations_step;
 
 std::vector<uint32_t> update_list;
 bool* update_checklist = nullptr;

@@ -45,6 +45,7 @@ extern enum ITEM {
 	AIR, WIRE, OUT, BATTERY, AMPLIFIER, BUTTON, SWITCH, BRIDGE, NOT, OR, XOR, NOR, XNOR, AND, NAND, LAMP
 };
 extern std::vector<std::string> item_names;
+extern bool one_simulations_step;
 
 extern std::vector<uint32_t> update_list;
 extern bool* update_checklist;
