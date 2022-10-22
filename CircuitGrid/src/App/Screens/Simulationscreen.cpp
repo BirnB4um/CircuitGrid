@@ -67,37 +67,37 @@ void Simulationscreen::init_update_functions() {
 	item_list.push_back(0x00000007);
 	item_names.push_back("Bridge");
 
-	update_functions.push_back(&Simulationscreen::update_not);
+	update_functions.push_back(&Simulationscreen::update_lamp);
 	item_list.push_back(0x00000008);
+	item_names.push_back("Lamp");
+
+	update_functions.push_back(&Simulationscreen::update_not);
+	item_list.push_back(0x00000009);
 	item_names.push_back("NOT");
 
 	update_functions.push_back(&Simulationscreen::update_or);
-	item_list.push_back(0x00000009);
+	item_list.push_back(0x0000000A);
 	item_names.push_back("OR");
 
 	update_functions.push_back(&Simulationscreen::update_xor);
-	item_list.push_back(0x0000000A);
+	item_list.push_back(0x0000000B);
 	item_names.push_back("XOR");
 
 	update_functions.push_back(&Simulationscreen::update_nor);
-	item_list.push_back(0x0000000B);
+	item_list.push_back(0x0000000C);
 	item_names.push_back("NOR");
 
 	update_functions.push_back(&Simulationscreen::update_xnor);
-	item_list.push_back(0x0000000C);
+	item_list.push_back(0x0000000D);
 	item_names.push_back("XNOR");
 
 	update_functions.push_back(&Simulationscreen::update_and);
-	item_list.push_back(0x0000000D);
+	item_list.push_back(0x0000000E);
 	item_names.push_back("AND");
 
 	update_functions.push_back(&Simulationscreen::update_nand);
-	item_list.push_back(0x0000000E);
-	item_names.push_back("NAND");
-
-	update_functions.push_back(&Simulationscreen::update_lamp);
 	item_list.push_back(0x0000000F);
-	item_names.push_back("Lamp");
+	item_names.push_back("NAND");
 
 }
 
@@ -325,95 +325,98 @@ void Simulationscreen::init() {
 		update_item_button_texture();
 		});
 
-	inv_not_button.init();
-	inv_not_button.set_texture_inrect(240, 96, 16, 16);
-	inv_not_button.set_hoverover_texture_inrect(240, 96, 16, 16);
-	inv_not_button.set_pressed_texture_inrect(240, 96, 16, 16);
-	inv_not_button.set_function([&]() {
-		selected_item = item_list[NOT];
-		update_item_button_texture();
-		});
-
-	inv_or_button.init();
-	inv_or_button.set_texture_inrect(240, 112, 16, 16);
-	inv_or_button.set_hoverover_texture_inrect(240, 112, 16, 16);
-	inv_or_button.set_pressed_texture_inrect(240, 112, 16, 16);
-	inv_or_button.set_function([&]() {
-		selected_item = item_list[OR];
-		update_item_button_texture();
-		});
-
-	inv_xor_button.init();
-	inv_xor_button.set_texture_inrect(240, 128, 16, 16);
-	inv_xor_button.set_hoverover_texture_inrect(240, 128, 16, 16);
-	inv_xor_button.set_pressed_texture_inrect(240, 128, 16, 16);
-	inv_xor_button.set_function([&]() {
-		selected_item = item_list[XOR];
-		update_item_button_texture();
-		});
-
-	inv_nor_button.init();
-	inv_nor_button.set_texture_inrect(240, 144, 16, 16);
-	inv_nor_button.set_hoverover_texture_inrect(240, 144, 16, 16);
-	inv_nor_button.set_pressed_texture_inrect(240, 144, 16, 16);
-	inv_nor_button.set_function([&]() {
-		selected_item = item_list[NOR];
-		update_item_button_texture();
-		});
-
-	inv_xnor_button.init();
-	inv_xnor_button.set_texture_inrect(240, 160, 16, 16);
-	inv_xnor_button.set_hoverover_texture_inrect(240, 160, 16, 16);
-	inv_xnor_button.set_pressed_texture_inrect(240, 160, 16, 16);
-	inv_xnor_button.set_function([&]() {
-		selected_item = item_list[XNOR];
-		update_item_button_texture();
-		});
-
-	inv_and_button.init();
-	inv_and_button.set_texture_inrect(240, 176, 16, 16);
-	inv_and_button.set_hoverover_texture_inrect(240, 176, 16, 16);
-	inv_and_button.set_pressed_texture_inrect(240, 176, 16, 16);
-	inv_and_button.set_function([&]() {
-		selected_item = item_list[AND];
-		update_item_button_texture();
-		});
-
-	inv_nand_button.init();
-	inv_nand_button.set_texture_inrect(240, 192, 16, 16);
-	inv_nand_button.set_hoverover_texture_inrect(240, 192, 16, 16);
-	inv_nand_button.set_pressed_texture_inrect(240, 192, 16, 16);
-	inv_nand_button.set_function([&]() {
-		selected_item = item_list[NAND];
-		update_item_button_texture();
-		});
-
 	inv_button_button.init();
-	inv_button_button.set_texture_inrect(240, 208, 16, 16);
-	inv_button_button.set_hoverover_texture_inrect(240, 208, 16, 16);
-	inv_button_button.set_pressed_texture_inrect(240, 208, 16, 16);
+	inv_button_button.set_texture_inrect(240, 96, 16, 16);
+	inv_button_button.set_hoverover_texture_inrect(240, 96, 16, 16);
+	inv_button_button.set_pressed_texture_inrect(240, 96, 16, 16);
 	inv_button_button.set_function([&]() {
 		selected_item = item_list[BUTTON];
 		update_item_button_texture();
 		});
 
 	inv_switch_button.init();
-	inv_switch_button.set_texture_inrect(240, 224, 16, 16);
-	inv_switch_button.set_hoverover_texture_inrect(240, 224, 16, 16);
-	inv_switch_button.set_pressed_texture_inrect(240, 224, 16, 16);
+	inv_switch_button.set_texture_inrect(240, 112, 16, 16);
+	inv_switch_button.set_hoverover_texture_inrect(240, 112, 16, 16);
+	inv_switch_button.set_pressed_texture_inrect(240, 112, 16, 16);
 	inv_switch_button.set_function([&]() {
 		selected_item = item_list[SWITCH];
 		update_item_button_texture();
 		});
 
 	inv_lamp_button.init();
-	inv_lamp_button.set_texture_inrect(240, 240, 16, 16);
-	inv_lamp_button.set_hoverover_texture_inrect(240, 240, 16, 16);
-	inv_lamp_button.set_pressed_texture_inrect(240, 240, 16, 16);
+	inv_lamp_button.set_texture_inrect(240, 128, 16, 16);
+	inv_lamp_button.set_hoverover_texture_inrect(240, 128, 16, 16);
+	inv_lamp_button.set_pressed_texture_inrect(240, 128, 16, 16);
 	inv_lamp_button.set_function([&]() {
 		selected_item = item_list[LAMP];
 		update_item_button_texture();
 		});
+
+
+	inv_not_button.init();
+	inv_not_button.set_texture_inrect(240, 144, 16, 16);
+	inv_not_button.set_hoverover_texture_inrect(240, 144, 16, 16);
+	inv_not_button.set_pressed_texture_inrect(240, 144, 16, 16);
+	inv_not_button.set_function([&]() {
+		selected_item = item_list[NOT];
+		update_item_button_texture();
+		});
+
+	inv_or_button.init();
+	inv_or_button.set_texture_inrect(240, 160, 16, 16);
+	inv_or_button.set_hoverover_texture_inrect(240, 160, 16, 16);
+	inv_or_button.set_pressed_texture_inrect(240, 160, 16, 16);
+	inv_or_button.set_function([&]() {
+		selected_item = item_list[OR];
+		update_item_button_texture();
+		});
+
+	inv_xor_button.init();
+	inv_xor_button.set_texture_inrect(240, 176, 16, 16);
+	inv_xor_button.set_hoverover_texture_inrect(240, 176, 16, 16);
+	inv_xor_button.set_pressed_texture_inrect(240, 176, 16, 16);
+	inv_xor_button.set_function([&]() {
+		selected_item = item_list[XOR];
+		update_item_button_texture();
+		});
+
+	inv_nor_button.init();
+	inv_nor_button.set_texture_inrect(240, 192, 16, 16);
+	inv_nor_button.set_hoverover_texture_inrect(240, 192, 16, 16);
+	inv_nor_button.set_pressed_texture_inrect(240, 192, 16, 16);
+	inv_nor_button.set_function([&]() {
+		selected_item = item_list[NOR];
+		update_item_button_texture();
+		});
+
+	inv_xnor_button.init();
+	inv_xnor_button.set_texture_inrect(240, 208, 16, 16);
+	inv_xnor_button.set_hoverover_texture_inrect(240, 208, 16, 16);
+	inv_xnor_button.set_pressed_texture_inrect(240, 208, 16, 16);
+	inv_xnor_button.set_function([&]() {
+		selected_item = item_list[XNOR];
+		update_item_button_texture();
+		});
+
+	inv_and_button.init();
+	inv_and_button.set_texture_inrect(240, 224, 16, 16);
+	inv_and_button.set_hoverover_texture_inrect(240, 224, 16, 16);
+	inv_and_button.set_pressed_texture_inrect(240, 224, 16, 16);
+	inv_and_button.set_function([&]() {
+		selected_item = item_list[AND];
+		update_item_button_texture();
+		});
+
+	inv_nand_button.init();
+	inv_nand_button.set_texture_inrect(240, 240, 16, 16);
+	inv_nand_button.set_hoverover_texture_inrect(240, 240, 16, 16);
+	inv_nand_button.set_pressed_texture_inrect(240, 240, 16, 16);
+	inv_nand_button.set_function([&]() {
+		selected_item = item_list[NAND];
+		update_item_button_texture();
+		});
+
+
 
 
 	resize();
@@ -914,12 +917,14 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			i = i >= item_count ? 0 : i < 0 ? item_count - 1 : i;
 			selected_item = item_list[i];
 			std::cout << i << std::endl;
+			update_item_button_texture();
 		}
 		else if (ev.key.code == sf::Keyboard::Down) {
 			int i = (selected_item & 0xFF) - 1;
 			i = i >= item_count ? 0 : i < 0 ? item_count - 1 : i;
 			selected_item = item_list[i];
 			std::cout << i << std::endl;
+			update_item_button_texture();
 		}
 	}
 

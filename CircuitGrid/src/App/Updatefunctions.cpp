@@ -9,15 +9,16 @@
 	6  -  Switch
 	7  -  Bridge
 
-	8  -  Not
-	9  -  Or
-	10 -  Xor
-	11 -  Nor
-	12 -  Xnor
-	13 -  And
-	14 -  Nand
+	8 -  Lamp
 
-	15 -  Lamp
+	9  -  Not
+	10  -  Or
+	11 -  Xor
+	12 -  Nor
+	13 -  Xnor
+	14 -  And
+	15 -  Nand
+
 */
 
 bool Simulationscreen::update_air(uint32_t& i) {
@@ -99,6 +100,10 @@ bool Simulationscreen::update_bridge(uint32_t& i) {
 	return false;
 }
 
+bool Simulationscreen::update_lamp(uint32_t& i) {
+	return false;
+}
+
 bool Simulationscreen::update_not(uint32_t& i) {
 	return false;
 }
@@ -127,6 +132,3 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 	return false;
 }
 
-bool Simulationscreen::update_lamp(uint32_t& i) {
-	return false;
-}
