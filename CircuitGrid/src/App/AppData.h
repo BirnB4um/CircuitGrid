@@ -50,9 +50,9 @@ extern enum ITEM {
 };
 extern std::vector<std::string> item_names;
 extern bool one_simulations_step;
-
 extern double update_time_taken;//millis
 extern double upload_texture_to_gpu_time_taken;//millis
+extern uint32_t number_of_pixels_to_update;
 
 extern std::vector<uint32_t> update_list;
 extern bool* update_checklist;

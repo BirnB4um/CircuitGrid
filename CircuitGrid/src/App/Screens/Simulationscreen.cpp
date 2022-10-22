@@ -103,12 +103,15 @@ void Simulationscreen::init() {
 	update_time_taken = 0;
 	upload_texture_to_gpu_time_taken = 0;
 	item_gui_texture_width = 16;
+	number_of_pixels_to_update = 0;
 
 	//debug stuff
 	upload_to_gpu_time_text.setFont(*font);
 	upload_to_gpu_time_text.setFillColor(sf::Color(255, 255, 255, 255));
 	update_board_time_text.setFont(*font);
 	update_board_time_text.setFillColor(sf::Color(255, 255, 255, 255));
+	updates_number_text.setFont(*font);
+	updates_number_text.setFillColor(sf::Color(255, 255, 255, 255));
 
 
 	init_update_functions();
@@ -179,6 +182,14 @@ void Simulationscreen::init() {
 		show_inventory = !show_inventory;
 		});
 	update_item_button_texture();
+
+	tps_slider.init();
+	tps_slider.set_function([&] () {
+		board_tps = tps_slider.value * 199 + 1;
+		if (board_tps == 200)
+			board_tps = 10000000;
+		std::cout << board_tps << std::endl;
+		});
 
 	//init inventory GUI
 	inventory_bg_rect.setFillColor(sf::Color(10,10,10,255));
@@ -445,6 +456,13 @@ void Simulationscreen::resize() {
 	item_button.set_position(x, y);
 	item_button.set_size(w, h);
 
+	h = pause_button.rect.getSize().y * 0.8f;
+	w = h * 10;
+	x = pause_button.rect.getPosition().x + pause_button.rect.getSize().x * 2.0f;
+	y = pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 0.1f;
+	tps_slider.set_position(x, y);
+	tps_slider.set_size(w, h);
+
 	//inventory GUI
 	stroke_width = 2;
 	y = item_button.rect.getPosition().y + item_button.rect.getSize().y + 10;
@@ -643,7 +661,10 @@ void Simulationscreen::resize() {
 	upload_to_gpu_time_text.setPosition(pause_button.rect.getPosition().x, pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 1.1f);
 
 	update_board_time_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
-	update_board_time_text.setPosition(pause_button.rect.getPosition().x, pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 1.1f + upload_to_gpu_time_text.getCharacterSize() * 1.5f);
+	update_board_time_text.setPosition(pause_button.rect.getPosition().x, upload_to_gpu_time_text.getPosition().y + upload_to_gpu_time_text.getCharacterSize() * 1.5f);
+
+	updates_number_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
+	updates_number_text.setPosition(pause_button.rect.getPosition().x, update_board_time_text.getPosition().y + update_board_time_text.getCharacterSize() * 1.5f);
 }
 
 void Simulationscreen::on_closing() {
@@ -848,18 +869,18 @@ void Simulationscreen::th_update_board() {
 }
 
 void Simulationscreen::update_board() {
-	uint32_t update_count = update_list.size();
-	if (update_count == 0)return;
+	number_of_pixels_to_update = update_list.size();
+	if (number_of_pixels_to_update == 0)return;
 
 	memcpy(next_board, this_board, board_size * 4);//copy board
 
-	memset(update_list_copy, 0, update_count * 4);
-	memcpy(update_list_copy, &update_list[0], update_count * 4);//copy update_list
+	memset(update_list_copy, 0, number_of_pixels_to_update * 4);
+	memcpy(update_list_copy, &update_list[0], number_of_pixels_to_update * 4);//copy update_list
 	update_list.clear();
 	memset(update_checklist, 0, board_size * sizeof(bool));//clear checklist marks
 
 	uint32_t index = 0;
-	for (uint32_t i = 0; i < update_count; i++) {
+	for (uint32_t i = 0; i < number_of_pixels_to_update; i++) {
 		index = update_list_copy[i];
 		if ((this->*update_functions[this_board[index * 4]])(index)) {
 			add_to_update_list(index);
@@ -943,6 +964,8 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
 				start_drawing_line = true;
 			}
+
+			tps_slider.press(window_mouse.x, window_mouse.y);//TODO: include this function in update() function
 		}
 	}
 
@@ -979,6 +1002,7 @@ void Simulationscreen::update() {
 	}
 	pause_button.update(window_mouse.x, window_mouse.y);
 	item_button.update(window_mouse.x, window_mouse.y);
+	tps_slider.update(window_mouse.x, window_mouse.y);
 
 	if (show_inventory) {
 		if (Utils::point_vs_rect(window_mouse.x, window_mouse.y, inventory_bg_rect.getPosition().x, inventory_bg_rect.getPosition().y,
@@ -1157,7 +1181,8 @@ void Simulationscreen::update() {
 
 	//debug stuff
 	upload_to_gpu_time_text.setString("upload board to GPU (ms):" + std::to_string(upload_texture_to_gpu_time_taken));
-	update_board_time_text.setString("update board (ms):" + std::to_string(update_time_taken));
+	update_board_time_text.setString("update board (ms):" + std::to_string(update_time_taken) + " (" + std::to_string(1000.0f / update_time_taken) + " tps)");
+	updates_number_text.setString("pixels to update:" + std::to_string(update_list.size()));
 }
 
 void Simulationscreen::render(sf::RenderTarget& window) {
@@ -1166,6 +1191,7 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	//GUI
 	pause_button.render(window);
 	item_button.render(window);
+	tps_slider.render(window);
 
 	if (show_inventory) {
 		window.draw(inventory_bg_rect);
@@ -1231,5 +1257,6 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	if (show_debug_info) {
 		window.draw(upload_to_gpu_time_text);
 		window.draw(update_board_time_text);
+		window.draw(updates_number_text);
 	}
 }

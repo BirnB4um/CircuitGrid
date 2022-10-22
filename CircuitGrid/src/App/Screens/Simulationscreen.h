@@ -7,6 +7,7 @@
 #include <functional>
 #include "../AppData.h"
 #include "../../GUI/Button.h"
+#include "../../GUI/Slider.h"
 #include "../../Tools/Utils.h"
 #include "../../Tools/Timer.h"
 
@@ -19,6 +20,8 @@ private:
 
 	Button item_button;
 	int item_gui_texture_width;
+
+	Slider tps_slider;
 
 	//Inventory gui
 	bool show_inventory;
@@ -61,6 +64,7 @@ private:
 	//debug stuff
 	sf::Text upload_to_gpu_time_text;
 	sf::Text update_board_time_text;
+	sf::Text updates_number_text;
 
 
 	//stuff to render board

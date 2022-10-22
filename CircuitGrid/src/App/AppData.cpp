@@ -44,6 +44,7 @@ std::vector<std::string> item_names;
 bool one_simulations_step;
 double update_time_taken;
 double upload_texture_to_gpu_time_taken;
+uint32_t number_of_pixels_to_update;
 
 std::vector<uint32_t> update_list;
 bool* update_checklist = nullptr;

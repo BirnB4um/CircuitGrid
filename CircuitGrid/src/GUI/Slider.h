@@ -24,6 +24,7 @@ public:
 	void update(int& mouse_x, int& mouse_y);
 	void update_scale();
 	void init();
+	bool check_over_slider(int& x, int& y);
 	void set_position(float x, float y);
 	void set_size(float w, float h);
 	void set_nob_texture_inrect(float x, float y, float w, float h);

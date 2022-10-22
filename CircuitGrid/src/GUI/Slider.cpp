@@ -51,6 +51,11 @@ void Slider::update_scale() {
 	line_rect.setPosition(bound_rect.left + nob_rect.getSize().x / 2, bound_rect.top + bound_rect.height / 2 - line_rect.getSize().y);
 }
 
+bool Slider::check_over_slider(int& x, int& y) {
+	return x >= bound_rect.left && x <= bound_rect.left + bound_rect.width &&
+		y >= bound_rect.top && y <= bound_rect.top + bound_rect.height;
+}
+
 void Slider::set_position(float x, float y) {
 	bound_rect.left = x;
 	bound_rect.top = y;
