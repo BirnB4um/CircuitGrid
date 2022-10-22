@@ -32,16 +32,14 @@ private:
 	Button inv_out_button;
 	sf::Text inv_battery_text;
 	Button inv_battery_button;
-	sf::Text inv_amplifier_text;
-	Button inv_amplifier_button;
 	sf::Text inv_bridge_text;
 	Button inv_bridge_button;
+	sf::Text inv_lamp_text;
+	Button inv_lamp_button;
 	sf::Text inv_button_text;
 	Button inv_button_button;
 	sf::Text inv_switch_text;
 	Button inv_switch_button;
-	sf::Text inv_lamp_text;
-	Button inv_lamp_button;
 
 	sf::Text inv_logic_gates_text;
 
