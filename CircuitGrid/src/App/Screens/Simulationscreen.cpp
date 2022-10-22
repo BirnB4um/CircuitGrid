@@ -1004,80 +1004,92 @@ void Simulationscreen::update() {
 	if (!mouse_over_gui) {
 
 		if (start_drawing_line) {
-			if (mouse_over_board) {
-				drawing_line = true;
-				drawing_start_x = floor(board_mouse.x);
-				drawing_start_y = floor(board_mouse.y);
-			}
+			drawing_line = true;
 			start_drawing_line = false;
+			drawing_start_x = floor(board_mouse.x);
+			drawing_start_y = floor(board_mouse.y);
+			drawing_start_x = drawing_start_x < 0 ? 0 : drawing_start_x > board_width - 1 ? board_width - 1 : drawing_start_x;
+			drawing_start_y = drawing_start_y < 0 ? 0 : drawing_start_y > board_height - 1 ? board_height - 1 : drawing_start_y;
 		}
 
 		if (start_drawing_rectangle) {
-			if (mouse_over_board) {
-				drawing_rectangle = true;
-				drawing_start_x = floor(board_mouse.x);
-				drawing_start_y = floor(board_mouse.y);
-			}
+			drawing_rectangle = true;
 			start_drawing_rectangle = false;
+			drawing_start_x = floor(board_mouse.x);
+			drawing_start_y = floor(board_mouse.y);
+			drawing_start_x = drawing_start_x < 0 ? 0 : drawing_start_x > board_width - 1 ? board_width - 1 : drawing_start_x;
+			drawing_start_y = drawing_start_y < 0 ? 0 : drawing_start_y > board_height - 1 ? board_height - 1 : drawing_start_y;
 		}
 
 		if (drawing_line) {
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				if (mouse_over_board) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					drawing_end_x = floor(board_mouse.x);
 					drawing_end_y = floor(board_mouse.y);
+					drawing_end_x = drawing_end_x < 0 ? 0 : drawing_end_x > board_width - 1 ? board_width - 1 : drawing_end_x;
+					drawing_end_y = drawing_end_y < 0 ? 0 : drawing_end_y > board_height - 1 ? board_height - 1 : drawing_end_y;
 
 					float x1 = (drawing_start_x + 0.5f) * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor);
 					float y1 = (drawing_start_y + 0.5f) * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor);
 					float x2 = (drawing_end_x + 0.5f) * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor);
 					float y2 = (drawing_end_y + 0.5f) * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor);
 					drawing_line_shape.setPosition(x1, y1);
-					drawing_line_shape.setSize(sf::Vector2f(sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)), 4));
+					drawing_line_shape.setSize(sf::Vector2f(sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)), 4));
 					drawing_line_shape.setRotation(atan2(y2 - y1, x2 - x1) * 180.0f / PI);
+
+				}
+				else {
+					drawing_line = false;
+
+					Drawinstruction instruction;
+					instruction.data[0] = LINE;
+					instruction.data[1] = 1;
+					instruction.data[2] = selected_item;
+					instruction.data[3] = drawing_start_x;
+					instruction.data[4] = drawing_start_y;
+					instruction.data[5] = drawing_end_x;
+					instruction.data[6] = drawing_end_y;
+					drawinstruction_list.push_back(instruction);
 				}
 			}
 			else {
 				drawing_line = false;
-
-				Drawinstruction instruction;
-				instruction.data[0] = LINE;
-				instruction.data[1] = 1;
-				instruction.data[2] = selected_item;
-				instruction.data[3] = drawing_start_x;
-				instruction.data[4] = drawing_start_y;
-				instruction.data[5] = drawing_end_x;
-				instruction.data[6] = drawing_end_y;
-				drawinstruction_list.push_back(instruction);
 			}
 		}
 		else if (drawing_rectangle) {
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				if (mouse_over_board) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					drawing_end_x = floor(board_mouse.x);
 					drawing_end_y = floor(board_mouse.y);
+					drawing_end_x = drawing_end_x < 0 ? 0 : drawing_end_x > board_width - 1 ? board_width - 1 : drawing_end_x;
+					drawing_end_y = drawing_end_y < 0 ? 0 : drawing_end_y > board_height - 1 ? board_height - 1 : drawing_end_y;
 
 					//update drawing_rectangle_shape
 					float x1 = drawing_end_x < drawing_start_x ? floor(drawing_end_x) : floor(drawing_start_x);
 					float y1 = drawing_end_y < drawing_start_y ? floor(drawing_end_y) : floor(drawing_start_y);
 					float x2 = drawing_end_x < drawing_start_x ? floor(drawing_start_x) + 1 : floor(drawing_end_x) + 1;
 					float y2 = drawing_end_y < drawing_start_y ? floor(drawing_start_y) + 1 : floor(drawing_end_y) + 1;
-					drawing_rect_shape.setPosition((x1 * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)), 
-													(y1 * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)));
+					drawing_rect_shape.setPosition((x1 * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)),
+						(y1 * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)));
 					drawing_rect_shape.setSize(sf::Vector2f((x2 - x1) * zoom_factor, (y2 - y1) * zoom_factor));
+
+				}
+				else {
+					drawing_rectangle = false;
+
+					Drawinstruction instruction;
+					instruction.data[0] = RECT;
+					instruction.data[1] = 1;
+					instruction.data[2] = selected_item;
+					instruction.data[3] = drawing_start_x;
+					instruction.data[4] = drawing_start_y;
+					instruction.data[5] = drawing_end_x;
+					instruction.data[6] = drawing_end_y;
+					drawinstruction_list.push_back(instruction);
 				}
 			}
 			else {
 				drawing_rectangle = false;
-
-				Drawinstruction instruction;
-				instruction.data[0] = RECT;
-				instruction.data[1] = 1;
-				instruction.data[2] = selected_item;
-				instruction.data[3] = drawing_start_x;
-				instruction.data[4] = drawing_start_y;
-				instruction.data[5] = drawing_end_x;
-				instruction.data[6] = drawing_end_y;
-				drawinstruction_list.push_back(instruction);
 			}
 		}
 		//create drawinstruction list
