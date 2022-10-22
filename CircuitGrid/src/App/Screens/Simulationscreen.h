@@ -58,6 +58,10 @@ private:
 	sf::Text inv_nand_text;
 	Button inv_nand_button;
 
+	//debug stuff
+	sf::Text upload_to_gpu_time_text;
+	sf::Text update_board_time_text;
+
 
 	//stuff to render board
 	sf::Shader board_shader;

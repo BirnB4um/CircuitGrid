@@ -66,7 +66,7 @@ bool Simulationscreen::update_wire(uint32_t& i) {
 		next_board[this_i + 1] = 0;
 		return true;
 	}
-	else {
+	else if(max_surrounding_electricity > 0) {
 		next_board[this_i + 1] = max_surrounding_electricity - 1;
 	}
 
@@ -157,7 +157,7 @@ bool Simulationscreen::update_bridge(uint32_t& i) {
 	if (this_board[this_i + 1] > max_surrounding_electricity_horizontal) {
 		next_board[this_i + 1] = 0;
 	}
-	else {
+	else if(max_surrounding_electricity_horizontal > 0) {
 		next_board[this_i + 1] = max_surrounding_electricity_horizontal - 1;
 	}
 
@@ -165,7 +165,7 @@ bool Simulationscreen::update_bridge(uint32_t& i) {
 	if (this_board[this_i + 2] > max_surrounding_electricity_vertical) {
 		next_board[this_i + 2] = 0;
 	}
-	else {
+	else if(max_surrounding_electricity_vertical > 0) {
 		next_board[this_i + 2] = max_surrounding_electricity_vertical - 1;
 	}
 

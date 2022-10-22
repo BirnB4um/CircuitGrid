@@ -19,6 +19,8 @@ sf::Font* font;
 
 //========== SIMULATION SCREEN ==========
 
+bool show_debug_info;
+
 //navigation
 float move_speed = 8;
 float zoom_speed = 0.1f;
@@ -40,6 +42,8 @@ uint8_t item_count = 0;
 enum ITEM;
 std::vector<std::string> item_names;
 bool one_simulations_step;
+double update_time_taken;
+double upload_texture_to_gpu_time_taken;
 
 std::vector<uint32_t> update_list;
 bool* update_checklist = nullptr;

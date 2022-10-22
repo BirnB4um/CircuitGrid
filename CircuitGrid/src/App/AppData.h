@@ -25,6 +25,8 @@ extern sf::Font* font;
 
 //========== SIMULATION SCREEN ==========
 
+extern bool show_debug_info;
+
 //navigation
 extern float move_speed;
 extern float zoom_speed;
@@ -48,6 +50,9 @@ extern enum ITEM {
 };
 extern std::vector<std::string> item_names;
 extern bool one_simulations_step;
+
+extern double update_time_taken;//millis
+extern double upload_texture_to_gpu_time_taken;//millis
 
 extern std::vector<uint32_t> update_list;
 extern bool* update_checklist;

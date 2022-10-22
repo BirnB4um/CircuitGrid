@@ -15,6 +15,7 @@ each pixel = 4 bytes
 -reset_simulation() -> clear all elec. and put gates in updatelist
 -if zoomed close -> pixel transition to texture instead of color
 -copy/paste part of board
+-show which pixels are being updated (with checklistmap)
 -save/load board + GUI
 -load configs from file (boardsize, tps, ...)
 -compile with CMAKE

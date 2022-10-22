@@ -99,7 +99,17 @@ void Simulationscreen::init_update_functions() {
 }
 
 void Simulationscreen::init() {
+	show_debug_info = false;
+	update_time_taken = 0;
+	upload_texture_to_gpu_time_taken = 0;
 	item_gui_texture_width = 16;
+
+	//debug stuff
+	upload_to_gpu_time_text.setFont(*font);
+	upload_to_gpu_time_text.setFillColor(sf::Color(255, 255, 255, 255));
+	update_board_time_text.setFont(*font);
+	update_board_time_text.setFillColor(sf::Color(255, 255, 255, 255));
+
 
 	init_update_functions();
 
@@ -628,6 +638,12 @@ void Simulationscreen::resize() {
 	}
 
 
+	//debug info
+	upload_to_gpu_time_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
+	upload_to_gpu_time_text.setPosition(pause_button.rect.getPosition().x, pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 1.1f);
+
+	update_board_time_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
+	update_board_time_text.setPosition(pause_button.rect.getPosition().x, pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 1.1f + upload_to_gpu_time_text.getCharacterSize() * 1.5f);
 }
 
 void Simulationscreen::on_closing() {
@@ -814,13 +830,17 @@ void Simulationscreen::th_update_board() {
 				timer.start();
 				update_board();
 				timer.stop();
-				int wait_time = int(1000.0f / board_tps - timer.get_duration());
+				update_time_taken = timer.get_duration();
+				int wait_time = int(1000.0f / board_tps - update_time_taken);
 				std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
 			}
 		}
 
 		if (drawn_to_board || !simulation_paused) {
+			timer.start();
 			board_data_texture.update(this_board);
+			timer.stop();
+			upload_texture_to_gpu_time_taken = timer.get_duration();
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(int(1000.0f / FPS - (timer.get_time() - start_frame_time))));
@@ -872,6 +892,9 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			target_board_offset_x = float(board_width) / 2;
 			target_board_offset_y = float(board_height) / 2;
 			target_zoom_factor = 1;
+		}
+		else if (ev.key.code == sf::Keyboard::M && sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {//(un-)pause simulation
+			show_debug_info = !show_debug_info;
 		}
 		else if (ev.key.code == sf::Keyboard::Space) {//(un-)pause simulation
 			pause_button.func();
@@ -1131,6 +1154,10 @@ void Simulationscreen::update() {
 	board_shader.setUniform("offset_x", board_offset_x);
 	board_shader.setUniform("offset_y", board_offset_y);
 	board_shader.setUniform("zoom_factor", zoom_factor);
+
+	//debug stuff
+	upload_to_gpu_time_text.setString("upload board to GPU (ms):" + std::to_string(upload_texture_to_gpu_time_taken));
+	update_board_time_text.setString("update board (ms):" + std::to_string(update_time_taken));
 }
 
 void Simulationscreen::render(sf::RenderTarget& window) {
@@ -1197,5 +1224,12 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	}
 	else if (drawing_line) {
 		window.draw(drawing_line_shape);
+	}
+
+
+	//debug texts
+	if (show_debug_info) {
+		window.draw(upload_to_gpu_time_text);
+		window.draw(update_board_time_text);
 	}
 }
