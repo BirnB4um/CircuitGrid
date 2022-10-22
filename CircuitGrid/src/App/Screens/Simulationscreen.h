@@ -77,6 +77,20 @@ private:
 	enum DRAWTYPE { POINT, LINE, RECT };
 	std::vector<Drawinstruction> drawinstruction_list;
 	std::mutex draw_mutex;
+	bool start_drawing_rectangle;
+	bool drawing_rectangle;
+	bool start_drawing_line;
+	bool drawing_line;
+	int drawing_start_x;
+	int drawing_start_y;
+	int drawing_end_x;
+	int drawing_end_y;
+	sf::RectangleShape drawing_rect_shape;
+	sf::RectangleShape drawing_line_shape;
+
+	bool mouse_over_gui;
+	bool mouse_over_board;
+	bool last_mouse_over_board;
 
 	std::vector <bool(Simulationscreen::*)(uint32_t& i)> update_functions;
 

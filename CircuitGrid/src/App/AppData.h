@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+#define PI 3.1415926535
+
 //========== APPLICATION DATA ==========
 
 //window stuff

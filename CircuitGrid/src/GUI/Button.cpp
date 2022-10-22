@@ -19,10 +19,14 @@ void Button::init() {
 	rect.setTexture(gui_texture);
 }
 
+bool Button::check_over_button(int &x, int &y) {
+	return x >= rect.getPosition().x && x <= rect.getPosition().x + rect.getSize().x &&
+		   y >= rect.getPosition().y && y <= rect.getPosition().y + rect.getSize().y;
+}
+
 bool Button::update(int& mouse_x, int& mouse_y) {
 	bool called_function = false;
-	if (mouse_x >= rect.getPosition().x && mouse_x <= rect.getPosition().x + rect.getSize().x &&
-		mouse_y >= rect.getPosition().y && mouse_y <= rect.getPosition().y + rect.getSize().y) {
+	if (check_over_button(mouse_x, mouse_y)) {
 		hover_over = true;
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			pressed = true;
