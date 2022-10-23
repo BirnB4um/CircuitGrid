@@ -10,7 +10,6 @@ each pixel = 4 bytes
 
 ///// TODO /////
 -add grid
--add brushsize
 -drawmode FILL
 -drawmode PIXELPERFECT
 -delete[] lists
@@ -22,6 +21,7 @@ each pixel = 4 bytes
 
 
 ///// BUGS /////
+-large brushsize cant draw over board_edge (only top & left)
 -logic for wire does not work
 -if tps is low (tps=5) -> drawing is updated too slow
 
@@ -40,4 +40,5 @@ each pixel = 4 bytes
 -draw while pressing shift: draw rect
 -draw while pressing control: draw line
 -scroll: zoom
+-scroll + crtl: change brushsize
 -control+shift+M: debug info

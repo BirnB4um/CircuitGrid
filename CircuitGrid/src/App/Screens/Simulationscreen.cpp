@@ -31,6 +31,9 @@ void Simulationscreen::load_shader() {
 	board_shader.setUniform("board_height", board_height);
 	board_shader.setUniform("screen_width", SCREEN_WIDTH);
 	board_shader.setUniform("screen_height", SCREEN_HEIGHT);
+	board_shader.setUniform("mouse_x", 0.0f);
+	board_shader.setUniform("mouse_y", 0.0f);
+	board_shader.setUniform("brush_size", 0.0f);
 }
 
 void Simulationscreen::init_update_functions() {
@@ -850,6 +853,7 @@ bool Simulationscreen::draw_to_board() {
 
 				for (int _y = y - (brush_size - 1); _y < y + brush_size; _y++) {
 					for (int _x = x - (brush_size - 1); _x < x + brush_size; _x++) {
+
 						if (_y >= 0 && _y < board_height && _x >= 0 && _x < board_width) {
 							if (sqrt((_x - x) * (_x - x) + (_y - y) * (_y - y)) <= brush_size - 1) {
 								*(uint32_t*)&this_board[(_x + _y * board_width) * 4] = instruction_list[instruction_index].data[2];
@@ -1052,9 +1056,14 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 	//wheel
 	else if (ev.type == sf::Event::MouseWheelMoved) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {//change brushsize
-			int new_brush_size = int(brush_size) + ev.mouseWheel.delta;
+			int new_brush_size = int(brush_size) + ev.mouseWheel.delta * (brush_size * 0.1f < 1.0f ? 1.0f : brush_size*0.1f);
 			brush_size = new_brush_size < 1 ? 1 : new_brush_size > board_width * 2 ? board_width * 2 : new_brush_size;
-			std::cout << brush_size << std::endl;
+			if (brush_size == 1) {
+				board_shader.setUniform("brush_size", 0.0f);
+			}
+			else {
+				board_shader.setUniform("brush_size", float(brush_size));
+			}
 		}
 		else {//zoom
 			target_zoom_factor += zoom_factor * (ev.mouseWheel.delta) * zoom_speed;
@@ -1112,6 +1121,8 @@ void Simulationscreen::update() {
 	last_board_mouse = board_mouse;
 	board_mouse.x = (window_mouse.x - (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)) / zoom_factor;
 	board_mouse.y = (window_mouse.y - (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)) / zoom_factor;
+	board_shader.setUniform("mouse_x", board_mouse.x);
+	board_shader.setUniform("mouse_y", board_mouse.y);
 	mouse_over_gui = false;
 	mouse_over_board = Utils::point_vs_rect(board_mouse.x, board_mouse.y, 0, 0, board_width, board_height);
 	last_mouse_over_board = Utils::point_vs_rect(last_board_mouse.x, last_board_mouse.y, 0, 0, board_width, board_height);
