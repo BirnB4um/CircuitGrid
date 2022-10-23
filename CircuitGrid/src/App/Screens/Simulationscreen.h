@@ -87,6 +87,7 @@ private:
 	enum DRAWTYPE { POINT, LINE, RECT };
 	std::vector<Drawinstruction> drawinstruction_list;
 	std::mutex draw_mutex;
+	uint32_t brush_size;
 	bool start_drawing_rectangle;
 	bool drawing_rectangle;
 	bool start_drawing_line;
@@ -107,6 +108,7 @@ private:
 	float drag_start_y;
 	float drag_start_offset_x;
 	float drag_start_offset_y;
+	bool can_drag_with_keyboard;
 
 	bool clear_board_bool;
 	bool reset_simulation_bool;

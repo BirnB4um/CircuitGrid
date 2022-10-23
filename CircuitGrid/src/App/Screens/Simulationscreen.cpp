@@ -104,6 +104,8 @@ void Simulationscreen::init_update_functions() {
 }
 
 void Simulationscreen::init() {
+	brush_size = 1;
+	can_drag_with_keyboard = true;
 	show_debug_info = false;
 	update_time_taken = 0;
 	upload_texture_to_gpu_time_taken = 0;
@@ -767,7 +769,7 @@ void Simulationscreen::create_board(unsigned int width, unsigned int height) {
 }
 
 void Simulationscreen::add_to_update_list(uint32_t i) {
-	if (i < board_width || i > board_size - board_width || this_board[i*4]==0)
+	if (i < board_width || i > board_size - board_width || this_board[i*4] == AIR)
 		return;
 
 	if (update_checklist[i] == 0) {
@@ -782,14 +784,10 @@ void Simulationscreen::reset_simulation() {
 	for (uint32_t i = 0; i < board_size;i++) {
 		if (this_board[i * 4] == BATTERY || this_board[i * 4] >= NOT) {
 			add_to_update_list(i);
-			if (i > 0)
-				add_to_update_list(i - 1);
-			if (i < board_size - 1)
-				add_to_update_list(i + 1);
-			if (i >= board_width)
-				add_to_update_list(i - board_width);
-			if (i < board_size-board_width)
-				add_to_update_list(i + board_width);
+			add_to_update_list(i - 1);
+			add_to_update_list(i + 1);
+			add_to_update_list(i - board_width);
+			add_to_update_list(i + board_width);
 		}
 		*(uint32_t*)&next_board[i * 4] = item_list[this_board[i*4]];
 		*(uint32_t*)&this_board[i * 4] = item_list[this_board[i*4]];
@@ -804,7 +802,8 @@ void Simulationscreen::clear_board() {
 }
 
 bool Simulationscreen::draw_to_board() {
-	if (drawinstruction_list.size() == 0)return false;
+	if (drawinstruction_list.size() == 0)
+		return false;
 
 	//get instructions
 	Drawinstruction* instruction_list;
@@ -849,12 +848,27 @@ bool Simulationscreen::draw_to_board() {
 				x = start_x + uint32_t(factor * dx);
 				y = start_y + uint32_t(factor * dy);
 
-				*(uint32_t*)&this_board[(x + y * board_width) * 4] = instruction_list[instruction_index].data[2];
-				add_to_update_list(x + y * board_width);
-				add_to_update_list(x + 1 + y * board_width);
-				add_to_update_list(x - 1 + y * board_width);
-				add_to_update_list(x + (y + 1) * board_width);
-				add_to_update_list(x + (y - 1) * board_width);
+				for (int _y = y - (brush_size - 1); _y < y + brush_size; _y++) {
+					for (int _x = x - (brush_size - 1); _x < x + brush_size; _x++) {
+						if (_y >= 0 && _y < board_height && _x >= 0 && _x < board_width) {
+							if (sqrt((_x - x) * (_x - x) + (_y - y) * (_y - y)) <= brush_size - 1) {
+								*(uint32_t*)&this_board[(_x + _y * board_width) * 4] = instruction_list[instruction_index].data[2];
+								add_to_update_list(_x + _y * board_width);
+								add_to_update_list(_x + 1 + _y * board_width);
+								add_to_update_list(_x - 1 + _y * board_width);
+								add_to_update_list(_x + (_y + 1) * board_width);
+								add_to_update_list(_x + (_y - 1) * board_width);
+							}
+						}
+					}
+				}
+
+				//*(uint32_t*)&this_board[(x + y * board_width) * 4] = instruction_list[instruction_index].data[2];
+				//add_to_update_list(x + y * board_width);
+				//add_to_update_list(x + 1 + y * board_width);
+				//add_to_update_list(x - 1 + y * board_width);
+				//add_to_update_list(x + (y + 1) * board_width);
+				//add_to_update_list(x + (y - 1) * board_width);
 			}
 		}
 		else if (instruction_list[instruction_index].data[0] == RECT) {
@@ -1037,7 +1051,14 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 	////Mouse////
 	//wheel
 	else if (ev.type == sf::Event::MouseWheelMoved) {
-		target_zoom_factor += zoom_factor * (ev.mouseWheel.delta) * zoom_speed;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {//change brushsize
+			int new_brush_size = int(brush_size) + ev.mouseWheel.delta;
+			brush_size = new_brush_size < 1 ? 1 : new_brush_size > board_width * 2 ? board_width * 2 : new_brush_size;
+			std::cout << brush_size << std::endl;
+		}
+		else {//zoom
+			target_zoom_factor += zoom_factor * (ev.mouseWheel.delta) * zoom_speed;
+		}
 	}
 
 	//Pressed
@@ -1154,6 +1175,7 @@ void Simulationscreen::update() {
 			drawing_start_y = drawing_start_y < 0 ? 0 : drawing_start_y > board_height - 1 ? board_height - 1 : drawing_start_y;
 		}
 
+		//create drawinstruction list
 		if (drawing_line) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -1176,7 +1198,7 @@ void Simulationscreen::update() {
 
 					Drawinstruction instruction;
 					instruction.data[0] = LINE;
-					instruction.data[1] = 1;
+					instruction.data[1] = brush_size;
 					instruction.data[2] = selected_item;
 					instruction.data[3] = drawing_start_x;
 					instruction.data[4] = drawing_start_y;
@@ -1225,13 +1247,12 @@ void Simulationscreen::update() {
 				drawing_rectangle = false;
 			}
 		}
-		//create drawinstruction list
 		else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			if (mouse_over_board && last_mouse_over_board) {
 				std::lock_guard<std::mutex> draw_lock(draw_mutex);
 				Drawinstruction instruction;
 				instruction.data[0] = LINE;
-				instruction.data[1] = 1;
+				instruction.data[1] = brush_size;
 				instruction.data[2] = selected_item;
 				instruction.data[3] = floor(last_board_mouse.x);
 				instruction.data[4] = floor(last_board_mouse.y);
@@ -1243,18 +1264,20 @@ void Simulationscreen::update() {
 	}
 
 	//update board_offset
-	float speed = move_speed / zoom_factor;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-		target_board_offset_y -= speed;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		target_board_offset_y += speed;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		target_board_offset_x -= speed;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		target_board_offset_x += speed;
+	if (can_drag_with_keyboard) {
+		float speed = move_speed / zoom_factor;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			target_board_offset_y -= speed;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			target_board_offset_y += speed;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			target_board_offset_x -= speed;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			target_board_offset_x += speed;
+		}
 	}
 
 	if (dragging_board) {

@@ -29,3 +29,15 @@ each pixel = 4 bytes
 ///// OPTIMIZE /////
 -update_checklist -> each bool = 1 bit (reduce size x8 & faster to clear)
 -memcpy only needed part of this_board to next_board. only from lowest update_index to highest update_index (faster to copy)
+
+
+///// HowTo /////
+-E: inventory
+-R: reset simulation
+-X: clear board
+-Space: pause/play simulation
+-drag while left pressed: draw to board
+-draw while pressing shift: draw rect
+-draw while pressing control: draw line
+-scroll: zoom
+-control+shift+M: debug info
