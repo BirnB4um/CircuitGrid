@@ -9,6 +9,8 @@ each pixel = 4 bytes
 
 
 ///// TODO /////
+-add grid
+-add brushsize
 -drawmode FILL
 -drawmode PIXELPERFECT
 -delete[] lists
