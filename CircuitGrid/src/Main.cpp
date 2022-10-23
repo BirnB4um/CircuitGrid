@@ -13,6 +13,7 @@
 using namespace std;
 
 int main() {
+
 	//Timer timer;
 	//int w = 4096;
 	//int h = 4096;

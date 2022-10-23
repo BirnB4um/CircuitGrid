@@ -20,8 +20,8 @@ void main(){
         if(zoom_factor >= 32){
             pixel = texture2D(large_pixel_texture, vec2(texture2D(board_data_texture, board_coords).r + pixel_coords.x, pixel_coords.y));
         }else{
-            if(texture2D(board_data_texture, board_coords).g > 0){//if electricity
-            pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0.5f));
+            if(texture2D(board_data_texture, board_coords).g > 1.0/255.0){//if electricity
+                pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0.5f));
             }else{
                 pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0));
             }

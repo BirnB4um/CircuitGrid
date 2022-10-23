@@ -11,6 +11,7 @@
 #include "../../Tools/Utils.h"
 #include "../../Tools/Timer.h"
 
+
 class Simulationscreen
 {
 private:
@@ -35,6 +36,8 @@ private:
 	Button inv_out_button;
 	sf::Text inv_battery_text;
 	Button inv_battery_button;
+	sf::Text inv_repeater_text;
+	Button inv_repeater_button;
 	sf::Text inv_bridge_text;
 	Button inv_bridge_button;
 	sf::Text inv_lamp_text;
@@ -126,8 +129,11 @@ private:
 	bool update_wire(uint32_t& i);
 	bool update_out(uint32_t& i);
 	bool update_battery(uint32_t& i);
-	bool update_amplifier(uint32_t& i);
+	bool update_repeater(uint32_t& i);
 	bool update_bridge(uint32_t& i);
+	bool update_button(uint32_t& i);
+	bool update_switch(uint32_t& i);
+	bool update_lamp(uint32_t& i);
 	bool update_not(uint32_t& i);
 	bool update_or(uint32_t& i);
 	bool update_xor(uint32_t& i);
@@ -135,7 +141,4 @@ private:
 	bool update_xnor(uint32_t& i);
 	bool update_and(uint32_t& i);
 	bool update_nand(uint32_t& i);
-	bool update_button(uint32_t& i);
-	bool update_switch(uint32_t& i);
-	bool update_lamp(uint32_t& i);
 };
