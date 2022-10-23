@@ -22,6 +22,7 @@ void Simulationscreen::load_shader() {
 		std::cout << "ERROR: failed to load 'board_shader.frag'!" << std::endl;
 	}
 	board_shader.setUniform("pixel_color_texture", pixel_color_texture);
+	board_shader.setUniform("large_pixel_texture", large_pixel_texture);
 	board_shader.setUniform("offset_x", board_offset_x);
 	board_shader.setUniform("offset_y", board_offset_y);
 	board_shader.setUniform("zoom_factor", zoom_factor);
@@ -148,6 +149,9 @@ void Simulationscreen::init() {
 	if (!pixel_color_texture.loadFromFile("res/images/pixel_color_texture.png")) {
 		std::cout << "ERROR: failed to load 'pixel_color_texture.png'!" << std::endl;
 	}
+	if (!large_pixel_texture.loadFromFile("res/images/large_pixel_texture.png")) {
+		std::cout << "ERROR: failed to load 'large_pixel_texture.png'!" << std::endl;
+	}
 
 	create_board(500, 500);
 
@@ -187,7 +191,7 @@ void Simulationscreen::init() {
 	tps_slider.set_function([&] () {
 		board_tps = tps_slider.value * 199 + 1;
 		if (board_tps == 200)
-			board_tps = 10000000;
+			board_tps = 1000000000000;
 		std::cout << board_tps << std::endl;
 		});
 
@@ -855,6 +859,7 @@ void Simulationscreen::th_update_board() {
 				int wait_time = int(1000.0f / board_tps - update_time_taken);
 				std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
 			}
+			drawn_to_board = true;
 		}
 
 		if (drawn_to_board || !simulation_paused) {

@@ -73,6 +73,7 @@ private:
 	sf::RectangleShape render_rect;
 	sf::Texture render_texture;
 	sf::Texture pixel_color_texture;
+	sf::Texture large_pixel_texture;
 
 	//update stuff
 	std::thread update_board_thread;

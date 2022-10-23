@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\gui_texture.png" />
+    <Image Include="res\images\large_pixel_texture.png" />
     <Image Include="res\images\pixel_color_texture.png" />
   </ItemGroup>
   <ItemGroup>

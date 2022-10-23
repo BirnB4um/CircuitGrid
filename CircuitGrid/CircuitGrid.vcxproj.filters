@@ -85,6 +85,9 @@
     <Image Include="res\images\pixel_color_texture.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\images\large_pixel_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\board_shader.frag" />
