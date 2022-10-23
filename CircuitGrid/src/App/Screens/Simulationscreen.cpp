@@ -105,6 +105,9 @@ void Simulationscreen::init() {
 	upload_texture_to_gpu_time_taken = 0;
 	item_gui_texture_width = 16;
 	number_of_pixels_to_update = 0;
+	move_speed = 10;
+	zoom_factor = 1;
+	target_zoom_factor = 1;
 
 	//debug stuff
 	upload_to_gpu_time_text.setFont(*font);

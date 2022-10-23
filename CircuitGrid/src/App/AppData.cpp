@@ -22,11 +22,11 @@ sf::Font* font;
 bool show_debug_info;
 
 //navigation
-float move_speed = 8;
+float move_speed;
 float zoom_speed = 0.1f;
 float board_offset_x = 0, board_offset_y = 0;
 float target_board_offset_x = 0, target_board_offset_y = 0;
-float zoom_factor = 1, target_zoom_factor = 1;
+float zoom_factor, target_zoom_factor;
 
 //board data
 int board_width = 0, board_height = 0, board_size = 0;

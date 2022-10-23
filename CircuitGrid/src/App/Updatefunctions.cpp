@@ -6,7 +6,7 @@
 	3  -  Battery
 	4  -  Bridge
 
-	5 -  Lamp
+	5  -  Lamp
 	6  -  Button
 	7  -  Switch
 
@@ -84,28 +84,30 @@ bool Simulationscreen::update_out(uint32_t& i) {
 
 	//up
 	if (this_board[i_up] >= BUTTON) {
-		if (this_board[i_up + 1] > 0) {
-			next_board[this_i + 1] = this_board[i_up + 1];
+		if (this_board[i_up + 1] > max_surrounding_electricity) {
+			max_surrounding_electricity = this_board[i_up + 1];
 		}
 	}
 	//left
 	if (this_board[i_left] >= BUTTON) {
-		if (this_board[i_left + 1] > 0) {
-			next_board[this_i + 1] = this_board[i_left + 1];
+		if (this_board[i_left + 1] > max_surrounding_electricity) {
+			max_surrounding_electricity = this_board[i_left + 1];
 		}
 	}
 	//right
 	if (this_board[i_right] >= BUTTON) {
-		if (this_board[i_right + 1] > 0) {
-			next_board[this_i + 1] = this_board[i_right + 1];
+		if (this_board[i_right + 1] > max_surrounding_electricity) {
+			max_surrounding_electricity = this_board[i_right + 1];
 		}
 	}
 	//down
 	if (this_board[i_down] >= BUTTON) {
-		if (this_board[i_down + 1] > 0) {
-			next_board[this_i + 1] = this_board[i_down + 1];
+		if (this_board[i_down + 1] > max_surrounding_electricity) {
+			max_surrounding_electricity = this_board[i_down + 1];
 		}
 	}
+	
+	next_board[this_i + 1] = max_surrounding_electricity;
 
 	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
@@ -185,30 +187,345 @@ bool Simulationscreen::update_switch(uint32_t& i) {
 }
 
 bool Simulationscreen::update_not(uint32_t& i) {
-	return false;
+	uint32_t this_i = i * 4;
+	uint32_t i_up = (i - board_width) * 4;
+	uint32_t i_down = (i + board_width) * 4;
+	uint32_t i_left = (i - 1) * 4;
+	uint32_t i_right = (i + 1) * 4;
+
+	char surrounding_electricity_count = 0;
+
+	//up
+	if (this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//down
+	if (this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//left
+	if (this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+		if (this_board[i_left + 1] > 0) {
+			surrounding_electricity_count++;
+
+		}
+	}
+
+	//right
+	if (this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+		if (this_board[i_right + 1] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+
+	if (surrounding_electricity_count > 0) {
+		next_board[this_i + 1] = 0;
+	}
+	else {
+		next_board[this_i + 1] = 0xFF;
+	}
+
+	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
 
 bool Simulationscreen::update_or(uint32_t& i) {
-	return false;
+	uint32_t this_i = i * 4;
+	uint32_t i_up = (i - board_width) * 4;
+	uint32_t i_down = (i + board_width) * 4;
+	uint32_t i_left = (i - 1) * 4;
+	uint32_t i_right = (i + 1) * 4;
+
+	char surrounding_electricity_count = 0;
+
+	//up
+	if (this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//down
+	if (this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//left
+	if (this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+		if (this_board[i_left + 1] > 0) {
+			surrounding_electricity_count++;
+
+		}
+	}
+
+	//right
+	if (this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+		if (this_board[i_right + 1] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+
+	if (surrounding_electricity_count > 0) {
+		next_board[this_i + 1] = 0xFF;
+	}
+	else {
+		next_board[this_i + 1] = 0;
+	}
+
+	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
 
 bool Simulationscreen::update_nor(uint32_t& i) {
-	return false;
+	uint32_t this_i = i * 4;
+	uint32_t i_up = (i - board_width) * 4;
+	uint32_t i_down = (i + board_width) * 4;
+	uint32_t i_left = (i - 1) * 4;
+	uint32_t i_right = (i + 1) * 4;
+
+	char surrounding_electricity_count = 0;
+
+	//up
+	if (this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//down
+	if (this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//left
+	if (this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+		if (this_board[i_left + 1] > 0) {
+			surrounding_electricity_count++;
+
+		}
+	}
+
+	//right
+	if (this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+		if (this_board[i_right + 1] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+
+	if (surrounding_electricity_count == 0) {
+		next_board[this_i + 1] = 0xFF;
+	}
+	else {
+		next_board[this_i + 1] = 0;
+	}
+
+	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
 
 bool Simulationscreen::update_xor(uint32_t& i) {
-	return false;
+	uint32_t this_i = i * 4;
+	uint32_t i_up = (i - board_width) * 4;
+	uint32_t i_down = (i + board_width) * 4;
+	uint32_t i_left = (i - 1) * 4;
+	uint32_t i_right = (i + 1) * 4;
+
+	char surrounding_electricity_count = 0;
+
+	//up
+	if (this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//down
+	if (this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//left
+	if (this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+		if (this_board[i_left + 1] > 0) {
+			surrounding_electricity_count++;
+
+		}
+	}
+
+	//right
+	if (this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+		if (this_board[i_right + 1] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+
+	if (surrounding_electricity_count == 1) {
+		next_board[this_i + 1] = 0xFF;
+	}
+	else {
+		next_board[this_i + 1] = 0;
+	}
+
+	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
 
 bool Simulationscreen::update_xnor(uint32_t& i) {
-	return false;
+	uint32_t this_i = i * 4;
+	uint32_t i_up = (i - board_width) * 4;
+	uint32_t i_down = (i + board_width) * 4;
+	uint32_t i_left = (i - 1) * 4;
+	uint32_t i_right = (i + 1) * 4;
+
+	char surrounding_electricity_count = 0;
+
+	//up
+	if (this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//down
+	if (this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//left
+	if (this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+		if (this_board[i_left + 1] > 0) {
+			surrounding_electricity_count++;
+
+		}
+	}
+
+	//right
+	if (this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+		if (this_board[i_right + 1] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+
+	if (surrounding_electricity_count != 1) {
+		next_board[this_i + 1] = 0xFF;
+	}
+	else {
+		next_board[this_i + 1] = 0;
+	}
+
+	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
 
 bool Simulationscreen::update_and(uint32_t& i) {
-	return false;
+	uint32_t this_i = i * 4;
+	uint32_t i_up = (i - board_width) * 4;
+	uint32_t i_down = (i + board_width) * 4;
+	uint32_t i_left = (i - 1) * 4;
+	uint32_t i_right = (i + 1) * 4;
+
+	char surrounding_electricity_count = 0;
+
+	//up
+	if (this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//down
+	if (this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//left
+	if (this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+		if (this_board[i_left + 1] > 0) {
+			surrounding_electricity_count++;
+
+		}
+	}
+
+	//right
+	if (this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+		if (this_board[i_right + 1] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+
+	if (surrounding_electricity_count > 1) {
+		next_board[this_i + 1] = 0xFF;
+	}
+	else {
+		next_board[this_i + 1] = 0;
+	}
+
+	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
 
 bool Simulationscreen::update_nand(uint32_t& i) {
-	return false;
+	uint32_t this_i = i * 4;
+	uint32_t i_up = (i - board_width) * 4;
+	uint32_t i_down = (i + board_width) * 4;
+	uint32_t i_left = (i - 1) * 4;
+	uint32_t i_right = (i + 1) * 4;
+
+	char surrounding_electricity_count = 0;
+
+	//up
+	if (this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//down
+	if (this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//left
+	if (this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+		if (this_board[i_left + 1] > 0) {
+			surrounding_electricity_count++;
+
+		}
+	}
+
+	//right
+	if (this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+		if (this_board[i_right + 1] > 0) {
+			surrounding_electricity_count++;
+		}
+	}
+
+
+	if (surrounding_electricity_count < 2) {
+		next_board[this_i + 1] = 0xFF;
+	}
+	else {
+		next_board[this_i + 1] = 0;
+	}
+
+	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
 
