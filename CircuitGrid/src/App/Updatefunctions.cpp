@@ -31,43 +31,61 @@ bool Simulationscreen::update_wire(uint32_t& i) {
 	uint32_t i_left = (i - 1) * 4;
 	uint32_t i_right = (i + 1) * 4;
 
-	uint32_t max_surrounding_electricity = 0;
+	uint8_t max_surrounding_electricity = 0;
+	int max_surrounding_output_electricity = -1;
 
 	//up
 	if (this_board[i_up] <= BRIDGE) {
-		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] > max_surrounding_electricity) {
+		if (this_board[i_up] == OUT && this_board[i_up + 1] > max_surrounding_output_electricity) {
+			max_surrounding_output_electricity = this_board[i_up + 1];
+		}
+		else if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] > max_surrounding_electricity) {
 			max_surrounding_electricity = this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)];
 		}
 	}
 
 	//down
 	if (this_board[i_down] <= BRIDGE) {
-		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] > max_surrounding_electricity) {
+		if (this_board[i_down] == OUT && this_board[i_down + 1] > max_surrounding_output_electricity) {
+			max_surrounding_output_electricity = this_board[i_down + 1];
+		}
+		else if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] > max_surrounding_electricity) {
 			max_surrounding_electricity = this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)];
 		}
 	}
 
 	//left
 	if (this_board[i_left] <= BRIDGE) {
-		if (this_board[i_left + 1] > max_surrounding_electricity) {
+		if (this_board[i_left] == OUT && this_board[i_left + 1] > max_surrounding_output_electricity) {
+			max_surrounding_output_electricity = this_board[i_left + 1];
+		}
+		else if (this_board[i_left + 1] > max_surrounding_electricity) {
 			max_surrounding_electricity = this_board[i_left + 1];
 		}
 	}
 
 	//right
 	if (this_board[i_right] <= BRIDGE) {
-		if (this_board[i_right + 1] > max_surrounding_electricity) {
+		if (this_board[i_right] == OUT && this_board[i_right + 1] > max_surrounding_output_electricity) {
+			max_surrounding_output_electricity = this_board[i_right + 1];
+		}
+		else if (this_board[i_right + 1] > max_surrounding_electricity) {
 			max_surrounding_electricity = this_board[i_right + 1];
 		}
 	}
 
-
-	if (this_board[this_i + 1] > max_surrounding_electricity) {
+	if (max_surrounding_output_electricity == 0) {
 		next_board[this_i + 1] = 0;
-		return true;
-	}
-	else if(max_surrounding_electricity > 0) {
-		next_board[this_i + 1] = max_surrounding_electricity - 1;
+	}else{
+		max_surrounding_electricity = max_surrounding_output_electricity > max_surrounding_electricity ? max_surrounding_output_electricity : max_surrounding_electricity;
+		
+		if (this_board[this_i + 1] > max_surrounding_electricity) {
+			next_board[this_i + 1] = 0;
+			return true;
+		}
+		else if (max_surrounding_electricity > 0) {
+			next_board[this_i + 1] = max_surrounding_electricity - 1;
+		}
 	}
 
 	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];

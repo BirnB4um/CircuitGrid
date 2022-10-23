@@ -21,6 +21,7 @@ each pixel = 4 bytes
 
 
 ///// BUGS /////
+-logic for wire does not work
 -if tps is low (tps=5) -> drawing is updated too slow
 
 
