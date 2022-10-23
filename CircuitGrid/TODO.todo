@@ -22,12 +22,11 @@ each pixel = 4 bytes
 
 ///// BUGS /////
 -large brushsize cant draw over board_edge (only top & left)
--logic for wire does not work
 -if tps is low (tps=5) -> drawing is updated too slow
 
 
 ///// OPTIMIZE /////
--update_checklist -> each bool = 1 bit (reduce size x8 & faster to clear)
+-update_checklist -> each bool = 1 bit (reduce size x8 & faster to clear with memset)
 -memcpy only needed part of this_board to next_board. only from lowest update_index to highest update_index (faster to copy)
 
 
@@ -42,3 +41,6 @@ each pixel = 4 bytes
 -scroll: zoom
 -scroll + crtl: change brushsize
 -control+shift+M: debug info
+-L: reload shader
+-I: info about pixel
+-0: put board in center
