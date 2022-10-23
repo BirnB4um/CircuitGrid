@@ -18,7 +18,6 @@ each pixel = 4 bytes
 -copy/paste part of board
 -save/load board + GUI
 -load configs from file (boardsize, tps, ...)
--compile with CMAKE
 
 
 

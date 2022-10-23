@@ -102,8 +102,19 @@ private:
 	bool mouse_over_board;
 	bool last_mouse_over_board;
 
+	bool dragging_board;
+	float drag_start_x;
+	float drag_start_y;
+	float drag_start_offset_x;
+	float drag_start_offset_y;
+
+	bool clear_board_bool;
+	bool reset_simulation_bool;
+
 	std::vector <bool(Simulationscreen::*)(uint32_t& i)> update_functions;
 
+	void reset_simulation();
+	void clear_board();
 	void add_to_update_list(uint32_t i);
 	bool draw_to_board();
 	void update_board();
