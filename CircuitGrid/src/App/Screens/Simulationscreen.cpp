@@ -67,11 +67,11 @@ void Simulationscreen::init_update_functions() {
 	item_names.push_back("Lamp");
 
 	update_functions.push_back(&Simulationscreen::update_button);
-	item_list.push_back(0x00000007);
+	item_list.push_back(0x00000107);
 	item_names.push_back("Button");
 
 	update_functions.push_back(&Simulationscreen::update_switch);
-	item_list.push_back(0x00000008);
+	item_list.push_back(0x00000108);
 	item_names.push_back("Switch");
 
 	update_functions.push_back(&Simulationscreen::update_not);
@@ -1175,6 +1175,55 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 	else if (ev.type == sf::Event::MouseButtonPressed) {
 
 		if (ev.key.code == sf::Mouse::Left) {
+
+			if (!edit_mode && mouse_over_board && !mouse_over_gui) {
+				std::lock_guard<std::mutex> draw_lock(draw_mutex);
+
+
+				uint32_t x = floor(board_mouse.x);
+				uint32_t y = floor(board_mouse.y);
+
+				if (this_board[(y * board_width + x) * 4] == BUTTON) {
+					if (this_board[(y * board_width + x) * 4 + 1] == 1) {
+						Drawinstruction instruction;
+						instruction.data[0] = POINT;
+						instruction.data[1] = brush_size;
+						instruction.data[2] = 0x00000200 + BUTTON;
+						instruction.data[3] = floor(last_board_mouse.x);
+						instruction.data[4] = floor(last_board_mouse.y);
+						instruction.data[5] = x;
+						instruction.data[6] = y;
+						drawinstruction_list.push_back(instruction);
+					}
+				}
+				else if (this_board[(y * board_width + x) * 4] == SWITCH) {
+					if (this_board[(y * board_width + x) * 4 + 1] == 1) {
+						Drawinstruction instruction;
+						instruction.data[0] = POINT;
+						instruction.data[1] = brush_size;
+						instruction.data[2] = 0x00000200 + SWITCH;
+						instruction.data[3] = floor(last_board_mouse.x);
+						instruction.data[4] = floor(last_board_mouse.y);
+						instruction.data[5] = x;
+						instruction.data[6] = y;
+						drawinstruction_list.push_back(instruction);
+					} 
+					else if (this_board[(y * board_width + x) * 4 + 1] == 2) {
+						Drawinstruction instruction;
+						instruction.data[0] = POINT;
+						instruction.data[1] = brush_size;
+						instruction.data[2] = 0x00000000 + SWITCH;
+						instruction.data[3] = floor(last_board_mouse.x);
+						instruction.data[4] = floor(last_board_mouse.y);
+						instruction.data[5] = x;
+						instruction.data[6] = y;
+						drawinstruction_list.push_back(instruction);
+					}
+				}
+
+
+			}
+
 			//start drawing rectangle
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
 				start_drawing_rectangle = true;

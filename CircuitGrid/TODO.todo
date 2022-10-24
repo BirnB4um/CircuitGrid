@@ -9,9 +9,9 @@ each pixel = 4 bytes
 
 
 ///// TODO /////
--add interactive mode
+-include press function for slider in update()
+-change update_thread to run perfectly on time (exactly targeted tps)
 -add grid
--drawmode FILL
 -drawmode PIXELPERFECTLINE
 -delete[] lists
 -copy/paste part of board

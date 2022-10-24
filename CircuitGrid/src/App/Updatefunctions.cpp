@@ -101,25 +101,25 @@ bool Simulationscreen::update_out(uint32_t& i) {
 
 	//up
 	if (this_board[i_up] >= BUTTON) {
-		if (this_board[i_up + 1] > 0) {
+		if (this_board[i_up + 1] > 1) {
 			next_board[this_i + 1] = 2;
 		}
 	}
 	//left
 	if (this_board[i_left] >= BUTTON) {
-		if (this_board[i_left + 1] > 0) {
+		if (this_board[i_left + 1] > 1) {
 			next_board[this_i + 1] = 2;
 		}
 	}
 	//right
 	if (this_board[i_right] >= BUTTON) {
-		if (this_board[i_right + 1] > 0) {
+		if (this_board[i_right + 1] > 1) {
 			next_board[this_i + 1] = 2;
 		}
 	}
 	//down
 	if (this_board[i_down] >= BUTTON) {
-		if (this_board[i_down + 1] > 0) {
+		if (this_board[i_down + 1] > 1) {
 			next_board[this_i + 1] = 2;
 		}
 	}
@@ -286,11 +286,18 @@ bool Simulationscreen::update_lamp(uint32_t& i) {
 }
 
 bool Simulationscreen::update_button(uint32_t& i) {
-	return false;
+
+	// 1: neutral; 2: on; 3: off
+
+
+
+
+	return true;
 }
 
 bool Simulationscreen::update_switch(uint32_t& i) {
-	return false;
+
+	return true;
 }
 
 bool Simulationscreen::update_not(uint32_t& i) {
@@ -336,7 +343,7 @@ bool Simulationscreen::update_not(uint32_t& i) {
 		next_board[this_i + 1] = 0;
 	}
 	else {
-		next_board[this_i + 1] = 1;
+		next_board[this_i + 1] = 2;
 	}
 
 	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
@@ -382,7 +389,7 @@ bool Simulationscreen::update_or(uint32_t& i) {
 
 
 	if (surrounding_electricity_count > 0) {
-		next_board[this_i + 1] = 1;
+		next_board[this_i + 1] = 2;
 	}
 	else {
 		next_board[this_i + 1] = 0;
@@ -431,7 +438,7 @@ bool Simulationscreen::update_nor(uint32_t& i) {
 
 
 	if (surrounding_electricity_count == 0) {
-		next_board[this_i + 1] = 1;
+		next_board[this_i + 1] = 2;
 	}
 	else {
 		next_board[this_i + 1] = 0;
@@ -480,7 +487,7 @@ bool Simulationscreen::update_xor(uint32_t& i) {
 
 
 	if (surrounding_electricity_count == 1) {
-		next_board[this_i + 1] = 1;
+		next_board[this_i + 1] = 2;
 	}
 	else {
 		next_board[this_i + 1] = 0;
@@ -529,7 +536,7 @@ bool Simulationscreen::update_xnor(uint32_t& i) {
 
 
 	if (surrounding_electricity_count != 1) {
-		next_board[this_i + 1] = 1;
+		next_board[this_i + 1] = 2;
 	}
 	else {
 		next_board[this_i + 1] = 0;
@@ -578,7 +585,7 @@ bool Simulationscreen::update_and(uint32_t& i) {
 
 
 	if (surrounding_electricity_count > 1) {
-		next_board[this_i + 1] = 1;
+		next_board[this_i + 1] = 2;
 	}
 	else {
 		next_board[this_i + 1] = 0;
@@ -627,7 +634,7 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 
 
 	if (surrounding_electricity_count < 2) {
-		next_board[this_i + 1] = 1;
+		next_board[this_i + 1] = 2;
 	}
 	else {
 		next_board[this_i + 1] = 0;
