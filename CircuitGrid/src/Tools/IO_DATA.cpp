@@ -4,8 +4,8 @@
 //=============
 
 /*
-   nr_file_name: 0 = nix,all*
-				 1 = set,all*
+   nr_file_name: 0 = all*
+				 1 = board,all*
 				 2 = rec,all*
 				 3 = josefistdumm,all*
 */
@@ -36,8 +36,8 @@ std::string IO_DATA::choose_open_file(int nr_file_name = 0) {//returns path to f
 	openFileDialog.lpstrFilter = "All Files (*.*)\0*.*\0";
 	openFileDialog.lpstrDefExt = "All";
 	if (nr_file_name == 1) {
-		openFileDialog.lpstrFilter = "Setting (*.set)\0*set\0All Files (*.*)\0*.*\0";
-		openFileDialog.lpstrDefExt = "set";
+		openFileDialog.lpstrFilter = "Board (*.board)\0*board\0All Files (*.*)\0*.*\0";
+		openFileDialog.lpstrDefExt = "board";
 	}
 	else if (nr_file_name == 2) {
 		openFileDialog.lpstrFilter = "Recording (*.rec)\0*rec\0All Files (*.*)\0*.*\0";
@@ -67,8 +67,8 @@ std::string IO_DATA::choose_save_file(int nr_file_name = 0) {
 	saveFileDialog.lpstrFilter = "All Files (*.*)\0*.*\0";
 	saveFileDialog.lpstrDefExt = "All";
 	if (nr_file_name == 1) {
-		saveFileDialog.lpstrFilter = "Setting (*.set)\0*set\0All Files (*.*)\0*.*\0";
-		saveFileDialog.lpstrDefExt = "set";
+		saveFileDialog.lpstrFilter = "Board (*.board)\0*board\0All Files (*.*)\0*.*\0";
+		saveFileDialog.lpstrDefExt = "board";
 	}
 	else if (nr_file_name == 2) {
 		saveFileDialog.lpstrFilter = "Recording (*.rec)\0*rec\0All Files (*.*)\0*.*\0";
@@ -88,22 +88,14 @@ std::string IO_DATA::choose_save_file(int nr_file_name = 0) {
 }
 
 
-bool IO_DATA::save_to_file(std::string file_name, const char output_data[], const int data_size, bool append_data) {
+bool IO_DATA::save_to_file(std::string file_name, const char *output_data, const int data_size, bool append_data) {
 	if (file_name == "")
 		return false;
 
-	if (append_data) {
-		auto myfile = std::fstream(file_name, std::ios::out | std::ios::binary | std::ios_base::app);
-		myfile.write((char*)output_data, data_size);
-		myfile.close();
-		return true;
-	}
-	else {
-		auto myfile = std::fstream(file_name, std::ios::out | std::ios::binary);
-		myfile.write((char*)output_data, data_size);
-		myfile.close();
-		return true;
-	}
+	auto myfile = std::fstream(file_name, std::ios::out | std::ios::binary | (append_data ? std::ios_base::app : 0));
+	myfile.write((char*)output_data, data_size);
+	myfile.close();
+	return true;
 
 }
 
