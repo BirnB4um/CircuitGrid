@@ -250,6 +250,14 @@ void Simulationscreen::init() {
 		}
 		});
 
+	reset_button.init();
+	reset_button.set_texture_inrect(89, 0, 9, 9);
+	reset_button.set_hoverover_texture_inrect(89, 9, 9, 9);
+	reset_button.set_pressed_texture_inrect(89, 18, 9, 9);
+	reset_button.set_function([&] () {
+		reset_simulation_bool = true;
+		});
+
 
 
 	//init inventory GUI
@@ -553,6 +561,13 @@ void Simulationscreen::resize() {
 	fill_button.set_position(x,y);
 	fill_button.set_size(w,h);
 
+	w = gui_scale * SCREEN_WIDTH * 0.04f;
+	h = w;
+	x = pause_button.rect.getPosition().x;
+	y = fill_button.rect.getPosition().y + gui_scale * fill_button.rect.getSize().y * 1.1f;
+	reset_button.set_position(x,y);
+	reset_button.set_size(w,h);
+
 	//inventory GUI
 	stroke_width = 2;
 	y = item_button.rect.getPosition().y + item_button.rect.getSize().y + 10;
@@ -758,13 +773,13 @@ void Simulationscreen::resize() {
 
 	//debug info
 	upload_to_gpu_time_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
-	upload_to_gpu_time_text.setPosition(pause_button.rect.getPosition().x, pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 1.1f);
+	upload_to_gpu_time_text.setPosition(edit_button.rect.getPosition().x + edit_button.rect.getSize().x * 1.1f, pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 1.1f);
 
 	update_board_time_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
-	update_board_time_text.setPosition(pause_button.rect.getPosition().x, upload_to_gpu_time_text.getPosition().y + upload_to_gpu_time_text.getCharacterSize() * 1.5f);
+	update_board_time_text.setPosition(edit_button.rect.getPosition().x + edit_button.rect.getSize().x * 1.1f, upload_to_gpu_time_text.getPosition().y + upload_to_gpu_time_text.getCharacterSize() * 1.5f);
 
 	updates_number_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
-	updates_number_text.setPosition(pause_button.rect.getPosition().x, update_board_time_text.getPosition().y + update_board_time_text.getCharacterSize() * 1.5f);
+	updates_number_text.setPosition(edit_button.rect.getPosition().x + edit_button.rect.getSize().x * 1.1f, update_board_time_text.getPosition().y + update_board_time_text.getCharacterSize() * 1.5f);
 }
 
 void Simulationscreen::on_closing() {
@@ -1110,7 +1125,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			clear_board_bool = true;
 		}
 		else if (ev.key.code == sf::Keyboard::R) {//reset simulation
-			reset_simulation_bool = true;;
+			reset_simulation_bool = true;
 		}
 		else if (ev.key.code == sf::Keyboard::E) {//open/close inventory
 			item_button.func();
@@ -1238,6 +1253,11 @@ void Simulationscreen::update() {
 		mouse_over_gui = true;
 	}
 	fill_button.update(window_mouse.x, window_mouse.y);
+
+	if (reset_button.check_over_button(window_mouse.x, window_mouse.y)) {
+		mouse_over_gui = true;
+	}
+	reset_button.update(window_mouse.x, window_mouse.y);
 
 	if (show_inventory) {
 		if (Utils::point_vs_rect(window_mouse.x, window_mouse.y, inventory_bg_rect.getPosition().x, inventory_bg_rect.getPosition().y,
@@ -1450,6 +1470,7 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	tps_slider.render(window);
 	edit_button.render(window);
 	fill_button.render(window);
+	reset_button.render(window);
 
 	if (show_inventory) {
 		window.draw(inventory_bg_rect);

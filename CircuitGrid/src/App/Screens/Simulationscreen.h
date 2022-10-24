@@ -25,8 +25,8 @@ private:
 	Slider tps_slider;
 
 	Button edit_button;
-
 	Button fill_button;
+	Button reset_button;
 
 	//Inventory gui
 	bool show_inventory;
