@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Tools\IO_DATA.cpp" />
     <ClCompile Include="src\App\Screens\Homescreen.cpp" />
     <ClCompile Include="src\App\Screens\Simulationscreen.cpp" />
     <ClCompile Include="src\App\AppData.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Tools\IO_DATA.h" />
     <ClInclude Include="src\App\Screens\Homescreen.h" />
     <ClInclude Include="src\App\Screens\Simulationscreen.h" />
     <ClInclude Include="src\App\AppData.h" />
