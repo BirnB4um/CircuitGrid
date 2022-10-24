@@ -55,7 +55,7 @@ void Simulationscreen::init_update_functions() {
 	item_names.push_back("Battery");
 
 	update_functions.push_back(&Simulationscreen::update_repeater);
-	item_list.push_back(0x00000104);
+	item_list.push_back(0x000A0104);
 	item_names.push_back("Repeater");
 
 	update_functions.push_back(&Simulationscreen::update_bridge);
@@ -242,10 +242,12 @@ void Simulationscreen::init() {
 		fill_mode = !fill_mode;
 		if (fill_mode) {
 			fill_button.set_texture_inrect(80, 18, 9, 9);
+			fill_button.set_hoverover_texture_inrect(80, 18, 9, 9);
 			fill_button.set_pressed_texture_inrect(80, 0, 9, 9);
 		}
 		else {
 			fill_button.set_texture_inrect(80, 0, 9, 9);
+			fill_button.set_hoverover_texture_inrect(80, 9, 9, 9);
 			fill_button.set_pressed_texture_inrect(80, 18, 9, 9);
 		}
 		});
@@ -1121,8 +1123,11 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::F) {//toggle fill_mode
 			fill_button.func();
 		}
-		else if (ev.key.code == sf::Keyboard::X) {//clear board
+		else if (ev.key.code == sf::Keyboard::X && sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) {//clear board
 			clear_board_bool = true;
+		}
+		else if (ev.key.code == sf::Keyboard::B) {//toggle edit mode
+			edit_button.func();
 		}
 		else if (ev.key.code == sf::Keyboard::R) {//reset simulation
 			reset_simulation_bool = true;
@@ -1178,7 +1183,6 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 
 			if (!edit_mode && mouse_over_board && !mouse_over_gui) {
 				std::lock_guard<std::mutex> draw_lock(draw_mutex);
-
 
 				uint32_t x = floor(board_mouse.x);
 				uint32_t y = floor(board_mouse.y);
