@@ -28,6 +28,7 @@ private:
 	Button edit_button;
 	Button fill_button;
 	Button reset_button;
+	Button grid_button;
 
 	//Inventory gui
 	bool show_inventory;
@@ -105,6 +106,7 @@ private:
 	sf::RectangleShape drawing_line_shape;
 	bool edit_mode;
 	bool fill_mode;
+	bool draw_grid;
 
 	bool mouse_over_gui;
 	bool mouse_over_board;

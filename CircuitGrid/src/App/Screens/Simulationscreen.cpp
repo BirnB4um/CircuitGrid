@@ -58,6 +58,7 @@ void Simulationscreen::load_resources() {
 	board_shader.setUniform("mouse_x", 0.0f);
 	board_shader.setUniform("mouse_y", 0.0f);
 	board_shader.setUniform("brush_size", 0.0f);
+	board_shader.setUniform("draw_grid", draw_grid);
 
 
 
@@ -141,7 +142,7 @@ void Simulationscreen::init() {
 	upload_texture_to_gpu_time_taken = 0;
 	item_gui_texture_width = 16;
 	number_of_pixels_to_update = 0;
-	move_speed = 10;
+	move_speed = 16;
 	zoom_factor = 1;
 	target_zoom_factor = 1;
 	clear_board_bool = false;
@@ -283,6 +284,25 @@ void Simulationscreen::init() {
 	reset_button.set_pressed_texture_inrect(89, 18, 9, 9);
 	reset_button.set_function([&] () {
 		reset_simulation_bool = true;
+		});
+
+	grid_button.init();
+	grid_button.set_texture_inrect(98, 0, 9, 9);
+	grid_button.set_hoverover_texture_inrect(98, 9, 9, 9);
+	grid_button.set_pressed_texture_inrect(98, 18, 9, 9);
+	grid_button.set_function([&] () {
+		draw_grid = !draw_grid;
+		board_shader.setUniform("draw_grid", draw_grid);
+		if (draw_grid) {
+			grid_button.set_texture_inrect(98, 18, 9, 9);
+			grid_button.set_hoverover_texture_inrect(98, 18, 9, 9);
+			grid_button.set_pressed_texture_inrect(98, 0, 9, 9);
+		}
+		else {
+			grid_button.set_texture_inrect(98, 0, 9, 9);
+			grid_button.set_hoverover_texture_inrect(98, 9, 9, 9);
+			grid_button.set_pressed_texture_inrect(98, 18, 9, 9);
+		}
 		});
 
 
@@ -590,16 +610,23 @@ void Simulationscreen::resize() {
 	w = gui_scale * SCREEN_WIDTH * 0.04f;
 	h = w;
 	x = pause_button.rect.getPosition().x;
-	y = edit_button.rect.getPosition().y + gui_scale * edit_button.rect.getSize().y * 1.1f;
+	y = edit_button.rect.getPosition().y + edit_button.rect.getSize().y * 1.1f * gui_scale;
 	fill_button.set_position(x,y);
 	fill_button.set_size(w,h);
 
 	w = gui_scale * SCREEN_WIDTH * 0.04f;
 	h = w;
 	x = pause_button.rect.getPosition().x;
-	y = fill_button.rect.getPosition().y + gui_scale * fill_button.rect.getSize().y * 1.1f;
+	y = fill_button.rect.getPosition().y + fill_button.rect.getSize().y * 1.1f * gui_scale;
 	reset_button.set_position(x,y);
 	reset_button.set_size(w,h);
+
+	w = gui_scale * SCREEN_WIDTH * 0.04f;
+	h = w;
+	x = pause_button.rect.getPosition().x;
+	y = reset_button.rect.getPosition().y + reset_button.rect.getSize().y * 1.1f * gui_scale;
+	grid_button.set_position(x,y);
+	grid_button.set_size(w,h);
 
 	//inventory GUI
 	stroke_width = 2;
@@ -1154,6 +1181,9 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::F) {//toggle fill_mode
 			fill_button.func();
 		}
+		else if (ev.key.code == sf::Keyboard::G) {//toggle grid
+			grid_button.func();
+		}
 		else if (ev.key.code == sf::Keyboard::X && sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) {//clear board
 			clear_board_bool = true;
 		}
@@ -1342,6 +1372,11 @@ void Simulationscreen::update() {
 		mouse_over_gui = true;
 	}
 	reset_button.update(window_mouse.x, window_mouse.y);
+
+	if (grid_button.check_over_button(window_mouse.x, window_mouse.y)) {
+		mouse_over_gui = true;
+	}
+	grid_button.update(window_mouse.x, window_mouse.y);
 
 	tps_text.setString("TPS:" + (board_tps == 10000000 ? "max" : std::to_string(int(board_tps))));
 
@@ -1557,6 +1592,7 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	edit_button.render(window);
 	fill_button.render(window);
 	reset_button.render(window);
+	grid_button.render(window);
 	window.draw(tps_text);
 
 	if (show_inventory) {

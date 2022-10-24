@@ -4,14 +4,13 @@
 each pixel = 4 bytes
 - 1b = id
 - 1b = elecricity
-- 1b = electricity II
-- 1b = lightlevel
+- 1b = electricity II; repeater value
+- 1b = wall
 
 
 ///// TODO /////
--change slider bound_rect to rect and type to Rectshape
+-info box at bottom left
 -change repeater value
--include press function for slider in update()
 -change update_thread to run perfectly on time (exactly targeted tps)
 -add grid
 -drawmode PIXELPERFECTLINE
@@ -50,3 +49,4 @@ each pixel = 4 bytes
 -I: info about pixel
 -0: put board in center
 -B: toggle edit mode
+-G: toggle Grid

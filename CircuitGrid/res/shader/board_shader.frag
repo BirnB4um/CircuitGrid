@@ -8,6 +8,7 @@ uniform int board_width, board_height;
 uniform int screen_width, screen_height;
 uniform float mouse_x, mouse_y;
 uniform float brush_size;
+uniform bool draw_grid;
 
 
 void main(){
@@ -19,6 +20,16 @@ void main(){
 
     if(board_coords.x >= 0 && board_coords.x <= 1 && board_coords.y >= 0 && board_coords.y <= 1){
         vec2 pixel_coords = {(board_coords.x * board_width - floor(board_coords.x * board_width))/256, (board_coords.y * board_height - floor(board_coords.y * board_height)) / 2};
+        
+        if(draw_grid && zoom_factor > 8){
+            float factor = zoom_factor > 12 ? 1 : (zoom_factor-8)/4;
+            if( abs((board_coords.x * board_width) - floor(board_coords.x * board_width)) <= 2.0/zoom_factor ||
+                abs((board_coords.y * board_height) - floor(board_coords.y * board_height)) <= 2.0/zoom_factor ){
+                gl_FragColor = vec4(0.1,0.1,0.1,1.0) * factor ;
+                return;
+            }
+        }
+
         float large_pixels_factor = zoom_factor < 16 ? 0 : zoom_factor >= 16 ?  zoom_factor < 32 ?  (zoom_factor-16.0)/16 : 1 : 0;
 
         if(texture2D(board_data_texture, board_coords).g > 1.0/255.0){//if electricity
