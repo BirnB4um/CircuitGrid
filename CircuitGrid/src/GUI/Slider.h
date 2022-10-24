@@ -9,12 +9,12 @@ using namespace std;
 class Slider :GUI_Item
 {
 private:
-	sf::FloatRect bound_rect;
 	sf::RectangleShape line_rect;
 	sf::RectangleShape nob_rect;
 	std::function<void()> func;
 
 public:
+	sf::RectangleShape rect;
 	bool pressed = false;
 	float value = 0.0f;
 

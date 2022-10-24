@@ -22,6 +22,7 @@ private:
 	Button item_button;
 	int item_gui_texture_width;
 
+	sf::Text tps_text;
 	Slider tps_slider;
 
 	Button edit_button;
@@ -128,7 +129,7 @@ private:
 	void update_board();
 	void th_update_board();
 	void create_board(unsigned int width, unsigned int height);
-	void load_shader();
+	void load_resources();
 	void init_update_functions();
 
 public:

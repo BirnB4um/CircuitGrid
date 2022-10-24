@@ -14,10 +14,34 @@ Simulationscreen::~Simulationscreen() {
 	}
 }
 
-void Simulationscreen::load_shader() {
-	std::cout << "loading shader..." << std::endl;
+void Simulationscreen::load_resources() {
+	std::cout << "== Loading resources ==" << std::endl;
+
+	//load fonts
+	std::cout << "load fonts..." << std::endl;
+
+	if (!font->loadFromFile("res/fonts/arial.ttf")) {
+		std::cout << "ERROR: couldnt load font 'arial.ttf'" << std::endl;
+	}
+
+	//reload texture
+	std::cout << "load textures..." << std::endl;
+
+	GUI_Item::gui_texture->loadFromFile("res/images/gui_texture.png");
+
+	if (!pixel_color_texture.loadFromFile("res/images/pixel_color_texture.png")) {
+		std::cout << "ERROR: failed to load 'pixel_color_texture.png'!" << std::endl;
+	}
+
+	if (!large_pixel_texture.loadFromFile("res/images/large_pixel_texture.png")) {
+		std::cout << "ERROR: failed to load 'large_pixel_texture.png'!" << std::endl;
+	}
+
+
 
 	//board shader
+	std::cout << "loading shader..." << std::endl;
+
 	if (!board_shader.loadFromFile("res/shader/board_shader.frag", sf::Shader::Fragment)) {
 		std::cout << "ERROR: failed to load 'board_shader.frag'!" << std::endl;
 	}
@@ -34,6 +58,9 @@ void Simulationscreen::load_shader() {
 	board_shader.setUniform("mouse_x", 0.0f);
 	board_shader.setUniform("mouse_y", 0.0f);
 	board_shader.setUniform("brush_size", 0.0f);
+
+
+
 }
 
 void Simulationscreen::init_update_functions() {
@@ -167,17 +194,10 @@ void Simulationscreen::init() {
 	render_rect.setPosition(0, 0);
 	render_rect.setTexture(&render_texture);
 
-	if (!pixel_color_texture.loadFromFile("res/images/pixel_color_texture.png")) {
-		std::cout << "ERROR: failed to load 'pixel_color_texture.png'!" << std::endl;
-	}
-	if (!large_pixel_texture.loadFromFile("res/images/large_pixel_texture.png")) {
-		std::cout << "ERROR: failed to load 'large_pixel_texture.png'!" << std::endl;
-	}
-
 	create_board(500, 500);
 
 	//load shader
-	load_shader();
+	load_resources();
 
 	//init threads
 	update_board_thread = std::thread(&Simulationscreen::th_update_board, this);
@@ -208,11 +228,16 @@ void Simulationscreen::init() {
 		});
 	update_item_button_texture();
 
+	tps_text.setFont(*font);
+	tps_text.setFillColor(sf::Color(255,255,255,255));
+	tps_text.setOutlineThickness(0);
+
 	tps_slider.init();
+	tps_slider.set_nob_texture_inrect(80, 27, 14, 14);
 	tps_slider.set_function([&] () {
-		board_tps = tps_slider.value * 999 + 1;
-		if (board_tps == 1000)
-			board_tps = 1000000000000;
+		board_tps = std::pow(1.007, tps_slider.value * 1000);
+		if (board_tps > 1000)
+			board_tps = 10000000;
 		std::cout << board_tps << std::endl;
 		});
 
@@ -543,11 +568,17 @@ void Simulationscreen::resize() {
 	item_button.set_size(w, h);
 
 	h = pause_button.rect.getSize().y * 0.8f;
-	w = h * 20;
-	x = pause_button.rect.getPosition().x + pause_button.rect.getSize().x * 5.0f;
+	w = h * 6;
+	x = pause_button.rect.getPosition().x + pause_button.rect.getSize().x * 1.5f;
 	y = pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 0.1f;
 	tps_slider.set_position(x, y);
 	tps_slider.set_size(w, h);
+
+	h = tps_slider.rect.getSize().y * 0.6f;
+	x = tps_slider.rect.getPosition().x + tps_slider.rect.getSize().x + gui_scale * 10;
+	y = tps_slider.rect.getPosition().y + tps_slider.rect.getSize().y * 0.2f;
+	tps_text.setCharacterSize(h); 
+	tps_text.setPosition(x, y);
 
 	w = gui_scale * SCREEN_WIDTH * 0.04f;
 	h = w;
@@ -1106,8 +1137,8 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 
 	//Released
 	else if (ev.type == sf::Event::KeyReleased) {
-		if (ev.key.code == sf::Keyboard::L) {
-			load_shader();
+		if (ev.key.code == sf::Keyboard::L) {//load resources
+			load_resources();
 		}
 		else if (ev.key.code == sf::Keyboard::Num0) {//center screen
 			target_board_offset_x = float(board_width) / 2;
@@ -1292,7 +1323,7 @@ void Simulationscreen::update() {
 	}
 	item_button.update(window_mouse.x, window_mouse.y);
 
-	if (tps_slider.check_over_slider(window_mouse.x, window_mouse.y)) {
+	if (tps_slider.check_over_slider(window_mouse.x, window_mouse.y) || tps_slider.pressed) {
 		mouse_over_gui = true;
 	}
 	tps_slider.update(window_mouse.x, window_mouse.y);
@@ -1311,6 +1342,8 @@ void Simulationscreen::update() {
 		mouse_over_gui = true;
 	}
 	reset_button.update(window_mouse.x, window_mouse.y);
+
+	tps_text.setString("TPS:" + (board_tps == 10000000 ? "max" : std::to_string(int(board_tps))));
 
 	if (show_inventory) {
 		if (Utils::point_vs_rect(window_mouse.x, window_mouse.y, inventory_bg_rect.getPosition().x, inventory_bg_rect.getPosition().y,
@@ -1524,6 +1557,7 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	edit_button.render(window);
 	fill_button.render(window);
 	reset_button.render(window);
+	window.draw(tps_text);
 
 	if (show_inventory) {
 		window.draw(inventory_bg_rect);

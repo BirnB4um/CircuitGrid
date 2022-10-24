@@ -282,7 +282,99 @@ bool Simulationscreen::update_bridge(uint32_t& i) {
 }
 
 bool Simulationscreen::update_lamp(uint32_t& i) {
-	return false;
+	uint32_t this_i = i * 4;
+	uint32_t i_up = (i - board_width) * 4;
+	uint32_t i_down = (i + board_width) * 4;
+	uint32_t i_left = (i - 1) * 4;
+	uint32_t i_right = (i + 1) * 4;
+
+	uint8_t surrounding_data = 0;//0b1:nachbar ist 0; 0x10:nachbar ist 2
+
+	//up
+	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE) {
+		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 0) {
+			surrounding_data = surrounding_data | 0b1;
+		}
+		else if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
+			surrounding_data = surrounding_data | 0b10;
+		}
+	}
+	else if (this_board[i_up] == LAMP) {
+		if (this_board[i_up + 1] == 0) {
+			surrounding_data = surrounding_data | 0b1;
+		}
+		else if (this_board[i_up + 1] == 2) {
+			surrounding_data = surrounding_data | 0b10;
+		}
+	}
+
+	//down
+	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE) {
+		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 0) {
+			surrounding_data = surrounding_data | 0b1;
+		}
+		else if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
+			surrounding_data = surrounding_data | 0b10;
+		}
+	}
+	else if (this_board[i_down] == LAMP) {
+		if (this_board[i_down + 1] == 0) {
+			surrounding_data = surrounding_data | 0b1;
+		}
+		else if (this_board[i_down + 1] == 2) {
+			surrounding_data = surrounding_data | 0b10;
+		}
+	}
+
+	//left
+	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE) {
+		if (this_board[i_left + 1] == 0) {
+			surrounding_data = surrounding_data | 0b1;
+		}
+		else if (this_board[i_left + 1] == 2) {
+			surrounding_data = surrounding_data | 0b10;
+		}
+	}
+	else if (this_board[i_left] == LAMP) {
+		if (this_board[i_left + 1] == 0) {
+			surrounding_data = surrounding_data | 0b1;
+		}
+		else if (this_board[i_left + 1] == 2) {
+			surrounding_data = surrounding_data | 0b10;
+		}
+	}
+
+	//right
+	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE) {
+		if (this_board[i_right + 1] == 0) {
+			surrounding_data = surrounding_data | 0b1;
+		}
+		else if (this_board[i_right + 1] == 2) {
+			surrounding_data = surrounding_data | 0b10;
+		}
+	}
+	else if (this_board[i_right] == LAMP) {
+		if (this_board[i_right + 1] == 0) {
+			surrounding_data = surrounding_data | 0b1;
+		}
+		else if (this_board[i_right + 1] == 2) {
+			surrounding_data = surrounding_data | 0b10;
+		}
+	}
+
+
+	if (this_board[this_i + 1] == 0) {//if off -> normal
+		next_board[this_i + 1] = 1;
+	}
+	else if (this_board[this_i + 1] == 2 && surrounding_data & 0b1) {//if on && surrounding off -> off
+		next_board[this_i + 1] = 0;
+	}
+	else if (this_board[this_i + 1] == 1 && surrounding_data & 0b10) {//if normal && surrounding on -> on
+		next_board[this_i + 1] = 2;
+	}
+
+
+	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
 
 bool Simulationscreen::update_button(uint32_t& i) {

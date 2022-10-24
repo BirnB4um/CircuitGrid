@@ -9,6 +9,8 @@ each pixel = 4 bytes
 
 
 ///// TODO /////
+-change slider bound_rect to rect and type to Rectshape
+-change repeater value
 -include press function for slider in update()
 -change update_thread to run perfectly on time (exactly targeted tps)
 -add grid
