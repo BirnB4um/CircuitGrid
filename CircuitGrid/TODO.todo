@@ -35,7 +35,7 @@ each pixel = 4 bytes
 ///// HowTo /////
 -E: inventory
 -R: reset simulation
--X + LControl + RControl: clear board
+-X + RControl: clear board
 -Space: pause/play simulation
 -drag while left pressed: draw to board
 -draw while pressing shift: draw rect
@@ -50,3 +50,4 @@ each pixel = 4 bytes
 -0: put board in center
 -B: toggle edit mode
 -G: toggle Grid
+-Y: toggle Details

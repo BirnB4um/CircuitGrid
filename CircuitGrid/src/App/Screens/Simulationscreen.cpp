@@ -59,9 +59,7 @@ void Simulationscreen::load_resources() {
 	board_shader.setUniform("mouse_y", 0.0f);
 	board_shader.setUniform("brush_size", 0.0f);
 	board_shader.setUniform("draw_grid", draw_grid);
-
-
-
+	board_shader.setUniform("draw_details", draw_details);
 }
 
 void Simulationscreen::init_update_functions() {
@@ -154,6 +152,7 @@ void Simulationscreen::init() {
 	drag_start_offset_y = 0;
 	edit_mode = true;
 	fill_mode = false;
+	draw_details = true;
 
 	//debug stuff
 	upload_to_gpu_time_text.setFont(*font);
@@ -304,6 +303,25 @@ void Simulationscreen::init() {
 			grid_button.set_pressed_texture_inrect(98, 18, 9, 9);
 		}
 		});
+
+	detail_button.init();
+	detail_button.set_texture_inrect(107, 0, 9, 9);
+	detail_button.set_hoverover_texture_inrect(107, 9, 9, 9);
+	detail_button.set_pressed_texture_inrect(107, 18, 9, 9);
+	detail_button.set_function([&] () {
+		draw_details = !draw_details;
+		board_shader.setUniform("draw_details", draw_details);
+		if (draw_details) {
+			detail_button.set_texture_inrect(107, 18, 9, 9);
+			detail_button.set_hoverover_texture_inrect(107, 18, 9, 9);
+			detail_button.set_pressed_texture_inrect(107, 0, 9, 9);
+		}
+		else {
+			detail_button.set_texture_inrect(107, 0, 9, 9);
+			detail_button.set_hoverover_texture_inrect(107, 9, 9, 9);
+			detail_button.set_pressed_texture_inrect(107, 18, 9, 9);
+		}
+	});
 
 
 
@@ -627,6 +645,13 @@ void Simulationscreen::resize() {
 	y = reset_button.rect.getPosition().y + reset_button.rect.getSize().y * 1.1f * gui_scale;
 	grid_button.set_position(x,y);
 	grid_button.set_size(w,h);
+
+	w = gui_scale * SCREEN_WIDTH * 0.04f;
+	h = w;
+	x = pause_button.rect.getPosition().x;
+	y = grid_button.rect.getPosition().y + grid_button.rect.getSize().y * 1.1f * gui_scale;
+	detail_button.set_position(x,y);
+	detail_button.set_size(w,h);
 
 	//inventory GUI
 	stroke_width = 2;
@@ -1184,6 +1209,9 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::G) {//toggle grid
 			grid_button.func();
 		}
+		else if (ev.key.code == sf::Keyboard::Y) {//toggle details
+			detail_button.func();
+		}
 		else if (ev.key.code == sf::Keyboard::X && sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) {//clear board
 			clear_board_bool = true;
 		}
@@ -1377,6 +1405,11 @@ void Simulationscreen::update() {
 		mouse_over_gui = true;
 	}
 	grid_button.update(window_mouse.x, window_mouse.y);
+
+	if (detail_button.check_over_button(window_mouse.x, window_mouse.y)) {
+		mouse_over_gui = true;
+	}
+	detail_button.update(window_mouse.x, window_mouse.y);
 
 	tps_text.setString("TPS:" + (board_tps == 10000000 ? "max" : std::to_string(int(board_tps))));
 
@@ -1593,6 +1626,7 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	fill_button.render(window);
 	reset_button.render(window);
 	grid_button.render(window);
+	detail_button.render(window);
 	window.draw(tps_text);
 
 	if (show_inventory) {
