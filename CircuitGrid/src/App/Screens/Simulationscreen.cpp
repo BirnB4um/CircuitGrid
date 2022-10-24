@@ -168,7 +168,7 @@ void Simulationscreen::init() {
 
 	selected_item = item_list[WIRE];
 	simulation_paused = true;
-	board_tps = 20;
+	board_tps = 10;
 	show_inventory = false;
 	one_simulations_step = false;
 
@@ -249,6 +249,7 @@ void Simulationscreen::init() {
 								"G - toggle grid\n"
 								"Y - toggle details\n"
 								"0 - zoom to origin\n"
+								"drag middle mouse button - drag board\n"
 								"SCROLL - zoom\n"
 								"SCROLL + Ctrl - change brushsize\n"
 								"drag left mouse - draw pixels\n"
@@ -294,6 +295,7 @@ void Simulationscreen::init() {
 
 	tps_slider.init();
 	tps_slider.set_nob_texture_inrect(80, 27, 14, 14);
+	tps_slider.value = log(board_tps) / (log(1.007) * 1000);
 	tps_slider.set_function([&] () {
 		board_tps = std::pow(1.007, tps_slider.value * 1000);
 		if (board_tps > 1000)
