@@ -24,6 +24,10 @@ private:
 
 	Slider tps_slider;
 
+	Button edit_button;
+
+	Button fill_button;
+
 	//Inventory gui
 	bool show_inventory;
 	sf::RectangleShape inventory_bg_rect;
@@ -84,7 +88,7 @@ private:
 	struct Drawinstruction {
 		uint32_t data[7];//drawtype, brushsize, element to draw, pos1x, pos1y, pos2x, pos2y
 	};
-	enum DRAWTYPE { POINT, LINE, RECT };
+	enum DRAWTYPE { POINT, LINE, RECT, FILL };
 	std::vector<Drawinstruction> drawinstruction_list;
 	std::mutex draw_mutex;
 	uint32_t brush_size;
@@ -98,6 +102,8 @@ private:
 	int drawing_end_y;
 	sf::RectangleShape drawing_rect_shape;
 	sf::RectangleShape drawing_line_shape;
+	bool edit_mode;
+	bool fill_mode;
 
 	bool mouse_over_gui;
 	bool mouse_over_board;
