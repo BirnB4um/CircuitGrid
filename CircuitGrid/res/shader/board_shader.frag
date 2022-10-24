@@ -9,6 +9,7 @@ uniform int screen_width, screen_height;
 uniform float mouse_x, mouse_y;
 uniform float brush_size;
 uniform bool draw_grid;
+uniform bool draw_details;
 
 
 void main(){
@@ -21,6 +22,7 @@ void main(){
     if(board_coords.x >= 0 && board_coords.x <= 1 && board_coords.y >= 0 && board_coords.y <= 1){
         vec2 pixel_coords = {(board_coords.x * board_width - floor(board_coords.x * board_width))/256, (board_coords.y * board_height - floor(board_coords.y * board_height)) / 2};
         
+        //draw grid
         if(draw_grid && zoom_factor > 8){
             float factor = zoom_factor > 12 ? 1 : (zoom_factor-8)/4;
             if( abs((board_coords.x * board_width) - floor(board_coords.x * board_width)) <= 2.0/zoom_factor ||
@@ -30,17 +32,17 @@ void main(){
             }
         }
 
-        float large_pixels_factor = zoom_factor < 16 ? 0 : zoom_factor >= 16 ?  zoom_factor < 32 ?  (zoom_factor-16.0)/16 : 1 : 0;
-
+        float large_pixels_factor = draw_details ? zoom_factor < 16 ? 0 : zoom_factor >= 16 ?  zoom_factor < 32 ?  (zoom_factor-16.0)/16 : 1 : 0 : 0;
+        
         if(texture2D(board_data_texture, board_coords).g > 1.0/255.0){//if electricity
-            pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0.5)) * (1.0 - large_pixels_factor)+ 
+            pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0.5)) * (1.0 - large_pixels_factor) +
                     texture2D(large_pixel_texture, vec2(texture2D(board_data_texture, board_coords).r + pixel_coords.x, pixel_coords.y + 0.5)) * large_pixels_factor;
         }else{
-            pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0)) * (1.0 - large_pixels_factor)+
+            pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0)) * (1.0 - large_pixels_factor) + 
                     texture2D(large_pixel_texture, vec2(texture2D(board_data_texture, board_coords).r + pixel_coords.x, pixel_coords.y)) * large_pixels_factor;
         }
         
-
+        //draw brush
         if(sqrt((board_coords.x*board_width - mouse_x) * (board_coords.x*board_width - mouse_x) + 
                 (board_coords.y*board_height - mouse_y) * (board_coords.y*board_height - mouse_y)) <= brush_size){
             pixel = pixel + 0.02;

@@ -29,6 +29,7 @@ private:
 	Button fill_button;
 	Button reset_button;
 	Button grid_button;
+	Button detail_button;
 
 	//Inventory gui
 	bool show_inventory;
@@ -107,6 +108,7 @@ private:
 	bool edit_mode;
 	bool fill_mode;
 	bool draw_grid;
+	bool draw_details;
 
 	bool mouse_over_gui;
 	bool mouse_over_board;

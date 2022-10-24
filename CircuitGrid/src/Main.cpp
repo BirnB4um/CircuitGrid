@@ -6,6 +6,8 @@
 #pragma comment(linker,"/SUBSYSTEM:WINDOWS")
 #endif
 
+#define VERSION 0.1
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "App/Application.h"
