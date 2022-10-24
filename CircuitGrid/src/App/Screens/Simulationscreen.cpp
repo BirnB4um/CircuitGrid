@@ -152,7 +152,7 @@ void Simulationscreen::init() {
 	drag_start_offset_y = 0;
 	edit_mode = true;
 	fill_mode = false;
-	draw_details = true;
+	draw_details = false;
 
 	//debug stuff
 	upload_to_gpu_time_text.setFont(*font);

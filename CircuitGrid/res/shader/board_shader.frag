@@ -11,6 +11,8 @@ uniform float brush_size;
 uniform bool draw_grid;
 uniform bool draw_details;
 
+float grid_width = 2;//in pixels
+float box_width = 2;//in pixels
 
 void main(){
     vec2 nCoords = gl_TexCoord[0].xy;
@@ -21,25 +23,29 @@ void main(){
 
     if(board_coords.x >= 0 && board_coords.x <= 1 && board_coords.y >= 0 && board_coords.y <= 1){
         vec2 pixel_coords = {(board_coords.x * board_width - floor(board_coords.x * board_width))/256, (board_coords.y * board_height - floor(board_coords.y * board_height)) / 2};
-        
-        //draw grid
-        if(draw_grid && zoom_factor > 8){
-            float factor = zoom_factor > 12 ? 1 : (zoom_factor-8)/4;
-            if( abs((board_coords.x * board_width) - floor(board_coords.x * board_width)) <= 2.0/zoom_factor ||
-                abs((board_coords.y * board_height) - floor(board_coords.y * board_height)) <= 2.0/zoom_factor ){
-                gl_FragColor = vec4(0.1,0.1,0.1,1.0) * factor ;
-                return;
-            }
-        }
 
         float large_pixels_factor = draw_details ? zoom_factor < 16 ? 0 : zoom_factor >= 16 ?  zoom_factor < 32 ?  (zoom_factor-16.0)/16 : 1 : 0 : 0;
-        
         if(texture2D(board_data_texture, board_coords).g > 1.0/255.0){//if electricity
             pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0.5)) * (1.0 - large_pixels_factor) +
                     texture2D(large_pixel_texture, vec2(texture2D(board_data_texture, board_coords).r + pixel_coords.x, pixel_coords.y + 0.5)) * large_pixels_factor;
         }else{
             pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0)) * (1.0 - large_pixels_factor) + 
                     texture2D(large_pixel_texture, vec2(texture2D(board_data_texture, board_coords).r + pixel_coords.x, pixel_coords.y)) * large_pixels_factor;
+        }
+
+        //draw grid
+        if(draw_grid && zoom_factor > 8){
+            float factor = zoom_factor > 12 ? 1 : (zoom_factor-8)/4;
+            if( abs((board_coords.x * board_width) - floor(board_coords.x * board_width)) <= grid_width/zoom_factor ||
+                abs((board_coords.y * board_height) - floor(board_coords.y * board_height)) <= grid_width/zoom_factor ){
+                pixel = vec4(0.1,0.1,0.1,1.0) * factor;
+            }
+
+            //draw mouse-box
+            if( ( abs( board_coords.x * board_width - (floor(mouse_x) + 0.5)) < 0.5 + box_width/zoom_factor && abs( board_coords.y * board_height - (floor(mouse_y) + 0.5)) < 0.5 + box_width/zoom_factor ) &&
+                ( abs(board_coords.x * board_width - (floor(mouse_x) + 0.5)) > 0.5 || abs(board_coords.y * board_height - (floor(mouse_y) + 0.5)) > 0.5 ) ){
+                pixel = vec4(1,1,1,1) * factor;
+            }
         }
         
         //draw brush

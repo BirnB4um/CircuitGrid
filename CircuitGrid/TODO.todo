@@ -9,10 +9,10 @@ each pixel = 4 bytes
 
 
 ///// TODO /////
+-box around mouse-pixel
 -info box at bottom left
 -change repeater value
 -change update_thread to run perfectly on time (exactly targeted tps)
--add grid
 -drawmode PIXELPERFECTLINE
 -add background tiles
 -delete[] lists
@@ -25,6 +25,7 @@ each pixel = 4 bytes
 ///// BUGS /////
 -large brushsize cant draw over board_edge (only top & left)
 -if tps is low (tps=5) -> drawing is updated too slow
+-in detail mode left edge is smaller than right one (probably float precision limit. maybe fix by making texture smaller, reduce from 256 to 16)
 
 
 ///// OPTIMIZE /////
