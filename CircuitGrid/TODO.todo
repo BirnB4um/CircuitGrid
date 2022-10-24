@@ -9,7 +9,6 @@ each pixel = 4 bytes
 
 
 ///// TODO /////
--box around mouse-pixel
 -info box at bottom left
 -change repeater value
 -change update_thread to run perfectly on time (exactly targeted tps)
@@ -52,3 +51,4 @@ each pixel = 4 bytes
 -B: toggle edit mode
 -G: toggle Grid
 -Y: toggle Details
+-H: help menu

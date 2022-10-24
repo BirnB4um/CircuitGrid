@@ -71,6 +71,18 @@ private:
 	sf::Text inv_nand_text;
 	Button inv_nand_button;
 
+	//help stuff
+	sf::RectangleShape help_bg_rect;
+	sf::Text help_tps_slider_text;
+	sf::Text help_edit_button_text;
+	sf::Text help_fill_button_text;
+	sf::Text help_reset_button_text;
+	sf::Text help_grid_button_text;
+	sf::Text help_details_button_text;
+	sf::Text help_item_button_text;
+	sf::Text help_hotkeys_text;
+	sf::Text help_close_text;
+
 	//debug stuff
 	sf::Text upload_to_gpu_time_text;
 	sf::Text update_board_time_text;
@@ -109,6 +121,7 @@ private:
 	bool fill_mode;
 	bool draw_grid;
 	bool draw_details;
+	bool show_help_menu;
 
 	bool mouse_over_gui;
 	bool mouse_over_board;

@@ -153,6 +153,7 @@ void Simulationscreen::init() {
 	edit_mode = true;
 	fill_mode = false;
 	draw_details = false;
+	show_help_menu = false;
 
 	//debug stuff
 	upload_to_gpu_time_text.setFont(*font);
@@ -202,6 +203,65 @@ void Simulationscreen::init() {
 	//init threads
 	update_board_thread = std::thread(&Simulationscreen::th_update_board, this);
 
+	//init help menu
+	help_bg_rect.setFillColor(sf::Color(0,0,0,150));
+
+	help_tps_slider_text.setFont(*font);
+	help_tps_slider_text.setString("< Change tickspeed (ticks per second)");
+	help_tps_slider_text.setFillColor(sf::Color(255,255,255,255));
+
+	help_edit_button_text.setFont(*font);
+	help_edit_button_text.setString("< Change Edit/Interact-Mode (Pencil:Edit, Hand:Interact) [B]");
+	help_edit_button_text.setFillColor(sf::Color(255,255,255,255));
+
+	help_fill_button_text.setFont(*font);
+	help_fill_button_text.setString("< Toggle Fill-Mode (fills whole space when drawing) [F]");
+	help_fill_button_text.setFillColor(sf::Color(255,255,255,255));
+
+	help_reset_button_text.setFont(*font);
+	help_reset_button_text.setString("< Reset Simulation (clear all electricity) [R]");
+	help_reset_button_text.setFillColor(sf::Color(255,255,255,255));
+
+	help_grid_button_text.setFont(*font);
+	help_grid_button_text.setString("< Toggle Grid [G]");
+	help_grid_button_text.setFillColor(sf::Color(255,255,255,255));
+
+	help_details_button_text.setFont(*font);
+	help_details_button_text.setString("< Toggle Details when zoomed in [Y]");
+	help_details_button_text.setFillColor(sf::Color(255,255,255,255));
+
+	help_item_button_text.setFont(*font);
+	help_item_button_text.setString("Selected Item [E] >");
+	help_item_button_text.setFillColor(sf::Color(255,255,255,255));
+
+	help_close_text.setFont(*font);
+	help_close_text.setString("Press H to exit this menu");
+	help_close_text.setFillColor(sf::Color(255,255,255,255));
+
+	help_hotkeys_text.setFont(*font);
+	help_hotkeys_text.setString("W/A/S/D - move board\n"
+								"H - show help menu\n"
+								"E - open/close inventory\n"
+								"SPACE - pause simulation\n"
+								"B - toggle edit-mode\n"
+								"F - toggle fill-mode\n"
+								"R - reset simulation\n"
+								"G - toggle grid\n"
+								"Y - toggle details\n"
+								"0 - zoom to origin\n"
+								"SCROLL - zoom\n"
+								"SCROLL + Ctrl - change brushsize\n"
+								"drag left mouse - draw pixels\n"
+								"draw + SHIFT - draw rect\n"
+								"draw + CTRL - draw line\n"
+								"X + R_CTRL - clear board\n"
+								"\n=== Debug stuff ===\n"
+								"L - reload resources (shader/images/...)\n"
+								"CTRL + SHIFT + M - toggle debug info\n"
+	);
+	help_hotkeys_text.setFillColor(sf::Color(255,255,255,255));
+
+
 	//init GUI
 	pause_button.init();
 	pause_button.set_texture_inrect(26, 0, 9, 9);
@@ -238,7 +298,6 @@ void Simulationscreen::init() {
 		board_tps = std::pow(1.007, tps_slider.value * 1000);
 		if (board_tps > 1000)
 			board_tps = 10000000;
-		std::cout << board_tps << std::endl;
 		});
 
 	edit_button.init();
@@ -855,6 +914,38 @@ void Simulationscreen::resize() {
 		inv_nand_text.setCharacterSize(h);
 	}
 
+	//help menu
+	help_bg_rect.setPosition(0, 0);
+	help_bg_rect.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+
+	help_tps_slider_text.setCharacterSize(tps_slider.rect.getSize().y * 0.4);
+	help_tps_slider_text.setPosition(tps_text.getPosition().x + tps_text.getGlobalBounds().width + 10, tps_slider.rect.getPosition().y + tps_slider.rect.getSize().y * 0.2f);
+	
+	help_edit_button_text.setCharacterSize(edit_button.rect.getSize().y * 0.4);
+	help_edit_button_text.setPosition(edit_button.rect.getPosition().x + edit_button.rect.getSize().x + 10, edit_button.rect.getPosition().y + edit_button.rect.getSize().y * 0.2f);
+	
+	help_fill_button_text.setCharacterSize(fill_button.rect.getSize().y * 0.4);
+	help_fill_button_text.setPosition(fill_button.rect.getPosition().x + fill_button.rect.getSize().x + 10, fill_button.rect.getPosition().y + fill_button.rect.getSize().y * 0.2f);
+	
+	help_reset_button_text.setCharacterSize(reset_button.rect.getSize().y * 0.4);
+	help_reset_button_text.setPosition(reset_button.rect.getPosition().x + reset_button.rect.getSize().x + 10, reset_button.rect.getPosition().y + reset_button.rect.getSize().y * 0.2f);
+	
+	help_grid_button_text.setCharacterSize(grid_button.rect.getSize().y * 0.4);
+	help_grid_button_text.setPosition(grid_button.rect.getPosition().x + grid_button.rect.getSize().x + 10, grid_button.rect.getPosition().y + grid_button.rect.getSize().y * 0.2f);
+	
+	help_details_button_text.setCharacterSize(detail_button.rect.getSize().y * 0.4);
+	help_details_button_text.setPosition(detail_button.rect.getPosition().x + detail_button.rect.getSize().x + 10, detail_button.rect.getPosition().y + detail_button.rect.getSize().y * 0.2f);
+	
+	help_item_button_text.setCharacterSize(item_button.rect.getSize().y * 0.4);
+	help_item_button_text.setPosition(item_button.rect.getPosition().x - help_item_button_text.getGlobalBounds().width - 10, item_button.rect.getPosition().y + item_button.rect.getSize().y * 0.2f);
+	
+	help_hotkeys_text.setCharacterSize(item_button.rect.getSize().y * 0.4);
+	help_hotkeys_text.setPosition( SCREEN_WIDTH - help_hotkeys_text.getGlobalBounds().width * 1.1f, item_button.rect.getPosition().y + item_button.rect.getSize().y * 2);
+	
+	help_close_text.setCharacterSize(item_button.rect.getSize().y * 0.8);
+	help_close_text.setPosition(SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.7f);
+
+
 
 	//debug info
 	upload_to_gpu_time_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
@@ -1182,6 +1273,14 @@ void Simulationscreen::update_board() {
 }
 
 void Simulationscreen::handle_events(sf::Event& ev) {
+
+	if (show_help_menu) {//toggle help_mode
+		if (ev.type == sf::Event::KeyReleased && ev.key.code == sf::Keyboard::H) {
+			show_help_menu = !show_help_menu;
+		}
+		return;
+	}
+
 	///// KEY /////
 	//Pressed
 	if (ev.type == sf::Event::KeyPressed) {
@@ -1202,6 +1301,9 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		}
 		else if (ev.key.code == sf::Keyboard::Space) {//(un-)pause simulation
 			pause_button.func();
+		}
+		else if (ev.key.code == sf::Keyboard::H) {//toggle help_mode
+			show_help_menu = !show_help_menu;
 		}
 		else if (ev.key.code == sf::Keyboard::F) {//toggle fill_mode
 			fill_button.func();
@@ -1230,20 +1332,6 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::I) {//print info about pixel
 			uint32_t i = (int(board_mouse.x) + int(board_mouse.y) * board_width)*4;
 			std::cout << "id:" << int(this_board[i]) << ", elec:" << int(this_board[i + 1]) << ", 3rd:" << int(this_board[i + 2]) << ", light:" << int(this_board[i + 3]) << std::endl;
-		}
-		else if (ev.key.code == sf::Keyboard::Up) {
-			int i = (selected_item & 0xFF) + 1;
-			i = i >= item_count ? 0 : i < 0 ? item_count - 1 : i;
-			selected_item = item_list[i];
-			std::cout << i << std::endl;
-			update_item_button_texture();
-		}
-		else if (ev.key.code == sf::Keyboard::Down) {
-			int i = (selected_item & 0xFF) - 1;
-			i = i >= item_count ? 0 : i < 0 ? item_count - 1 : i;
-			selected_item = item_list[i];
-			std::cout << i << std::endl;
-			update_item_button_texture();
 		}
 	}
 
@@ -1360,6 +1448,14 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 }
 
 void Simulationscreen::update() {
+	
+	//help menu
+	if (show_help_menu) {
+		simulation_paused = true;
+		show_inventory = false;
+		return;
+	}
+
 	//update board_mouse
 	last_board_mouse = board_mouse;
 	board_mouse.x = (window_mouse.x - (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)) / zoom_factor;
@@ -1697,5 +1793,20 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 		window.draw(upload_to_gpu_time_text);
 		window.draw(update_board_time_text);
 		window.draw(updates_number_text);
+	}
+
+	//help menu
+	if (show_help_menu) {
+		window.draw(help_bg_rect);
+
+		window.draw(help_tps_slider_text);
+		window.draw(help_edit_button_text);
+		window.draw(help_fill_button_text);
+		window.draw(help_reset_button_text);
+		window.draw(help_grid_button_text);
+		window.draw(help_details_button_text);
+		window.draw(help_item_button_text);
+		window.draw(help_hotkeys_text);
+		window.draw(help_close_text);
 	}
 }
