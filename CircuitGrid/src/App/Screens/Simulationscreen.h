@@ -81,6 +81,13 @@ public:
 
 	bool clear_board_bool;
 	bool reset_simulation_bool;
+	bool selection_mode;
+
+	long selection_start_x;
+	long selection_start_y;
+	long selection_end_x;
+	long selection_end_y;
+	sf::RectangleShape selection_rect;
 
 	std::vector <bool(Simulationscreen::*)(uint32_t& i)> update_functions;
 

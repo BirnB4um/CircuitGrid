@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "../../../GUI/Button.h"
 
@@ -23,6 +22,7 @@ public:
 	Button reset_button;
 	Button grid_button;
 	Button detail_button;
+	Button selection_button;
 
 	void init();
 	void update_item_button_texture();
