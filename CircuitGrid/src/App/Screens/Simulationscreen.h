@@ -10,78 +10,23 @@
 #include "../../GUI/Slider.h"
 #include "../../Tools/Utils.h"
 #include "../../Tools/Timer.h"
+#include "SimulationscreenGUI/Inventory.h"
+#include "SimulationscreenGUI/HelpMenu.h"
+#include "SimulationscreenGUI/TopGUI.h"
 
 
 class Simulationscreen
 {
-private:
+
+public:
 
 	//GUI
-	Button pause_button;
+	TopGUI gui;
 
-	Button item_button;
-	int item_gui_texture_width;
-
-	sf::Text tps_text;
-	Slider tps_slider;
-
-	Button edit_button;
-	Button fill_button;
-	Button reset_button;
-	Button grid_button;
-	Button detail_button;
-
-	//Inventory gui
+	Inventory inventory;
 	bool show_inventory;
-	sf::RectangleShape inventory_bg_rect;
-	sf::Text inventory_text;
-	sf::Text inv_air_text;
-	Button inv_air_button;
-	sf::Text inv_wire_text;
-	Button inv_wire_button;
-	sf::Text inv_out_text;
-	Button inv_out_button;
-	sf::Text inv_battery_text;
-	Button inv_battery_button;
-	sf::Text inv_repeater_text;
-	Button inv_repeater_button;
-	sf::Text inv_bridge_text;
-	Button inv_bridge_button;
-	sf::Text inv_lamp_text;
-	Button inv_lamp_button;
-	sf::Text inv_button_text;
-	Button inv_button_button;
-	sf::Text inv_switch_text;
-	Button inv_switch_button;
 
-	sf::Text inv_logic_gates_text;
-
-	sf::Text inv_not_text;
-	Button inv_not_button;
-	sf::Text inv_or_text;
-	Button inv_or_button;
-	sf::Text inv_xor_text;
-	Button inv_xor_button;
-	sf::Text inv_nor_text;
-	Button inv_nor_button;
-	sf::Text inv_xnor_text;
-	Button inv_xnor_button;
-	sf::Text inv_and_text;
-	Button inv_and_button;
-	sf::Text inv_nand_text;
-	Button inv_nand_button;
-
-	//help stuff
-	sf::RectangleShape help_bg_rect;
-	sf::Text help_tps_slider_text;
-	sf::Text help_edit_button_text;
-	sf::Text help_fill_button_text;
-	sf::Text help_reset_button_text;
-	sf::Text help_grid_button_text;
-	sf::Text help_details_button_text;
-	sf::Text help_item_button_text;
-	sf::Text help_hotkeys_text;
-	sf::Text help_close_text;
+	HelpMenu helpmenu;
 
 	//debug stuff
 	sf::Text upload_to_gpu_time_text;
@@ -152,7 +97,6 @@ private:
 public:
 	Simulationscreen();
 	~Simulationscreen();
-	void update_item_button_texture();
 	void init();
 	void resize();
 	void on_closing();

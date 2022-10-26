@@ -1,6 +1,9 @@
 #include "Simulationscreen.h"
 
 Simulationscreen::Simulationscreen() {
+	inventory.sim = this;
+	helpmenu.sim = this;
+	gui.sim = this;
 }
 
 Simulationscreen::~Simulationscreen() {
@@ -138,7 +141,6 @@ void Simulationscreen::init() {
 	show_debug_info = false;
 	update_time_taken = 0;
 	upload_texture_to_gpu_time_taken = 0;
-	item_gui_texture_width = 16;
 	number_of_pixels_to_update = 0;
 	move_speed = 16;
 	zoom_factor = 1;
@@ -204,443 +206,17 @@ void Simulationscreen::init() {
 	update_board_thread = std::thread(&Simulationscreen::th_update_board, this);
 
 	//init help menu
-	help_bg_rect.setFillColor(sf::Color(0,0,0,150));
-
-	help_tps_slider_text.setFont(*font);
-	help_tps_slider_text.setString("< Change tickspeed (ticks per second)");
-	help_tps_slider_text.setFillColor(sf::Color(255,255,255,255));
-
-	help_edit_button_text.setFont(*font);
-	help_edit_button_text.setString("< Change Edit/Interact-Mode (Pencil:Edit, Hand:Interact) [B]");
-	help_edit_button_text.setFillColor(sf::Color(255,255,255,255));
-
-	help_fill_button_text.setFont(*font);
-	help_fill_button_text.setString("< Toggle Fill-Mode (fills whole space when drawing) [F]");
-	help_fill_button_text.setFillColor(sf::Color(255,255,255,255));
-
-	help_reset_button_text.setFont(*font);
-	help_reset_button_text.setString("< Reset Simulation (clear all electricity) [R]");
-	help_reset_button_text.setFillColor(sf::Color(255,255,255,255));
-
-	help_grid_button_text.setFont(*font);
-	help_grid_button_text.setString("< Toggle Grid [G]");
-	help_grid_button_text.setFillColor(sf::Color(255,255,255,255));
-
-	help_details_button_text.setFont(*font);
-	help_details_button_text.setString("< Toggle Details when zoomed in [Y]");
-	help_details_button_text.setFillColor(sf::Color(255,255,255,255));
-
-	help_item_button_text.setFont(*font);
-	help_item_button_text.setString("Selected Item [E] >");
-	help_item_button_text.setFillColor(sf::Color(255,255,255,255));
-
-	help_close_text.setFont(*font);
-	help_close_text.setString("Press H to exit this menu");
-	help_close_text.setFillColor(sf::Color(255,255,255,255));
-
-	help_hotkeys_text.setFont(*font);
-	help_hotkeys_text.setString("W/A/S/D - move board\n"
-								"H - show help menu\n"
-								"E - open/close inventory\n"
-								"SPACE - pause simulation\n"
-								"B - toggle edit-mode\n"
-								"F - toggle fill-mode\n"
-								"R - reset simulation\n"
-								"G - toggle grid\n"
-								"Y - toggle details\n"
-								"0 - zoom to origin\n"
-								"drag middle mouse button - drag board\n"
-								"SCROLL - zoom\n"
-								"SCROLL + Ctrl - change brushsize\n"
-								"drag left mouse - draw pixels\n"
-								"draw + SHIFT - draw rect\n"
-								"draw + CTRL - draw line\n"
-								"X + R_CTRL - clear board\n"
-								"\n=== Debug stuff ===\n"
-								"L - reload resources (shader/images/...)\n"
-								"CTRL + SHIFT + M - toggle debug info\n"
-	);
-	help_hotkeys_text.setFillColor(sf::Color(255,255,255,255));
+	helpmenu.init();
 
 
 	//init GUI
-	pause_button.init();
-	pause_button.set_texture_inrect(26, 0, 9, 9);
-	pause_button.set_hoverover_texture_inrect(26, 9, 9, 9);
-	pause_button.set_pressed_texture_inrect(26, 18, 9, 9);
-	pause_button.set_function([&]() {
-		simulation_paused = !simulation_paused;
-		one_simulations_step = false;
-		if (simulation_paused) {
-			pause_button.set_texture_inrect(26, 0, 9, 9);
-			pause_button.set_hoverover_texture_inrect(26, 9, 9, 9);
-			pause_button.set_pressed_texture_inrect(26, 18, 9, 9);
-		}
-		else {
-			pause_button.set_texture_inrect(35, 0, 9, 9);
-			pause_button.set_hoverover_texture_inrect(35, 9, 9, 9);
-			pause_button.set_pressed_texture_inrect(35, 18, 9, 9);
-		}
-		});
-
-	item_button.init();
-	item_button.set_function([&] () {
-		show_inventory = !show_inventory;
-		});
-	update_item_button_texture();
-
-	tps_text.setFont(*font);
-	tps_text.setFillColor(sf::Color(255,255,255,255));
-	tps_text.setOutlineThickness(0);
-
-	tps_slider.init();
-	tps_slider.set_nob_texture_inrect(80, 27, 14, 14);
-	tps_slider.value = log(board_tps) / (log(1.007) * 1000);
-	tps_slider.set_function([&] () {
-		board_tps = std::pow(1.007, tps_slider.value * 1000);
-		if (board_tps > 1000)
-			board_tps = 10000000;
-		});
-
-	edit_button.init();
-	edit_button.set_texture_inrect(44, 0, 18, 18);
-	edit_button.set_hoverover_texture_inrect(44, 18, 18, 18);
-	edit_button.set_pressed_texture_inrect(44, 36, 18, 18);
-	edit_button.set_function([&] () {
-		edit_mode = !edit_mode;
-		if (edit_mode) {
-			edit_button.set_texture_inrect(44, 0, 18, 18);
-			edit_button.set_hoverover_texture_inrect(44, 18, 18, 18);
-			edit_button.set_pressed_texture_inrect(44, 36, 18, 18);
-		}
-		else {
-			edit_button.set_texture_inrect(62, 0, 18, 18);
-			edit_button.set_hoverover_texture_inrect(62, 18, 18, 18);
-			edit_button.set_pressed_texture_inrect(62, 36, 18, 18);
-		}
-		});
-
-	fill_button.init();
-	fill_button.set_texture_inrect(80, 0, 9, 9);
-	fill_button.set_hoverover_texture_inrect(80, 9, 9, 9);
-	fill_button.set_pressed_texture_inrect(80, 18, 9, 9);
-	fill_button.set_function([&] () {
-		fill_mode = !fill_mode;
-		if (fill_mode) {
-			fill_button.set_texture_inrect(80, 18, 9, 9);
-			fill_button.set_hoverover_texture_inrect(80, 18, 9, 9);
-			fill_button.set_pressed_texture_inrect(80, 0, 9, 9);
-		}
-		else {
-			fill_button.set_texture_inrect(80, 0, 9, 9);
-			fill_button.set_hoverover_texture_inrect(80, 9, 9, 9);
-			fill_button.set_pressed_texture_inrect(80, 18, 9, 9);
-		}
-		});
-
-	reset_button.init();
-	reset_button.set_texture_inrect(89, 0, 9, 9);
-	reset_button.set_hoverover_texture_inrect(89, 9, 9, 9);
-	reset_button.set_pressed_texture_inrect(89, 18, 9, 9);
-	reset_button.set_function([&] () {
-		reset_simulation_bool = true;
-		});
-
-	grid_button.init();
-	grid_button.set_texture_inrect(98, 0, 9, 9);
-	grid_button.set_hoverover_texture_inrect(98, 9, 9, 9);
-	grid_button.set_pressed_texture_inrect(98, 18, 9, 9);
-	grid_button.set_function([&] () {
-		draw_grid = !draw_grid;
-		board_shader.setUniform("draw_grid", draw_grid);
-		if (draw_grid) {
-			grid_button.set_texture_inrect(98, 18, 9, 9);
-			grid_button.set_hoverover_texture_inrect(98, 18, 9, 9);
-			grid_button.set_pressed_texture_inrect(98, 0, 9, 9);
-		}
-		else {
-			grid_button.set_texture_inrect(98, 0, 9, 9);
-			grid_button.set_hoverover_texture_inrect(98, 9, 9, 9);
-			grid_button.set_pressed_texture_inrect(98, 18, 9, 9);
-		}
-		});
-
-	detail_button.init();
-	detail_button.set_texture_inrect(107, 0, 9, 9);
-	detail_button.set_hoverover_texture_inrect(107, 9, 9, 9);
-	detail_button.set_pressed_texture_inrect(107, 18, 9, 9);
-	detail_button.set_function([&] () {
-		draw_details = !draw_details;
-		board_shader.setUniform("draw_details", draw_details);
-		if (draw_details) {
-			detail_button.set_texture_inrect(107, 18, 9, 9);
-			detail_button.set_hoverover_texture_inrect(107, 18, 9, 9);
-			detail_button.set_pressed_texture_inrect(107, 0, 9, 9);
-		}
-		else {
-			detail_button.set_texture_inrect(107, 0, 9, 9);
-			detail_button.set_hoverover_texture_inrect(107, 9, 9, 9);
-			detail_button.set_pressed_texture_inrect(107, 18, 9, 9);
-		}
-	});
-
-
+	gui.init();
 
 	//init inventory GUI
-	inventory_bg_rect.setFillColor(sf::Color(10,10,10,255));
-	inventory_bg_rect.setOutlineColor(sf::Color(100,100,100,255));
-
-	//texts
-	{
-		inventory_text.setFont(*font);
-		inventory_text.setString("Inventory");
-		inventory_text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-		inventory_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inventory_text.setOutlineThickness(0);
-
-		inv_logic_gates_text.setFont(*font);
-		inv_logic_gates_text.setString("Logic Gates");
-		inv_logic_gates_text.setStyle(sf::Text::Bold);
-		inv_logic_gates_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_logic_gates_text.setOutlineThickness(0);
-
-		inv_air_text.setFont(*font);
-		inv_air_text.setString("Air");
-		inv_air_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_air_text.setOutlineThickness(0);
-
-		inv_wire_text.setFont(*font);
-		inv_wire_text.setString("Wire");
-		inv_wire_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_wire_text.setOutlineThickness(0);
-
-		inv_out_text.setFont(*font);
-		inv_out_text.setString("Output");
-		inv_out_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_out_text.setOutlineThickness(0);
-
-		inv_battery_text.setFont(*font);
-		inv_battery_text.setString("Battery");
-		inv_battery_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_battery_text.setOutlineThickness(0);
-
-		inv_repeater_text.setFont(*font);
-		inv_repeater_text.setString("Repeater");
-		inv_repeater_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_repeater_text.setOutlineThickness(0);
-
-		inv_bridge_text.setFont(*font);
-		inv_bridge_text.setString("Bridge");
-		inv_bridge_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_bridge_text.setOutlineThickness(0);
-
-		inv_lamp_text.setFont(*font);
-		inv_lamp_text.setString("Lamp");
-		inv_lamp_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_lamp_text.setOutlineThickness(0);
-
-		inv_button_text.setFont(*font);
-		inv_button_text.setString("Button");
-		inv_button_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_button_text.setOutlineThickness(0);
-
-		inv_switch_text.setFont(*font);
-		inv_switch_text.setString("Switch");
-		inv_switch_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_switch_text.setOutlineThickness(0);
-
-		inv_not_text.setFont(*font);
-		inv_not_text.setString("NOT");
-		inv_not_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_not_text.setOutlineThickness(0);
-
-		inv_or_text.setFont(*font);
-		inv_or_text.setString("OR");
-		inv_or_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_or_text.setOutlineThickness(0);
-
-		inv_nor_text.setFont(*font);
-		inv_nor_text.setString("NOR");
-		inv_nor_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_nor_text.setOutlineThickness(0);
-
-		inv_xor_text.setFont(*font);
-		inv_xor_text.setString("XOR");
-		inv_xor_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_xor_text.setOutlineThickness(0);
-
-		inv_xnor_text.setFont(*font);
-		inv_xnor_text.setString("XNOR");
-		inv_xnor_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_xnor_text.setOutlineThickness(0);
-
-		inv_and_text.setFont(*font);
-		inv_and_text.setString("AND");
-		inv_and_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_and_text.setOutlineThickness(0);
-
-		inv_nand_text.setFont(*font);
-		inv_nand_text.setString("NAND");
-		inv_nand_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_nand_text.setOutlineThickness(0);
-
-
-		//buttons
-		inv_air_button.init();
-		inv_air_button.set_texture_inrect(240, 0, 16, 16);
-		inv_air_button.set_hoverover_texture_inrect(240, 0, 16, 16);
-		inv_air_button.set_pressed_texture_inrect(240, 0, 16, 16);
-		inv_air_button.set_function([&]() {
-			selected_item = item_list[AIR];
-			update_item_button_texture();
-			});
-
-		inv_wire_button.init();
-		inv_wire_button.set_texture_inrect(240, 16, 16, 16);
-		inv_wire_button.set_hoverover_texture_inrect(240, 16, 16, 16);
-		inv_wire_button.set_pressed_texture_inrect(240, 16, 16, 16);
-		inv_wire_button.set_function([&]() {
-			selected_item = item_list[WIRE];
-			update_item_button_texture();
-			});
-
-		inv_out_button.init();
-		inv_out_button.set_texture_inrect(240, 32, 16, 16);
-		inv_out_button.set_hoverover_texture_inrect(240, 32, 16, 16);
-		inv_out_button.set_pressed_texture_inrect(240, 32, 16, 16);
-		inv_out_button.set_function([&]() {
-			selected_item = item_list[OUT];
-			update_item_button_texture();
-			});
-
-		inv_battery_button.init();
-		inv_battery_button.set_texture_inrect(240, 48, 16, 16);
-		inv_battery_button.set_hoverover_texture_inrect(240, 48, 16, 16);
-		inv_battery_button.set_pressed_texture_inrect(240, 48, 16, 16);
-		inv_battery_button.set_function([&]() {
-			selected_item = item_list[BATTERY];
-			update_item_button_texture();
-			});
-
-		inv_repeater_button.init();
-		inv_repeater_button.set_texture_inrect(240, 64, 16, 16);
-		inv_repeater_button.set_hoverover_texture_inrect(240, 64, 16, 16);
-		inv_repeater_button.set_pressed_texture_inrect(240, 64, 16, 16);
-		inv_repeater_button.set_function([&]() {
-			selected_item = item_list[REPEATER];
-			update_item_button_texture();
-			});
-
-		inv_bridge_button.init();
-		inv_bridge_button.set_texture_inrect(240, 80, 16, 16);
-		inv_bridge_button.set_hoverover_texture_inrect(240, 80, 16, 16);
-		inv_bridge_button.set_pressed_texture_inrect(240, 80, 16, 16);
-		inv_bridge_button.set_function([&]() {
-			selected_item = item_list[BRIDGE];
-			update_item_button_texture();
-			});
-
-		inv_lamp_button.init();
-		inv_lamp_button.set_texture_inrect(240, 96, 16, 16);
-		inv_lamp_button.set_hoverover_texture_inrect(240, 96, 16, 16);
-		inv_lamp_button.set_pressed_texture_inrect(240, 96, 16, 16);
-		inv_lamp_button.set_function([&]() {
-			selected_item = item_list[LAMP];
-			update_item_button_texture();
-			});
-
-		inv_button_button.init();
-		inv_button_button.set_texture_inrect(240, 112, 16, 16);
-		inv_button_button.set_hoverover_texture_inrect(240, 112, 16, 16);
-		inv_button_button.set_pressed_texture_inrect(240, 112, 16, 16);
-		inv_button_button.set_function([&]() {
-			selected_item = item_list[BUTTON];
-			update_item_button_texture();
-			});
-
-		inv_switch_button.init();
-		inv_switch_button.set_texture_inrect(240, 128, 16, 16);
-		inv_switch_button.set_hoverover_texture_inrect(240, 128, 16, 16);
-		inv_switch_button.set_pressed_texture_inrect(240, 128, 16, 16);
-		inv_switch_button.set_function([&]() {
-			selected_item = item_list[SWITCH];
-			update_item_button_texture();
-			});
-
-
-		inv_not_button.init();
-		inv_not_button.set_texture_inrect(240, 144, 16, 16);
-		inv_not_button.set_hoverover_texture_inrect(240, 144, 16, 16);
-		inv_not_button.set_pressed_texture_inrect(240, 144, 16, 16);
-		inv_not_button.set_function([&]() {
-			selected_item = item_list[NOT];
-			update_item_button_texture();
-			});
-
-		inv_or_button.init();
-		inv_or_button.set_texture_inrect(240, 160, 16, 16);
-		inv_or_button.set_hoverover_texture_inrect(240, 160, 16, 16);
-		inv_or_button.set_pressed_texture_inrect(240, 160, 16, 16);
-		inv_or_button.set_function([&]() {
-			selected_item = item_list[OR];
-			update_item_button_texture();
-			});
-
-		inv_nor_button.init();
-		inv_nor_button.set_texture_inrect(240, 176, 16, 16);
-		inv_nor_button.set_hoverover_texture_inrect(240, 176, 16, 16);
-		inv_nor_button.set_pressed_texture_inrect(240, 176, 16, 16);
-		inv_nor_button.set_function([&]() {
-			selected_item = item_list[NOR];
-			update_item_button_texture();
-			});
-
-		inv_xor_button.init();
-		inv_xor_button.set_texture_inrect(240, 192, 16, 16);
-		inv_xor_button.set_hoverover_texture_inrect(240, 192, 16, 16);
-		inv_xor_button.set_pressed_texture_inrect(240, 192, 16, 16);
-		inv_xor_button.set_function([&]() {
-			selected_item = item_list[XOR];
-			update_item_button_texture();
-			});
-
-		inv_xnor_button.init();
-		inv_xnor_button.set_texture_inrect(240, 208, 16, 16);
-		inv_xnor_button.set_hoverover_texture_inrect(240, 208, 16, 16);
-		inv_xnor_button.set_pressed_texture_inrect(240, 208, 16, 16);
-		inv_xnor_button.set_function([&]() {
-			selected_item = item_list[XNOR];
-			update_item_button_texture();
-			});
-
-		inv_and_button.init();
-		inv_and_button.set_texture_inrect(240, 224, 16, 16);
-		inv_and_button.set_hoverover_texture_inrect(240, 224, 16, 16);
-		inv_and_button.set_pressed_texture_inrect(240, 224, 16, 16);
-		inv_and_button.set_function([&]() {
-			selected_item = item_list[AND];
-			update_item_button_texture();
-			});
-
-		inv_nand_button.init();
-		inv_nand_button.set_texture_inrect(240, 240, 16, 16);
-		inv_nand_button.set_hoverover_texture_inrect(240, 240, 16, 16);
-		inv_nand_button.set_pressed_texture_inrect(240, 240, 16, 16);
-		inv_nand_button.set_function([&]() {
-			selected_item = item_list[NAND];
-			update_item_button_texture();
-			});
-	}
-
+	inventory.init();
 
 
 	resize();
-}
-
-void Simulationscreen::update_item_button_texture() {
-	item_button.set_texture_inrect(240, (selected_item & 0xFF) * item_gui_texture_width, item_gui_texture_width, item_gui_texture_width);
-	item_button.set_hoverover_texture_inrect(240, (selected_item & 0xFF) * item_gui_texture_width, item_gui_texture_width, item_gui_texture_width);
-	item_button.set_pressed_texture_inrect(240, (selected_item & 0xFF) * item_gui_texture_width, item_gui_texture_width, item_gui_texture_width);
 }
 
 void Simulationscreen::resize() {
@@ -652,312 +228,24 @@ void Simulationscreen::resize() {
 	//GUI
 	int x, y, w, h;
 	int stroke_width;
-	w = gui_scale * SCREEN_WIDTH * 0.04f;
-	h = w;
-	x = 8;
-	y = 8;
-	pause_button.set_position(x, y);
-	pause_button.set_size(w, h);
-
-	w = gui_scale * SCREEN_WIDTH * 0.04f;
-	h = w;
-	x = SCREEN_WIDTH - w - 10;
-	y = 10;
-	item_button.set_position(x, y);
-	item_button.set_size(w, h);
-
-	h = pause_button.rect.getSize().y * 0.8f;
-	w = h * 6;
-	x = pause_button.rect.getPosition().x + pause_button.rect.getSize().x * 1.5f;
-	y = pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 0.1f;
-	tps_slider.set_position(x, y);
-	tps_slider.set_size(w, h);
-
-	h = tps_slider.rect.getSize().y * 0.6f;
-	x = tps_slider.rect.getPosition().x + tps_slider.rect.getSize().x + gui_scale * 10;
-	y = tps_slider.rect.getPosition().y + tps_slider.rect.getSize().y * 0.2f;
-	tps_text.setCharacterSize(h); 
-	tps_text.setPosition(x, y);
-
-	w = gui_scale * SCREEN_WIDTH * 0.04f;
-	h = w;
-	x = pause_button.rect.getPosition().x;
-	y = gui_scale * SCREEN_HEIGHT * 0.1f;
-	edit_button.set_position(x,y);
-	edit_button.set_size(w,h);
-
-	w = gui_scale * SCREEN_WIDTH * 0.04f;
-	h = w;
-	x = pause_button.rect.getPosition().x;
-	y = edit_button.rect.getPosition().y + edit_button.rect.getSize().y * 1.1f * gui_scale;
-	fill_button.set_position(x,y);
-	fill_button.set_size(w,h);
-
-	w = gui_scale * SCREEN_WIDTH * 0.04f;
-	h = w;
-	x = pause_button.rect.getPosition().x;
-	y = fill_button.rect.getPosition().y + fill_button.rect.getSize().y * 1.1f * gui_scale;
-	reset_button.set_position(x,y);
-	reset_button.set_size(w,h);
-
-	w = gui_scale * SCREEN_WIDTH * 0.04f;
-	h = w;
-	x = pause_button.rect.getPosition().x;
-	y = reset_button.rect.getPosition().y + reset_button.rect.getSize().y * 1.1f * gui_scale;
-	grid_button.set_position(x,y);
-	grid_button.set_size(w,h);
-
-	w = gui_scale * SCREEN_WIDTH * 0.04f;
-	h = w;
-	x = pause_button.rect.getPosition().x;
-	y = grid_button.rect.getPosition().y + grid_button.rect.getSize().y * 1.1f * gui_scale;
-	detail_button.set_position(x,y);
-	detail_button.set_size(w,h);
+	gui.resize();
 
 	//inventory GUI
-	stroke_width = 2;
-	y = item_button.rect.getPosition().y + item_button.rect.getSize().y + 10;
-	h = SCREEN_HEIGHT - y - stroke_width;
-	w = h * 0.3f;
-	x = SCREEN_WIDTH - w - stroke_width;
-	inventory_bg_rect.setPosition(x, y);
-	inventory_bg_rect.setSize(sf::Vector2f(w, h));
-	inventory_bg_rect.setOutlineThickness(stroke_width);
-
-	x = inventory_bg_rect.getPosition().x + 15;
-	y = inventory_bg_rect.getPosition().y + 10;
-	w = 0;
-	h = inventory_bg_rect.getSize().y * 0.045f;
-	inventory_text.setPosition(x, y);
-	inventory_text.setCharacterSize(h);
-
-	//item buttons
-	float perc_w = 0.25f;
-	float offset_from_top = 0.11f;
-	{
-		w = inventory_bg_rect.getSize().x * perc_w;
-		h = w;
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
-		y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top;
-		inv_air_button.set_position(x, y);
-		inv_air_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
-		inv_wire_button.set_position(x, y);
-		inv_wire_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 3 + perc_w * 2);
-		inv_out_button.set_position(x, y);
-		inv_out_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
-		y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.5f + perc_w);
-		inv_battery_button.set_position(x, y);
-		inv_battery_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
-		inv_repeater_button.set_position(x, y);
-		inv_repeater_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 3 + perc_w *2);
-		inv_bridge_button.set_position(x, y);
-		inv_bridge_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
-		y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.5f + perc_w) * 2;
-		inv_lamp_button.set_position(x, y);
-		inv_lamp_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
-		inv_button_button.set_position(x, y);
-		inv_button_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 3 + perc_w * 2);
-		inv_switch_button.set_position(x, y);
-		inv_switch_button.set_size(w, h);
-
-
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
-		y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.5f + perc_w) * 4;
-		inv_not_button.set_position(x, y);
-		inv_not_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
-		inv_or_button.set_position(x, y);
-		inv_or_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 3 + perc_w * 2);
-		inv_nor_button.set_position(x, y);
-		inv_nor_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
-		y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.5f + perc_w) * 5;
-		inv_xor_button.set_position(x, y);
-		inv_xor_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
-		inv_xnor_button.set_position(x, y);
-		inv_xnor_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 3 + perc_w * 2);
-		inv_and_button.set_position(x, y);
-		inv_and_button.set_size(w, h);
-
-		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
-		y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.5f + perc_w) * 6;
-		inv_nand_button.set_position(x, y);
-		inv_nand_button.set_size(w, h);
-	}
-
-	//logic_gates text
-	x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
-	y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.5f + perc_w) * 3.1f;
-	h = inventory_bg_rect.getSize().x * 0.13f;
-	inv_logic_gates_text.setPosition(x, y);
-	inv_logic_gates_text.setCharacterSize(h);
-	
-	//items texts
-	{
-		h = inv_air_button.rect.getSize().x * 0.4f;
-		x = inv_air_button.rect.getPosition().x;
-		y = inv_air_button.rect.getPosition().y - h * 1.3f;
-		inv_air_text.setPosition(x, y);
-		inv_air_text.setCharacterSize(h);
-
-		h = inv_wire_button.rect.getSize().x * 0.4f;
-		x = inv_wire_button.rect.getPosition().x;
-		y = inv_wire_button.rect.getPosition().y - h * 1.3f;
-		inv_wire_text.setPosition(x, y);
-		inv_wire_text.setCharacterSize(h);
-
-		h = inv_out_button.rect.getSize().x * 0.3f;
-		x = inv_out_button.rect.getPosition().x;
-		y = inv_out_button.rect.getPosition().y - h * 1.3f;
-		inv_out_text.setPosition(x, y);
-		inv_out_text.setCharacterSize(h);
-
-		h = inv_battery_button.rect.getSize().x * 0.3f;
-		x = inv_battery_button.rect.getPosition().x;
-		y = inv_battery_button.rect.getPosition().y - h * 1.3f;
-		inv_battery_text.setPosition(x, y);
-		inv_battery_text.setCharacterSize(h);
-
-		h = inv_repeater_button.rect.getSize().x * 0.3f;
-		x = inv_repeater_button.rect.getPosition().x;
-		y = inv_repeater_button.rect.getPosition().y - h * 1.3f;
-		inv_repeater_text.setPosition(x, y);
-		inv_repeater_text.setCharacterSize(h);
-
-		h = inv_bridge_button.rect.getSize().x * 0.3f;
-		x = inv_bridge_button.rect.getPosition().x;
-		y = inv_bridge_button.rect.getPosition().y - h * 1.3f;
-		inv_bridge_text.setPosition(x, y);
-		inv_bridge_text.setCharacterSize(h);
-
-		h = inv_lamp_button.rect.getSize().x * 0.35f;
-		x = inv_lamp_button.rect.getPosition().x;
-		y = inv_lamp_button.rect.getPosition().y - h * 1.3f;
-		inv_lamp_text.setPosition(x, y);
-		inv_lamp_text.setCharacterSize(h);
-
-		h = inv_button_button.rect.getSize().x * 0.35f;
-		x = inv_button_button.rect.getPosition().x;
-		y = inv_button_button.rect.getPosition().y - h * 1.3f;
-		inv_button_text.setPosition(x, y);
-		inv_button_text.setCharacterSize(h);
-
-		h = inv_switch_button.rect.getSize().x * 0.35f;
-		x = inv_switch_button.rect.getPosition().x;
-		y = inv_switch_button.rect.getPosition().y - h * 1.3f;
-		inv_switch_text.setPosition(x, y);
-		inv_switch_text.setCharacterSize(h);
-
-		h = inv_not_button.rect.getSize().x * 0.4f;
-		x = inv_not_button.rect.getPosition().x;
-		y = inv_not_button.rect.getPosition().y - h * 1.3f;
-		inv_not_text.setPosition(x, y);
-		inv_not_text.setCharacterSize(h);
-
-		h = inv_or_button.rect.getSize().x * 0.4f;
-		x = inv_or_button.rect.getPosition().x;
-		y = inv_or_button.rect.getPosition().y - h * 1.3f;
-		inv_or_text.setPosition(x, y);
-		inv_or_text.setCharacterSize(h);
-
-		h = inv_nor_button.rect.getSize().x * 0.4f;
-		x = inv_nor_button.rect.getPosition().x;
-		y = inv_nor_button.rect.getPosition().y - h * 1.3f;
-		inv_nor_text.setPosition(x, y);
-		inv_nor_text.setCharacterSize(h);
-
-		h = inv_xor_button.rect.getSize().x * 0.4f;
-		x = inv_xor_button.rect.getPosition().x;
-		y = inv_xor_button.rect.getPosition().y - h * 1.3f;
-		inv_xor_text.setPosition(x, y);
-		inv_xor_text.setCharacterSize(h);
-
-		h = inv_xnor_button.rect.getSize().x * 0.35f;
-		x = inv_xnor_button.rect.getPosition().x;
-		y = inv_xnor_button.rect.getPosition().y - h * 1.3f;
-		inv_xnor_text.setPosition(x, y);
-		inv_xnor_text.setCharacterSize(h);
-
-		h = inv_and_button.rect.getSize().x * 0.4f;
-		x = inv_and_button.rect.getPosition().x;
-		y = inv_and_button.rect.getPosition().y - h * 1.3f;
-		inv_and_text.setPosition(x, y);
-		inv_and_text.setCharacterSize(h);
-
-		h = inv_nand_button.rect.getSize().x * 0.35f;
-		x = inv_nand_button.rect.getPosition().x;
-		y = inv_nand_button.rect.getPosition().y - h * 1.3f;
-		inv_nand_text.setPosition(x, y);
-		inv_nand_text.setCharacterSize(h);
-	}
+	inventory.resize();
 
 	//help menu
-	help_bg_rect.setPosition(0, 0);
-	help_bg_rect.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
-
-	help_tps_slider_text.setCharacterSize(tps_slider.rect.getSize().y * 0.4);
-	help_tps_slider_text.setPosition(tps_text.getPosition().x + tps_text.getGlobalBounds().width + 10, tps_slider.rect.getPosition().y + tps_slider.rect.getSize().y * 0.2f);
-	
-	help_edit_button_text.setCharacterSize(edit_button.rect.getSize().y * 0.4);
-	help_edit_button_text.setPosition(edit_button.rect.getPosition().x + edit_button.rect.getSize().x + 10, edit_button.rect.getPosition().y + edit_button.rect.getSize().y * 0.2f);
-	
-	help_fill_button_text.setCharacterSize(fill_button.rect.getSize().y * 0.4);
-	help_fill_button_text.setPosition(fill_button.rect.getPosition().x + fill_button.rect.getSize().x + 10, fill_button.rect.getPosition().y + fill_button.rect.getSize().y * 0.2f);
-	
-	help_reset_button_text.setCharacterSize(reset_button.rect.getSize().y * 0.4);
-	help_reset_button_text.setPosition(reset_button.rect.getPosition().x + reset_button.rect.getSize().x + 10, reset_button.rect.getPosition().y + reset_button.rect.getSize().y * 0.2f);
-	
-	help_grid_button_text.setCharacterSize(grid_button.rect.getSize().y * 0.4);
-	help_grid_button_text.setPosition(grid_button.rect.getPosition().x + grid_button.rect.getSize().x + 10, grid_button.rect.getPosition().y + grid_button.rect.getSize().y * 0.2f);
-	
-	help_details_button_text.setCharacterSize(detail_button.rect.getSize().y * 0.4);
-	help_details_button_text.setPosition(detail_button.rect.getPosition().x + detail_button.rect.getSize().x + 10, detail_button.rect.getPosition().y + detail_button.rect.getSize().y * 0.2f);
-	
-	help_item_button_text.setCharacterSize(item_button.rect.getSize().y * 0.4);
-	help_item_button_text.setPosition(item_button.rect.getPosition().x - help_item_button_text.getGlobalBounds().width - 10, item_button.rect.getPosition().y + item_button.rect.getSize().y * 0.2f);
-	
-	help_hotkeys_text.setCharacterSize(item_button.rect.getSize().y * 0.4);
-	help_hotkeys_text.setPosition( SCREEN_WIDTH - help_hotkeys_text.getGlobalBounds().width * 1.1f, item_button.rect.getPosition().y + item_button.rect.getSize().y * 2);
-	
-	help_close_text.setCharacterSize(item_button.rect.getSize().y * 0.8);
-	help_close_text.setPosition(SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.7f);
-
+	helpmenu.resize();
 
 
 	//debug info
 	upload_to_gpu_time_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
-	upload_to_gpu_time_text.setPosition(edit_button.rect.getPosition().x + edit_button.rect.getSize().x * 1.1f, pause_button.rect.getPosition().y + pause_button.rect.getSize().y * 1.1f);
+	upload_to_gpu_time_text.setPosition(gui.edit_button.rect.getPosition().x + gui.edit_button.rect.getSize().x * 1.1f, gui.pause_button.rect.getPosition().y + gui.pause_button.rect.getSize().y * 1.1f);
 
 	update_board_time_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
-	update_board_time_text.setPosition(edit_button.rect.getPosition().x + edit_button.rect.getSize().x * 1.1f, upload_to_gpu_time_text.getPosition().y + upload_to_gpu_time_text.getCharacterSize() * 1.5f);
+	update_board_time_text.setPosition(gui.edit_button.rect.getPosition().x + gui.edit_button.rect.getSize().x * 1.1f, upload_to_gpu_time_text.getPosition().y + upload_to_gpu_time_text.getCharacterSize() * 1.5f);
 
 	updates_number_text.setCharacterSize(SCREEN_HEIGHT * 0.02f);
-	updates_number_text.setPosition(edit_button.rect.getPosition().x + edit_button.rect.getSize().x * 1.1f, update_board_time_text.getPosition().y + update_board_time_text.getCharacterSize() * 1.5f);
+	updates_number_text.setPosition(gui.edit_button.rect.getPosition().x + gui.edit_button.rect.getSize().x * 1.1f, update_board_time_text.getPosition().y + update_board_time_text.getCharacterSize() * 1.5f);
 }
 
 void Simulationscreen::on_closing() {
@@ -1302,31 +590,31 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			show_debug_info = !show_debug_info;
 		}
 		else if (ev.key.code == sf::Keyboard::Space) {//(un-)pause simulation
-			pause_button.func();
+			gui.pause_button.func();
 		}
 		else if (ev.key.code == sf::Keyboard::H) {//toggle help_mode
 			show_help_menu = !show_help_menu;
 		}
 		else if (ev.key.code == sf::Keyboard::F) {//toggle fill_mode
-			fill_button.func();
+			gui.fill_button.func();
 		}
 		else if (ev.key.code == sf::Keyboard::G) {//toggle grid
-			grid_button.func();
+			gui.grid_button.func();
 		}
 		else if (ev.key.code == sf::Keyboard::Y) {//toggle details
-			detail_button.func();
+			gui.detail_button.func();
 		}
 		else if (ev.key.code == sf::Keyboard::X && sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) {//clear board
 			clear_board_bool = true;
 		}
 		else if (ev.key.code == sf::Keyboard::B) {//toggle edit mode
-			edit_button.func();
+			gui.edit_button.func();
 		}
 		else if (ev.key.code == sf::Keyboard::R) {//reset simulation
 			reset_simulation_bool = true;
 		}
 		else if (ev.key.code == sf::Keyboard::E) {//open/close inventory
-			item_button.func();
+			gui.item_button.func();
 		}
 		else if (ev.key.code == sf::Keyboard::Right) {//one step
 			one_simulations_step = true;
@@ -1416,7 +704,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 				start_drawing_line = true;
 			}
 
-			tps_slider.press(window_mouse.x, window_mouse.y);//TODO: include this function in update() function
+			gui.tps_slider.press(window_mouse.x, window_mouse.y);
 		}
 
 		//start dragging board
@@ -1434,7 +722,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		if (ev.key.code == sf::Mouse::Right) {
 			if (Utils::point_vs_rect(board_mouse.x, board_mouse.y, 0, 0, board_width, board_height)) {
 				selected_item = *(uint32_t*)&this_board[int(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];
-				update_item_button_texture();
+				gui.update_item_button_texture();
 			}
 		}
 
@@ -1469,70 +757,10 @@ void Simulationscreen::update() {
 	last_mouse_over_board = Utils::point_vs_rect(last_board_mouse.x, last_board_mouse.y, 0, 0, board_width, board_height);
 
 	//update GUI
-	if (pause_button.check_over_button(window_mouse.x, window_mouse.y)) {
-		mouse_over_gui = true;
-	}
-	pause_button.update(window_mouse.x, window_mouse.y);
-
-	if (item_button.check_over_button(window_mouse.x, window_mouse.y)) {
-		mouse_over_gui = true;
-	}
-	item_button.update(window_mouse.x, window_mouse.y);
-
-	if (tps_slider.check_over_slider(window_mouse.x, window_mouse.y) || tps_slider.pressed) {
-		mouse_over_gui = true;
-	}
-	tps_slider.update(window_mouse.x, window_mouse.y);
-
-	if (edit_button.check_over_button(window_mouse.x, window_mouse.y)) {
-		mouse_over_gui = true;
-	}
-	edit_button.update(window_mouse.x, window_mouse.y);
-
-	if (fill_button.check_over_button(window_mouse.x, window_mouse.y)) {
-		mouse_over_gui = true;
-	}
-	fill_button.update(window_mouse.x, window_mouse.y);
-
-	if (reset_button.check_over_button(window_mouse.x, window_mouse.y)) {
-		mouse_over_gui = true;
-	}
-	reset_button.update(window_mouse.x, window_mouse.y);
-
-	if (grid_button.check_over_button(window_mouse.x, window_mouse.y)) {
-		mouse_over_gui = true;
-	}
-	grid_button.update(window_mouse.x, window_mouse.y);
-
-	if (detail_button.check_over_button(window_mouse.x, window_mouse.y)) {
-		mouse_over_gui = true;
-	}
-	detail_button.update(window_mouse.x, window_mouse.y);
-
-	tps_text.setString("TPS:" + (board_tps == 10000000 ? "max" : std::to_string(int(board_tps))));
+	gui.update();
 
 	if (show_inventory) {
-		if (Utils::point_vs_rect(window_mouse.x, window_mouse.y, inventory_bg_rect.getPosition().x, inventory_bg_rect.getPosition().y,
-								 inventory_bg_rect.getSize().x, inventory_bg_rect.getSize().y)) {
-			mouse_over_gui = true;
-
-			inv_air_button.update(window_mouse.x, window_mouse.y);
-			inv_wire_button.update(window_mouse.x, window_mouse.y);
-			inv_out_button.update(window_mouse.x, window_mouse.y);
-			inv_battery_button.update(window_mouse.x, window_mouse.y);
-			inv_repeater_button.update(window_mouse.x, window_mouse.y);
-			inv_bridge_button.update(window_mouse.x, window_mouse.y);
-			inv_button_button.update(window_mouse.x, window_mouse.y);
-			inv_switch_button.update(window_mouse.x, window_mouse.y);
-			inv_lamp_button.update(window_mouse.x, window_mouse.y);
-			inv_not_button.update(window_mouse.x, window_mouse.y);
-			inv_or_button.update(window_mouse.x, window_mouse.y);
-			inv_nor_button.update(window_mouse.x, window_mouse.y);
-			inv_xor_button.update(window_mouse.x, window_mouse.y);
-			inv_xnor_button.update(window_mouse.x, window_mouse.y);
-			inv_and_button.update(window_mouse.x, window_mouse.y);
-			inv_nand_button.update(window_mouse.x, window_mouse.y);
-		}
+		inventory.update();
 	}
 
 	//drawing
@@ -1644,7 +872,7 @@ void Simulationscreen::update() {
 					drawinstruction_list.push_back(instruction);
 
 					if (fill_mode)
-						fill_button.func();
+						gui.fill_button.func();
 				}
 			}
 		}
@@ -1717,69 +945,10 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	window.draw(render_rect, &board_shader);
 
 	//GUI
-	pause_button.render(window);
-	item_button.render(window);
-	tps_slider.render(window);
-	edit_button.render(window);
-	fill_button.render(window);
-	reset_button.render(window);
-	grid_button.render(window);
-	detail_button.render(window);
-	window.draw(tps_text);
+	gui.render(window);
 
 	if (show_inventory) {
-		window.draw(inventory_bg_rect);
-		window.draw(inventory_text);
-
-		inv_air_button.render(window);
-		window.draw(inv_air_text);
-
-		inv_wire_button.render(window);
-		window.draw(inv_wire_text);
-
-		inv_out_button.render(window);
-		window.draw(inv_out_text);
-
-		inv_battery_button.render(window);
-		window.draw(inv_battery_text);
-
-		inv_repeater_button.render(window);
-		window.draw(inv_repeater_text);
-
-		inv_bridge_button.render(window);
-		window.draw(inv_bridge_text);
-
-		inv_button_button.render(window);
-		window.draw(inv_button_text);
-
-		inv_switch_button.render(window);
-		window.draw(inv_switch_text);
-
-		inv_lamp_button.render(window);
-		window.draw(inv_lamp_text);
-
-		inv_not_button.render(window);
-		window.draw(inv_not_text);
-
-		inv_or_button.render(window);
-		window.draw(inv_or_text);
-
-		inv_nor_button.render(window);
-		window.draw(inv_nor_text);
-
-		inv_xor_button.render(window);
-		window.draw(inv_xor_text);
-
-		inv_xnor_button.render(window);
-		window.draw(inv_xnor_text);
-
-		inv_and_button.render(window);
-		window.draw(inv_and_text);
-
-		inv_nand_button.render(window);
-		window.draw(inv_nand_text);
-
-		window.draw(inv_logic_gates_text);
+		inventory.render(window);
 	}
 
 	if (drawing_rectangle) {
@@ -1799,16 +968,6 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 
 	//help menu
 	if (show_help_menu) {
-		window.draw(help_bg_rect);
-
-		window.draw(help_tps_slider_text);
-		window.draw(help_edit_button_text);
-		window.draw(help_fill_button_text);
-		window.draw(help_reset_button_text);
-		window.draw(help_grid_button_text);
-		window.draw(help_details_button_text);
-		window.draw(help_item_button_text);
-		window.draw(help_hotkeys_text);
-		window.draw(help_close_text);
+		helpmenu.render(window);
 	}
 }
