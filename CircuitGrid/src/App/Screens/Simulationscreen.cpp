@@ -92,7 +92,7 @@ void Simulationscreen::init_update_functions() {
 	item_names.push_back("Bridge");
 
 	update_functions.push_back(&Simulationscreen::update_lamp);
-	item_list.push_back(0x00000006);
+	item_list.push_back(0x00000106);
 	item_names.push_back("Lamp");
 
 	update_functions.push_back(&Simulationscreen::update_button);
@@ -609,6 +609,8 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		}
 		else if (ev.key.code == sf::Keyboard::H) {//toggle help_mode
 			show_help_menu = !show_help_menu;
+			if (!simulation_paused)
+				gui.pause_button.func();
 		}
 		else if (ev.key.code == sf::Keyboard::F) {//toggle fill_mode
 			gui.fill_button.func();
@@ -760,7 +762,6 @@ void Simulationscreen::update() {
 	
 	//help menu
 	if (show_help_menu) {
-		simulation_paused = true;
 		show_inventory = false;
 		return;
 	}

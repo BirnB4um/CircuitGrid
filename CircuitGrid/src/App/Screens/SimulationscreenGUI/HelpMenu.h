@@ -18,6 +18,7 @@ public:
 	sf::Text help_reset_button_text;
 	sf::Text help_grid_button_text;
 	sf::Text help_details_button_text;
+	sf::Text help_selection_button_text;
 	sf::Text help_item_button_text;
 	sf::Text help_hotkeys_text;
 	sf::Text help_close_text;

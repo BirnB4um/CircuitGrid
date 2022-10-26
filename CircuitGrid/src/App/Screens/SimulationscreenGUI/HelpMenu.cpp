@@ -27,6 +27,10 @@ void HelpMenu::init() {
 	help_details_button_text.setString("< Toggle Details when zoomed in [Y]");
 	help_details_button_text.setFillColor(sf::Color(255, 255, 255, 255));
 
+	help_selection_button_text.setFont(*font);
+	help_selection_button_text.setString("< Toggle to select area [Z]");
+	help_selection_button_text.setFillColor(sf::Color(255, 255, 255, 255));
+
 	help_item_button_text.setFont(*font);
 	help_item_button_text.setString("Selected Item [E] >");
 	help_item_button_text.setFillColor(sf::Color(255, 255, 255, 255));
@@ -45,6 +49,7 @@ void HelpMenu::init() {
 		"R - reset simulation\n"
 		"G - toggle grid\n"
 		"Y - toggle details\n"
+		"Z - toggle selection-mode\n"
 		"0 - zoom to origin\n"
 		"drag middle mouse button - drag board\n"
 		"SCROLL - zoom\n"
@@ -88,13 +93,17 @@ void HelpMenu::resize() {
 	help_details_button_text.setPosition(sim->gui.detail_button.rect.getPosition().x + sim->gui.detail_button.rect.getSize().x + 10,
 										sim->gui.detail_button.rect.getPosition().y + sim->gui.detail_button.rect.getSize().y * 0.2f);
 
+	help_selection_button_text.setCharacterSize(sim->gui.selection_button.rect.getSize().y * 0.4);
+	help_selection_button_text.setPosition(sim->gui.selection_button.rect.getPosition().x + sim->gui.selection_button.rect.getSize().x + 10,
+										sim->gui.selection_button.rect.getPosition().y + sim->gui.selection_button.rect.getSize().y * 0.2f);
+
 	help_item_button_text.setCharacterSize(sim->gui.item_button.rect.getSize().y * 0.4);
 	help_item_button_text.setPosition(sim->gui.item_button.rect.getPosition().x - help_item_button_text.getGlobalBounds().width - 10,
 										sim->gui.item_button.rect.getPosition().y + sim->gui.item_button.rect.getSize().y * 0.2f);
 
-	help_hotkeys_text.setCharacterSize(sim->gui.item_button.rect.getSize().y * 0.4);
+	help_hotkeys_text.setCharacterSize(sim->gui.item_button.rect.getSize().y * 0.3);
 	help_hotkeys_text.setPosition(SCREEN_WIDTH - help_hotkeys_text.getGlobalBounds().width * 1.1f,
-										sim->gui.item_button.rect.getPosition().y + sim->gui.item_button.rect.getSize().y * 2);
+										SCREEN_HEIGHT - help_hotkeys_text.getGlobalBounds().height);
 
 	help_close_text.setCharacterSize(sim->gui.item_button.rect.getSize().y * 0.8);
 	help_close_text.setPosition(SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.7f);
@@ -113,6 +122,7 @@ void HelpMenu::render(sf::RenderTarget &window) {
 	window.draw(help_reset_button_text);
 	window.draw(help_grid_button_text);
 	window.draw(help_details_button_text);
+	window.draw(help_selection_button_text);
 	window.draw(help_item_button_text);
 	window.draw(help_hotkeys_text);
 	window.draw(help_close_text);
