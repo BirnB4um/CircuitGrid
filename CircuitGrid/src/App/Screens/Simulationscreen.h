@@ -83,6 +83,10 @@ public:
 	bool reset_simulation_bool;
 	bool selection_mode;
 
+	bool selection_set;
+	uint8_t selection_part;//0:nothing; 1:top_left; 2:top_right; 3:bottom_left; 4:bottom_right; 5:top; 6:left; 7:right; 8:bottom; 9:all
+	long selection_mouse_offset_x;
+	long selection_mouse_offset_y;
 	long selection_start_x;
 	long selection_start_y;
 	long selection_end_x;

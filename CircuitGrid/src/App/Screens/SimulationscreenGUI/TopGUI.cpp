@@ -127,6 +127,8 @@ void TopGUI::init() {
 	selection_button.set_pressed_texture_inrect(116, 18, 9, 9);
 	selection_button.set_function([&]() {
 		sim->selection_mode = !sim->selection_mode;
+		sim->selection_set = false;
+		sim->selection_part = 0;
 		if (sim->selection_mode) {
 			selection_button.set_texture_inrect(116, 18, 9, 9);
 			selection_button.set_hoverover_texture_inrect(116, 9, 9, 9);

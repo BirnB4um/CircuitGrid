@@ -161,6 +161,8 @@ void Simulationscreen::init() {
 	selection_start_y = -1;
 	selection_end_x = -1;
 	selection_end_y = -1;
+	selection_set = false;
+	selection_part = 0;
 	
 
 	//debug stuff
@@ -668,8 +670,55 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 
 		if (ev.key.code == sf::Mouse::Left) {
 
+			//draw/change selection box
+			if (selection_mode) {
+				if (mouse_over_board && !mouse_over_gui) {
+					if (!selection_set) {
+						selection_set = true;
+						selection_start_x = floor(board_mouse.x);
+						selection_start_y = floor(board_mouse.y);
+						selection_end_x = floor(board_mouse.x);
+						selection_end_y = floor(board_mouse.y);
+						selection_part = 4;
+					}
+					else {
+						if (Utils::point_vs_rect(board_mouse.x, board_mouse.y, selection_start_x, selection_start_y,
+							selection_end_x - selection_start_x, selection_end_y - selection_start_y)) {//all
+							selection_part = 9;
+						}
+						else if (board_mouse.x <= selection_start_x && board_mouse.y <= selection_start_y) {//top left
+							selection_part = 1;
+						}
+						else if (board_mouse.x >= selection_end_x && board_mouse.y <= selection_start_y) {//top right
+							selection_part = 2;
+						}
+						else if (board_mouse.x <= selection_start_x && board_mouse.y >= selection_end_y) {//bottom left
+							selection_part = 3;
+						}
+						else if (board_mouse.x >= selection_end_x && board_mouse.y >= selection_end_y) {//bottom right
+							selection_part = 4;
+						}
+						else if (board_mouse.y <= selection_start_y) {//top
+							selection_part = 5;
+						}
+						else if (board_mouse.x <= selection_start_x) {//left
+							selection_part = 6;
+						}
+						else if (board_mouse.x >= selection_end_x) {//right
+							selection_part = 7;
+						}
+						else if (board_mouse.y >= selection_start_y) {//bottom
+							selection_part = 8;
+						}
+						std::cout << int(selection_part ) << std::endl;
+					}
+
+					selection_mouse_offset_x = floor(board_mouse.x) - selection_start_x;
+					selection_mouse_offset_y = floor(board_mouse.y) - selection_start_y;
+				}
+			}
 			//interacte with board
-			if (!selection_mode && !edit_mode && mouse_over_board && !mouse_over_gui) {
+			else if (!edit_mode && mouse_over_board && !mouse_over_gui) {
 				std::lock_guard<std::mutex> draw_lock(draw_mutex);
 
 				uint32_t x = floor(board_mouse.x);
@@ -834,20 +883,42 @@ void Simulationscreen::update() {
 		start_drawing_rectangle = false;
 		start_drawing_line = false;
 
-		if (selection_start_x == -1) {
-			selection_start_x = floor(board_mouse.x);
-			selection_start_y = floor(board_mouse.y);
-			selection_end_x = floor(board_mouse.x);
-			selection_end_y = floor(board_mouse.y);
-		}
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			selection_start_x = floor(board_mouse.x);
-			selection_start_y = floor(board_mouse.y);
-		}
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-			selection_end_x = floor(board_mouse.x);
-			selection_end_y = floor(board_mouse.y);
+			if (selection_part == 9) {//all
+				selection_end_x = floor(board_mouse.x) - selection_mouse_offset_x + (selection_end_x - selection_start_x);
+				selection_end_y = floor(board_mouse.y) - selection_mouse_offset_y + (selection_end_y - selection_start_y);
+				selection_start_x = floor(board_mouse.x) - selection_mouse_offset_x;
+				selection_start_y = floor(board_mouse.y) - selection_mouse_offset_y;
+			}
+			else if (selection_part == 1) {//top left
+				selection_start_x = floor(board_mouse.x);
+				selection_start_y = floor(board_mouse.y);
+			}
+			else if (selection_part == 2) {//top right
+				selection_end_x = floor(board_mouse.x);
+				selection_start_y = floor(board_mouse.y);
+			}
+			else if (selection_part == 3) {//bottom left
+				selection_start_x = floor(board_mouse.x);
+				selection_end_y = floor(board_mouse.y);
+			}
+			else if (selection_part == 4) {//bottom reight
+				selection_end_x = floor(board_mouse.x);
+				selection_end_y = floor(board_mouse.y);
+			}
+			else if (selection_part == 5) {//top
+				selection_start_y = floor(board_mouse.y);
+			}
+			else if (selection_part == 6) {//left
+				selection_start_x = floor(board_mouse.x);
+			}
+			else if (selection_part == 7) {//right
+				selection_end_x = floor(board_mouse.x);
+			}
+			else if (selection_part == 8) {//bottom
+				selection_end_y = floor(board_mouse.y);
+			}
 		}
 
 		selection_start_x = selection_start_x < 0 ? 0 : selection_start_x > board_width - 1 ? board_width - 1 : selection_start_x;
@@ -855,15 +926,22 @@ void Simulationscreen::update() {
 		selection_start_y = selection_start_y < 0 ? 0 : selection_start_y > board_height - 1 ? board_height - 1 : selection_start_y;
 		selection_end_y = selection_end_y < 0 ? 0 : selection_end_y > board_height - 1 ? board_height - 1 : selection_end_y;
 		
+		//switch if not in order
+		if (selection_end_x < selection_start_x) {
+			long temp = selection_start_x;
+			selection_start_x = selection_end_x;
+			selection_end_x = temp;
+		}
+		if (selection_end_y < selection_start_y) {
+			long temp = selection_start_y;
+			selection_start_y = selection_end_y;
+			selection_end_y = temp;
+		}
 
 		//update drawing_rectangle_shape
-		float x1 = selection_end_x < selection_start_x ? floor(selection_end_x) : floor(selection_start_x);
-		float y1 = selection_end_y < selection_start_y ? floor(selection_end_y) : floor(selection_start_y);
-		float x2 = selection_end_x < selection_start_x ? floor(selection_start_x) + 1 : floor(selection_end_x) + 1;
-		float y2 = selection_end_y < selection_start_y ? floor(selection_start_y) + 1 : floor(selection_end_y) + 1;
-		selection_rect.setPosition((x1 * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)),
-			(y1 * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)));
-		selection_rect.setSize(sf::Vector2f((x2 - x1) * zoom_factor, (y2 - y1) * zoom_factor));
+		selection_rect.setPosition((selection_start_x * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)),
+									(selection_start_y * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)));
+		selection_rect.setSize(sf::Vector2f((selection_end_x + 1 - selection_start_x) * zoom_factor, (selection_end_y + 1 - selection_start_y) * zoom_factor));
 
 	}
 	else {
@@ -1017,7 +1095,7 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 		window.draw(drawing_line_shape);
 	}
 
-	if (selection_mode) {
+	if (selection_mode && selection_set) {
 		window.draw(selection_rect);
 	}
 

@@ -738,12 +738,14 @@ bool Simulationscreen::update_and(uint32_t& i) {
 	uint32_t i_right = (i + 1) * 4;
 
 	uint8_t surrounding_electricity_count = 0;
+	uint8_t surrounding_count = 0;
 
 	//up
 	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
 		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
+		surrounding_count++;
 	}
 
 	//down
@@ -751,14 +753,15 @@ bool Simulationscreen::update_and(uint32_t& i) {
 		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
+		surrounding_count++;
 	}
 
 	//left
 	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
 		if (this_board[i_left + 1] == 2) {
 			surrounding_electricity_count++;
-
 		}
+		surrounding_count++;
 	}
 
 	//right
@@ -766,10 +769,11 @@ bool Simulationscreen::update_and(uint32_t& i) {
 		if (this_board[i_right + 1] == 2) {
 			surrounding_electricity_count++;
 		}
+		surrounding_count++;
 	}
 
 
-	if (surrounding_electricity_count > 1) {
+	if (surrounding_electricity_count == surrounding_count) {
 		next_board[this_i + 1] = 2;
 	}
 	else {
@@ -787,12 +791,14 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 	uint32_t i_right = (i + 1) * 4;
 
 	uint8_t surrounding_electricity_count = 0;
+	uint8_t surrounding_count = 0;
 
 	//up
 	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
 		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
+		surrounding_count++;
 	}
 
 	//down
@@ -800,14 +806,15 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
+		surrounding_count++;
 	}
 
 	//left
 	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
 		if (this_board[i_left + 1] == 2) {
 			surrounding_electricity_count++;
-
 		}
+		surrounding_count++;
 	}
 
 	//right
@@ -815,10 +822,11 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 		if (this_board[i_right + 1] == 2) {
 			surrounding_electricity_count++;
 		}
+		surrounding_count++;
 	}
 
 
-	if (surrounding_electricity_count < 2) {
+	if (surrounding_electricity_count == surrounding_count) {
 		next_board[this_i + 1] = 2;
 	}
 	else {
