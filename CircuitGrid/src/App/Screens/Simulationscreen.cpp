@@ -89,7 +89,7 @@ void Simulationscreen::init_update_functions() {
 	item_names.push_back("Repeater");
 
 	update_functions.push_back(&Simulationscreen::update_bridge);
-	item_list.push_back(0x00000105);
+	item_list.push_back(0x00010105);
 	item_names.push_back("Bridge");
 
 	update_functions.push_back(&Simulationscreen::update_lamp);
@@ -349,15 +349,27 @@ void Simulationscreen::reset_simulation() {
 	update_list.clear();
 	memset(&update_checklist[0], 0, board_size * sizeof(bool));
 	for (uint32_t i = 0; i < board_size;i++) {
-		if (this_board[i * 4] == BATTERY || this_board[i * 4] >= NOT) {
+		if (this_board[i * 4] == BATTERY || this_board[i * 4] >= BUTTON) {
 			add_to_update_list(i);
 			add_to_update_list(i - 1);
 			add_to_update_list(i + 1);
 			add_to_update_list(i - board_width);
 			add_to_update_list(i + board_width);
 		}
-		*(uint32_t*)&next_board[i * 4] = item_list[this_board[i*4]];
-		*(uint32_t*)&this_board[i * 4] = item_list[this_board[i*4]];
+		if (next_board[i * 4] == REPEATER) {
+			next_board[i * 4 + 1] = ((uint8_t*)&item_list[this_board[i * 4]])[1];
+			this_board[i * 4 + 1] = ((uint8_t*)&item_list[this_board[i * 4]])[1];
+		}
+		else if (next_board[i * 4] == BUTTON) {
+
+		}
+		else if (next_board[i * 4] == SWITCH) {
+
+		} else {
+			*(uint32_t*)&next_board[i * 4] = item_list[this_board[i * 4]];
+			*(uint32_t*)&this_board[i * 4] = item_list[this_board[i * 4]];
+		}
+
 	}
 }
 
@@ -711,6 +723,50 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		}
 		else if (ev.key.code == sf::Keyboard::Right) {//one step
 			one_simulations_step = true;
+		}
+		else if (ev.key.code == sf::Keyboard::Up) {
+			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER) {//increment repeater value
+				std::lock_guard<std::mutex> lock(draw_mutex);
+
+				uint32_t new_item = *(uint32_t*)&this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];
+				uint8_t value = ((uint8_t*)&new_item)[2];
+				
+				value++;
+				((uint8_t*)&new_item)[2] = value;
+
+				Drawinstruction instruction;
+				instruction.data[0] = POINT;
+				instruction.data[1] = 1;
+				instruction.data[2] = new_item;
+				instruction.data[3] = floor(last_board_mouse.x);
+				instruction.data[4] = floor(last_board_mouse.y);
+				instruction.data[5] = floor(board_mouse.x);
+				instruction.data[6] = floor(board_mouse.y);
+				instruction.structure_pointer = nullptr;
+				drawinstruction_list.push_back(instruction);
+			}
+		}
+		else if (ev.key.code == sf::Keyboard::Down) {
+			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER) {//decrement repeater value
+				std::lock_guard<std::mutex> lock(draw_mutex);
+
+				uint32_t new_item = *(uint32_t*)&this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];
+				uint8_t value = ((uint8_t*)&new_item)[2];
+				
+				value--;
+				((uint8_t*)&new_item)[2] = value;
+
+				Drawinstruction instruction;
+				instruction.data[0] = POINT;
+				instruction.data[1] = 1;
+				instruction.data[2] = new_item;
+				instruction.data[3] = floor(last_board_mouse.x);
+				instruction.data[4] = floor(last_board_mouse.y);
+				instruction.data[5] = floor(board_mouse.x);
+				instruction.data[6] = floor(board_mouse.y);
+				instruction.structure_pointer = nullptr;
+				drawinstruction_list.push_back(instruction);
+			}
 		}
 		else if (ev.key.code == sf::Keyboard::I) {//print info about pixel
 			uint32_t i = (int(board_mouse.x) + int(board_mouse.y) * board_width)*4;

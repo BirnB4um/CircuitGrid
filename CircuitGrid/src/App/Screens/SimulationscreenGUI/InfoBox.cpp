@@ -27,7 +27,7 @@ void InfoBox::resize() {
 
 	stroke_width = 2;
 	h = SCREEN_HEIGHT * 0.15f;
-	w = h * 1.5f;
+	w = h * 1.7f;
 	x = stroke_width;
 	y = SCREEN_HEIGHT - h - stroke_width;
 	bg_rect.setPosition(x, y);
@@ -64,9 +64,10 @@ void InfoBox::resize() {
 }
 void InfoBox::update() {
 	if (sim->mouse_over_board) {
-		name_text.setString("Name: " + item_names[this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4]]);
-		electricity_text.setString("Electricity.: " + std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 1]));
-		additional_data_text.setString("Additional Data: " + std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 2]));
+		std::string name = item_names[this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4]];
+		name_text.setString("Name: " + name);
+		electricity_text.setString((name == item_names[BRIDGE] ? "Electricity horizontal: " : "Electricity.: ") + std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 1]));
+		additional_data_text.setString( (name == item_names[REPEATER] ? "Delay Value: " : name == item_names[BRIDGE] ? "Electricity vertical: " : "Additional Data: ") + std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 2]) + (name == item_names[REPEATER] ? "(+/-)" : ""));
 		last_additional_data_text.setString("Last Data: " + std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 3]));
 	}
 }
