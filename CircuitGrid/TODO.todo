@@ -9,7 +9,7 @@ each pixel = 4 bytes
 
 
 ///// TODO /////
--change selectionrect by clicking only left mouse (depending on which corner/line)
+-create structure
 -info box at bottom left
 -change repeater value
 -change update_thread to run perfectly on time (exactly targeted tps)

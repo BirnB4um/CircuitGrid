@@ -47,8 +47,9 @@ public:
 
 	struct Drawinstruction {
 		uint32_t data[7];//drawtype, brushsize, element to draw, pos1x, pos1y, pos2x, pos2y
+		uint8_t* structure_pointer;
 	};
-	enum DRAWTYPE { POINT, LINE, RECT, FILL };
+	enum DRAWTYPE { POINT, LINE, RECT, FILL, STRUCTURE };
 	std::vector<Drawinstruction> drawinstruction_list;
 	std::mutex draw_mutex;
 	uint32_t brush_size;

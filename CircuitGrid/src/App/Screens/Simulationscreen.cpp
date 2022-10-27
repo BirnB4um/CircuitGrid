@@ -366,7 +366,7 @@ bool Simulationscreen::draw_to_board() {
 
 		list_size = drawinstruction_list.size();
 		instruction_list = new Drawinstruction[list_size];
-		memcpy(instruction_list, &drawinstruction_list[0], list_size * 7 * 4);
+		memcpy(instruction_list, &drawinstruction_list[0], list_size * (7 * 4 + sizeof(uint8_t*)));
 		drawinstruction_list.clear();
 	}
 
@@ -417,12 +417,6 @@ bool Simulationscreen::draw_to_board() {
 					}
 				}
 
-				//*(uint32_t*)&this_board[(x + y * board_width) * 4] = instruction_list[instruction_index].data[2];
-				//add_to_update_list(x + y * board_width);
-				//add_to_update_list(x + 1 + y * board_width);
-				//add_to_update_list(x - 1 + y * board_width);
-				//add_to_update_list(x + (y + 1) * board_width);
-				//add_to_update_list(x + (y - 1) * board_width);
 			}
 		}
 		else if (instruction_list[instruction_index].data[0] == RECT) {
@@ -483,6 +477,15 @@ bool Simulationscreen::draw_to_board() {
 						test_list.push_back(next_i - board_width );
 				}
 			}
+
+		}
+		else if (instruction_list[instruction_index].data[0] == STRUCTURE) {
+			//structure: 4bytes: width  /  4bytes: height  /  list_of_pixels: 4bytes pro pixel
+
+			uint32_t start_x = instruction_list[instruction_index].data[5];
+			uint32_t start_y = instruction_list[instruction_index].data[6];
+
+			//TODO:
 
 		}
 	}
@@ -710,7 +713,6 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 						else if (board_mouse.y >= selection_start_y) {//bottom
 							selection_part = 8;
 						}
-						std::cout << int(selection_part ) << std::endl;
 					}
 
 					selection_mouse_offset_x = floor(board_mouse.x) - selection_start_x;
@@ -734,6 +736,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 						instruction.data[4] = floor(last_board_mouse.y);
 						instruction.data[5] = x;
 						instruction.data[6] = y;
+						instruction.structure_pointer = nullptr;
 						drawinstruction_list.push_back(instruction);
 					}
 				}
@@ -747,6 +750,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 						instruction.data[4] = floor(last_board_mouse.y);
 						instruction.data[5] = x;
 						instruction.data[6] = y;
+						instruction.structure_pointer = nullptr;
 						drawinstruction_list.push_back(instruction);
 					} 
 					else if (this_board[(y * board_width + x) * 4 + 1] == 2) {
@@ -758,6 +762,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 						instruction.data[4] = floor(last_board_mouse.y);
 						instruction.data[5] = x;
 						instruction.data[6] = y;
+						instruction.structure_pointer = nullptr;
 						drawinstruction_list.push_back(instruction);
 					}
 				}
@@ -922,9 +927,16 @@ void Simulationscreen::update() {
 		}
 
 		selection_start_x = selection_start_x < 0 ? 0 : selection_start_x > board_width - 1 ? board_width - 1 : selection_start_x;
-		selection_end_x = selection_end_x < 0 ? 0 : selection_end_x > board_width - 1 ? board_width - 1 : selection_end_x;
 		selection_start_y = selection_start_y < 0 ? 0 : selection_start_y > board_height - 1 ? board_height - 1 : selection_start_y;
+		selection_end_x = selection_end_x < 0 ? 0 : selection_end_x > board_width - 1 ? board_width - 1 : selection_end_x;
 		selection_end_y = selection_end_y < 0 ? 0 : selection_end_y > board_height - 1 ? board_height - 1 : selection_end_y;
+
+		if (selection_start_x == 0) {
+			selection_mouse_offset_x = floor(board_mouse.x);
+		}
+		if (selection_start_y == 0) {
+			selection_mouse_offset_y = floor(board_mouse.y);
+		}
 		
 		//switch if not in order
 		if (selection_end_x < selection_start_x) {
@@ -997,6 +1009,7 @@ void Simulationscreen::update() {
 							instruction.data[4] = drawing_start_y;
 							instruction.data[5] = drawing_end_x;
 							instruction.data[6] = drawing_end_y;
+							instruction.structure_pointer = nullptr;
 							drawinstruction_list.push_back(instruction);
 						}
 					}
@@ -1033,6 +1046,7 @@ void Simulationscreen::update() {
 							instruction.data[4] = drawing_start_y;
 							instruction.data[5] = drawing_end_x;
 							instruction.data[6] = drawing_end_y;
+							instruction.structure_pointer = nullptr;
 							drawinstruction_list.push_back(instruction);
 						}
 					}
@@ -1051,6 +1065,7 @@ void Simulationscreen::update() {
 						instruction.data[4] = floor(last_board_mouse.y);
 						instruction.data[5] = floor(board_mouse.x);
 						instruction.data[6] = floor(board_mouse.y);
+						instruction.structure_pointer = nullptr;
 						drawinstruction_list.push_back(instruction);
 
 						if (fill_mode)
