@@ -13,6 +13,7 @@
 #include "SimulationscreenGUI/Inventory.h"
 #include "SimulationscreenGUI/HelpMenu.h"
 #include "SimulationscreenGUI/TopGUI.h"
+#include "SimulationscreenGUI/InfoBox.h"
 
 
 class Simulationscreen
@@ -27,6 +28,7 @@ public:
 	bool show_inventory;
 
 	HelpMenu helpmenu;
+	InfoBox infobox;
 
 	//debug stuff
 	sf::Text upload_to_gpu_time_text;

@@ -4,6 +4,7 @@ Simulationscreen::Simulationscreen() {
 	inventory.sim = this;
 	helpmenu.sim = this;
 	gui.sim = this;
+	infobox.sim = this;
 }
 
 Simulationscreen::~Simulationscreen() {
@@ -228,6 +229,8 @@ void Simulationscreen::init() {
 	//init help menu
 	helpmenu.init();
 
+	//info box
+	infobox.init();
 
 	//init GUI
 	gui.init();
@@ -255,6 +258,9 @@ void Simulationscreen::resize() {
 
 	//help menu
 	helpmenu.resize();
+
+	//infobox
+	infobox.resize();
 
 
 	//debug info
@@ -913,6 +919,7 @@ void Simulationscreen::update() {
 
 	//update GUI
 	gui.update();
+	infobox.update();
 
 	if (show_inventory) {
 		inventory.update();
@@ -1213,6 +1220,9 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 	if (pasting) {
 		window.draw(paste_rect);
 	}
+
+	//infobox
+	infobox.render(window);
 
 
 	//debug texts

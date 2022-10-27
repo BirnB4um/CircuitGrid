@@ -9,11 +9,8 @@ each pixel = 4 bytes
 
 
 ///// TODO /////
--create structure
--copy/paste part of board
 -added structure_list (list of all saved structures)
 -save/load board + GUI
--info box at bottom left
 -change repeater value
 -drawmode PIXELPERFECTLINE
 -change update_thread to run perfectly on time (exactly targeted tps)

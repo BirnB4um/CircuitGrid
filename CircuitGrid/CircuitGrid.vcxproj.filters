@@ -57,6 +57,9 @@
     <ClCompile Include="src\App\Screens\SimulationscreenGUI\TopGUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\App\Screens\SimulationscreenGUI\InfoBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\Application.h">
@@ -99,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\App\Screens\SimulationscreenGUI\TopGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\Screens\SimulationscreenGUI\InfoBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
