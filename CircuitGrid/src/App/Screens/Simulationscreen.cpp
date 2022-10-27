@@ -163,6 +163,10 @@ void Simulationscreen::init() {
 	selection_end_y = -1;
 	selection_set = false;
 	selection_part = 0;
+	copy_structure = new uint8_t[8];
+	memset(copy_structure, 0, 8);
+	pasting = false;
+	paste_structure = copy_structure;
 	
 
 	//debug stuff
@@ -208,6 +212,10 @@ void Simulationscreen::init() {
 	render_texture.create(1, 1);
 	render_rect.setPosition(0, 0);
 	render_rect.setTexture(&render_texture);
+
+	paste_rect.setFillColor(sf::Color::Transparent);
+	paste_rect.setOutlineColor(sf::Color(255,150,0,255));
+	paste_rect.setOutlineThickness(4);
 
 	create_board(500, 500);
 
@@ -484,8 +492,25 @@ bool Simulationscreen::draw_to_board() {
 
 			uint32_t start_x = instruction_list[instruction_index].data[5];
 			uint32_t start_y = instruction_list[instruction_index].data[6];
+			uint8_t* structure_pointer = instruction_list[instruction_index].structure_pointer;
+			uint32_t width = *(uint32_t*)&structure_pointer[0];
+			uint32_t height = *(uint32_t*)&structure_pointer[4];
 
-			//TODO:
+			if (width == 0 || height == 0) {
+				continue;
+			}
+
+			for (uint32_t y = start_y; y <= start_y + height && y < board_height; y++) {
+				for (uint32_t x = start_x; x <= start_x + width && x < board_width; x++) {
+					*(uint32_t*)&this_board[(y * board_width + x) * 4] = *(uint32_t*)&structure_pointer[8 + ((y-start_y) * width + (x-start_x)) * 4];
+					add_to_update_list(x + y * board_width);
+					add_to_update_list(x + 1 + y * board_width);
+					add_to_update_list(x - 1 + y * board_width);
+					add_to_update_list(x + (y + 1) * board_width);
+					add_to_update_list(x + (y - 1) * board_width);
+				}
+			}
+
 
 		}
 	}
@@ -617,6 +642,19 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			if (!simulation_paused)
 				gui.pause_button.func();
 		}
+		else if (ev.key.code == sf::Keyboard::C) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+				if (selection_mode && selection_set) {//copy selected area
+
+				}
+			}
+		}
+		else if (ev.key.code == sf::Keyboard::V) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+				pasting = true;
+				paste_structure = copy_structure;
+			}
+		}
 		else if (ev.key.code == sf::Keyboard::F) {//toggle fill_mode
 			gui.fill_button.func();
 		}
@@ -673,8 +711,26 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 
 		if (ev.key.code == sf::Mouse::Left) {
 
+			//paste structure
+			if (pasting) {
+				pasting = false;
+				if (*(uint32_t*)&paste_structure[0] != 0 && *(uint32_t*)&paste_structure[4] != 0) {
+					std::lock_guard<std::mutex> lock(draw_mutex);
+					Drawinstruction instruction;
+					instruction.data[0] = STRUCTURE;
+					instruction.data[1] = brush_size;
+					instruction.data[2] = WIRE;
+					instruction.data[3] = floor(last_board_mouse.x);
+					instruction.data[4] = floor(last_board_mouse.y);
+					instruction.data[5] = paste_x;
+					instruction.data[6] = paste_y;
+					instruction.structure_pointer = paste_structure;
+					drawinstruction_list.push_back(instruction);
+				}
+
+			}
 			//draw/change selection box
-			if (selection_mode) {
+			else if (selection_mode) {
 				if (mouse_over_board && !mouse_over_gui) {
 					if (!selection_set) {
 						selection_set = true;
@@ -883,8 +939,23 @@ void Simulationscreen::update() {
 		zoom_factor += (target_zoom_factor - zoom_factor) * 0.2f;
 	}
 
+	//paste mode
+	if (pasting) {
+
+		if(mouse_over_board){
+			paste_x = floor(board_mouse.x);
+			paste_y = floor(board_mouse.y);
+		}
+
+		uint32_t width = *(uint32_t*)&paste_structure[0];
+		uint32_t height = *(uint32_t*)&paste_structure[4];
+
+		paste_rect.setPosition((paste_x * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)),
+			(paste_y * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)));
+		paste_rect.setSize(sf::Vector2f(width * zoom_factor, height * zoom_factor));
+	}
 	//selectionmode
-	if (selection_mode) {
+	else if (selection_mode) {
 		start_drawing_rectangle = false;
 		start_drawing_line = false;
 
@@ -1112,6 +1183,10 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 
 	if (selection_mode && selection_set) {
 		window.draw(selection_rect);
+	}
+
+	if (pasting) {
+		window.draw(paste_rect);
 	}
 
 

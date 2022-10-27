@@ -45,6 +45,12 @@ public:
 	//update stuff
 	std::thread update_board_thread;
 
+	bool pasting;
+	sf::RectangleShape paste_rect;
+	uint8_t* paste_structure;
+	uint32_t paste_x, paste_y;
+
+	uint8_t* copy_structure;
 	struct Drawinstruction {
 		uint32_t data[7];//drawtype, brushsize, element to draw, pos1x, pos1y, pos2x, pos2y
 		uint8_t* structure_pointer;
