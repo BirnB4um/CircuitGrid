@@ -496,13 +496,13 @@ bool Simulationscreen::draw_to_board() {
 			uint32_t width = *(uint32_t*)&structure_pointer[0];
 			uint32_t height = *(uint32_t*)&structure_pointer[4];
 
-			if (width == 0 || height == 0) {
-				continue;
-			}
+			//if (width == 0 || height == 0) {
+			//	continue;
+			//}
 
-			for (uint32_t y = start_y; y <= start_y + height && y < board_height; y++) {
-				for (uint32_t x = start_x; x <= start_x + width && x < board_width; x++) {
-					*(uint32_t*)&this_board[(y * board_width + x) * 4] = *(uint32_t*)&structure_pointer[8 + ((y-start_y) * width + (x-start_x)) * 4];
+			for (uint32_t y = start_y; y < start_y + height && y < board_height; y++) {
+				for (uint32_t x = start_x; x < start_x + width && x < board_width; x++) {
+					memcpy(&this_board[(y * board_width + x) * 4], &structure_pointer[8 + ((y - start_y) * width + (x - start_x)) * 4], 4);
 					add_to_update_list(x + y * board_width);
 					add_to_update_list(x + 1 + y * board_width);
 					add_to_update_list(x - 1 + y * board_width);
@@ -645,6 +645,30 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::C) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
 				if (selection_mode && selection_set) {//copy selected area
+					gui.selection_button.func();
+
+					long width = selection_end_x - selection_start_x + 1;
+					long height = selection_end_y - selection_start_y + 1;
+
+					if (width < 1 || height < 1) {
+						return;
+					}
+
+
+					delete[] copy_structure;
+					copy_structure = new uint8_t[8 + (height * width) * 4];
+					
+					*(uint32_t*)&copy_structure[0] = width;
+					*(uint32_t*)&copy_structure[4] = height;
+				
+					uint32_t i = 0;
+					for (uint32_t y = selection_start_y; y <= selection_end_y; y++) {
+						for (uint32_t x = selection_start_x; x <= selection_end_x; x++) {
+							//*(uint32_t*)&copy_structure[8 + i * 4] = *(uint32_t*)&this_board[(y * board_width + x) * 4];
+							memcpy(&copy_structure[8 + i * 4], &this_board[(y * board_width + x) * 4], 4);
+							i++;
+						}
+					}
 
 				}
 			}
@@ -710,27 +734,8 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 	else if (ev.type == sf::Event::MouseButtonPressed) {
 
 		if (ev.key.code == sf::Mouse::Left) {
-
-			//paste structure
-			if (pasting) {
-				pasting = false;
-				if (*(uint32_t*)&paste_structure[0] != 0 && *(uint32_t*)&paste_structure[4] != 0) {
-					std::lock_guard<std::mutex> lock(draw_mutex);
-					Drawinstruction instruction;
-					instruction.data[0] = STRUCTURE;
-					instruction.data[1] = brush_size;
-					instruction.data[2] = WIRE;
-					instruction.data[3] = floor(last_board_mouse.x);
-					instruction.data[4] = floor(last_board_mouse.y);
-					instruction.data[5] = paste_x;
-					instruction.data[6] = paste_y;
-					instruction.structure_pointer = paste_structure;
-					drawinstruction_list.push_back(instruction);
-				}
-
-			}
 			//draw/change selection box
-			else if (selection_mode) {
+			if (selection_mode) {
 				if (mouse_over_board && !mouse_over_gui) {
 					if (!selection_set) {
 						selection_set = true;
@@ -850,7 +855,27 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 
 	//Released
 	else if (ev.type == sf::Event::MouseButtonReleased) {
-		if (ev.key.code == sf::Mouse::Right) {
+		if (ev.key.code == sf::Mouse::Left) {
+
+			if (pasting) {
+				pasting = false;
+
+				if (*(uint32_t*)&paste_structure[0] != 0 && *(uint32_t*)&paste_structure[4] != 0) {
+					std::lock_guard<std::mutex> lock(draw_mutex);
+					Drawinstruction instruction;
+					instruction.data[0] = STRUCTURE;
+					instruction.data[1] = brush_size;
+					instruction.data[2] = WIRE;
+					instruction.data[3] = floor(last_board_mouse.x);
+					instruction.data[4] = floor(last_board_mouse.y);
+					instruction.data[5] = paste_x;
+					instruction.data[6] = paste_y;
+					instruction.structure_pointer = paste_structure;
+					drawinstruction_list.push_back(instruction);
+				}
+			}
+		}
+		else if (ev.key.code == sf::Mouse::Right) {
 			if (Utils::point_vs_rect(board_mouse.x, board_mouse.y, 0, 0, board_width, board_height)) {
 				selected_item = *(uint32_t*)&this_board[int(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];
 				gui.update_item_button_texture();

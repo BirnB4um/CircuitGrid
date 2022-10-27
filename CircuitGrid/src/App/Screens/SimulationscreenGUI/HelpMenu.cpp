@@ -58,6 +58,8 @@ void HelpMenu::init() {
 		"draw + SHIFT - draw rect\n"
 		"draw + CTRL - draw line\n"
 		"X + R_CTRL - clear board\n"
+		"C + CTRL - copy selected area\n"
+		"V + CTRL - paste copied area\n"
 		"\n=== Debug stuff ===\n"
 		"L - reload resources (shader/images/...)\n"
 		"CTRL + SHIFT + M - toggle debug info\n"
