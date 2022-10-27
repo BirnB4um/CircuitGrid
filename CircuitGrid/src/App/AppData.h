@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "../Tools/IO_DATA.h"
 
 #define PI 3.1415926535
 
@@ -22,6 +23,7 @@ extern enum SCREEN_ID {
 	HOMESCREEN, SIMULATION
 };
 extern sf::Font* font;
+extern IO_DATA io_data;
 
 //========== SIMULATION SCREEN ==========
 
@@ -46,7 +48,7 @@ extern uint32_t selected_item;
 extern std::vector<uint32_t> item_list;
 extern uint8_t item_count;
 extern enum ITEM {
-	AIR, WIRE, OUT, BATTERY, REPEATER, BRIDGE, LAMP, BUTTON, SWITCH, NOT, OR, NOR, XOR, XNOR, AND, NAND
+	AIR, WIRE, OUTPUT, BATTERY, REPEATER, BRIDGE, LAMP, BUTTON, SWITCH, NOT, OR, NOR, XOR, XNOR, AND, NAND
 };
 extern std::vector<std::string> item_names;
 extern bool one_simulations_step;

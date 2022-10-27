@@ -28,6 +28,7 @@ public:
 	bool show_inventory;
 
 	HelpMenu helpmenu;
+
 	InfoBox infobox;
 
 	//debug stuff
@@ -103,6 +104,9 @@ public:
 	sf::RectangleShape selection_rect;
 
 	std::vector <bool(Simulationscreen::*)(uint32_t& i)> update_functions;
+
+	void load_board();
+	void save_board();
 
 	void reset_simulation();
 	void clear_board();

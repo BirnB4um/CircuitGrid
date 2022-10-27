@@ -16,6 +16,7 @@ float gui_scale = 1.0f;
 int screen_id = 0;
 enum SCREEN_ID;
 sf::Font* font;
+IO_DATA io_data;
 
 //========== SIMULATION SCREEN ==========
 

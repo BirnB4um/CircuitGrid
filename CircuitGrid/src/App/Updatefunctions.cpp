@@ -495,21 +495,21 @@ bool Simulationscreen::update_not(uint32_t& i) {
 	uint8_t surrounding_electricity_count = 0;
 
 	//up
-	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUTPUT) {
 		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//down
-	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUTPUT) {
 		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//left
-	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUTPUT) {
 		if (this_board[i_left + 1] == 2) {
 			surrounding_electricity_count++;
 
@@ -517,7 +517,7 @@ bool Simulationscreen::update_not(uint32_t& i) {
 	}
 
 	//right
-	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUTPUT) {
 		if (this_board[i_right + 1] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -544,21 +544,21 @@ bool Simulationscreen::update_or(uint32_t& i) {
 	uint8_t surrounding_electricity_count = 0;
 
 	//up
-	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUTPUT) {
 		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//down
-	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUTPUT) {
 		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//left
-	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUTPUT) {
 		if (this_board[i_left + 1] == 2) {
 			surrounding_electricity_count++;
 
@@ -566,7 +566,7 @@ bool Simulationscreen::update_or(uint32_t& i) {
 	}
 
 	//right
-	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUTPUT) {
 		if (this_board[i_right + 1] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -593,21 +593,21 @@ bool Simulationscreen::update_nor(uint32_t& i) {
 	uint8_t surrounding_electricity_count = 0;
 
 	//up
-	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUTPUT) {
 		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//down
-	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUTPUT) {
 		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//left
-	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUTPUT) {
 		if (this_board[i_left + 1] == 2) {
 			surrounding_electricity_count++;
 
@@ -615,7 +615,7 @@ bool Simulationscreen::update_nor(uint32_t& i) {
 	}
 
 	//right
-	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUTPUT) {
 		if (this_board[i_right + 1] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -642,21 +642,21 @@ bool Simulationscreen::update_xor(uint32_t& i) {
 	uint8_t surrounding_electricity_count = 0;
 
 	//up
-	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUTPUT) {
 		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//down
-	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUTPUT) {
 		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//left
-	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUTPUT) {
 		if (this_board[i_left + 1] == 2) {
 			surrounding_electricity_count++;
 
@@ -664,7 +664,7 @@ bool Simulationscreen::update_xor(uint32_t& i) {
 	}
 
 	//right
-	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUTPUT) {
 		if (this_board[i_right + 1] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -691,21 +691,21 @@ bool Simulationscreen::update_xnor(uint32_t& i) {
 	uint8_t surrounding_electricity_count = 0;
 
 	//up
-	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUTPUT) {
 		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//down
-	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUTPUT) {
 		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
 	}
 
 	//left
-	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUTPUT) {
 		if (this_board[i_left + 1] == 2) {
 			surrounding_electricity_count++;
 
@@ -713,7 +713,7 @@ bool Simulationscreen::update_xnor(uint32_t& i) {
 	}
 
 	//right
-	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUTPUT) {
 		if (this_board[i_right + 1] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -741,7 +741,7 @@ bool Simulationscreen::update_and(uint32_t& i) {
 	uint8_t surrounding_count = 0;
 
 	//up
-	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUTPUT) {
 		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -749,7 +749,7 @@ bool Simulationscreen::update_and(uint32_t& i) {
 	}
 
 	//down
-	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUTPUT) {
 		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -757,7 +757,7 @@ bool Simulationscreen::update_and(uint32_t& i) {
 	}
 
 	//left
-	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUTPUT) {
 		if (this_board[i_left + 1] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -765,7 +765,7 @@ bool Simulationscreen::update_and(uint32_t& i) {
 	}
 
 	//right
-	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUTPUT) {
 		if (this_board[i_right + 1] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -794,7 +794,7 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 	uint8_t surrounding_count = 0;
 
 	//up
-	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUT) {
+	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUTPUT) {
 		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -802,7 +802,7 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 	}
 
 	//down
-	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUT) {
+	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUTPUT) {
 		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -810,7 +810,7 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 	}
 
 	//left
-	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUT) {
+	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUTPUT) {
 		if (this_board[i_left + 1] == 2) {
 			surrounding_electricity_count++;
 		}
@@ -818,7 +818,7 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 	}
 
 	//right
-	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUT) {
+	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUTPUT) {
 		if (this_board[i_right + 1] == 2) {
 			surrounding_electricity_count++;
 		}

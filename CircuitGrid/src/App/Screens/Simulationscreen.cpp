@@ -242,6 +242,40 @@ void Simulationscreen::init() {
 	resize();
 }
 
+void Simulationscreen::load_board() {
+	std::string file_name = io_data.choose_open_file(1);
+	//TODO:
+}
+
+void Simulationscreen::save_board() {
+	/*
+	1 byte: VERSION
+	4 byte: WIDTH
+	4 byte: HEIGHT
+	x byte: DATA
+	*/
+
+	std::string file_name = io_data.choose_save_file(1);
+
+	std::lock_guard<std::mutex> lock(draw_mutex);
+
+	uint8_t version = 0x01;
+	uint32_t width = board_width;
+	uint32_t height = board_height;
+
+	uint64_t size = 9 + board_size * 4;
+	uint8_t* out_data = new uint8_t[size];
+
+	memcpy(&out_data[0], &version, 1);
+	memcpy(&out_data[1], &width, 4);
+	memcpy(&out_data[5], &height, 4);
+	memcpy(&out_data[9], this_board, board_size * 4);
+
+	io_data.save_to_file(file_name, (char*)out_data, size, false);
+
+	delete[] out_data;
+}
+
 void Simulationscreen::resize() {
 	board_shader.setUniform("screen_width", SCREEN_WIDTH);
 	board_shader.setUniform("screen_height", SCREEN_HEIGHT);
@@ -514,10 +548,6 @@ bool Simulationscreen::draw_to_board() {
 			uint32_t width = *(uint32_t*)&structure_pointer[0];
 			uint32_t height = *(uint32_t*)&structure_pointer[4];
 
-			//if (width == 0 || height == 0) {
-			//	continue;
-			//}
-
 			for (uint32_t y = start_y; y < start_y + height && y < board_height; y++) {
 				for (uint32_t x = start_x; x < start_x + width && x < board_width; x++) {
 					memcpy(&this_board[(y * board_width + x) * 4], &structure_pointer[8 + ((y - start_y) * width + (x - start_x)) * 4], 4);
@@ -717,6 +747,9 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		}
 		else if (ev.key.code == sf::Keyboard::R) {//reset simulation
 			reset_simulation_bool = true;
+		}
+		else if (ev.key.code == sf::Keyboard::S && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {//save board
+			save_board();
 		}
 		else if (ev.key.code == sf::Keyboard::E) {//open/close inventory
 			gui.item_button.func();

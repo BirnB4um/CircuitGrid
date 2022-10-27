@@ -9,9 +9,8 @@ each pixel = 4 bytes
 
 
 ///// TODO /////
--added structure_list (list of all saved structures)
 -save/load board + GUI
--change repeater value
+-added structure_list (list of all saved structures)
 -drawmode PIXELPERFECTLINE
 -change update_thread to run perfectly on time (exactly targeted tps)
 -add background tiles

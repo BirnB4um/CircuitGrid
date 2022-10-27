@@ -6,246 +6,245 @@ void Inventory::init() {
 	inventory_bg_rect.setOutlineColor(sf::Color(100, 100, 100, 255));
 
 	//texts
-	{
-		inventory_text.setFont(*font);
-		inventory_text.setString("Inventory");
-		inventory_text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-		inventory_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inventory_text.setOutlineThickness(0);
+	inventory_text.setFont(*font);
+	inventory_text.setString("Inventory");
+	inventory_text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	inventory_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inventory_text.setOutlineThickness(0);
 
-		inv_logic_gates_text.setFont(*font);
-		inv_logic_gates_text.setString("Logic Gates");
-		inv_logic_gates_text.setStyle(sf::Text::Bold);
-		inv_logic_gates_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_logic_gates_text.setOutlineThickness(0);
+	inv_logic_gates_text.setFont(*font);
+	inv_logic_gates_text.setString("Logic Gates");
+	inv_logic_gates_text.setStyle(sf::Text::Bold);
+	inv_logic_gates_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_logic_gates_text.setOutlineThickness(0);
 
-		inv_air_text.setFont(*font);
-		inv_air_text.setString("Air");
-		inv_air_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_air_text.setOutlineThickness(0);
+	inv_air_text.setFont(*font);
+	inv_air_text.setString("Air");
+	inv_air_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_air_text.setOutlineThickness(0);
 
-		inv_wire_text.setFont(*font);
-		inv_wire_text.setString("Wire");
-		inv_wire_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_wire_text.setOutlineThickness(0);
+	inv_wire_text.setFont(*font);
+	inv_wire_text.setString("Wire");
+	inv_wire_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_wire_text.setOutlineThickness(0);
 
-		inv_out_text.setFont(*font);
-		inv_out_text.setString("Output");
-		inv_out_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_out_text.setOutlineThickness(0);
+	inv_out_text.setFont(*font);
+	inv_out_text.setString("Output");
+	inv_out_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_out_text.setOutlineThickness(0);
 
-		inv_battery_text.setFont(*font);
-		inv_battery_text.setString("Battery");
-		inv_battery_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_battery_text.setOutlineThickness(0);
+	inv_battery_text.setFont(*font);
+	inv_battery_text.setString("Battery");
+	inv_battery_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_battery_text.setOutlineThickness(0);
 
-		inv_repeater_text.setFont(*font);
-		inv_repeater_text.setString("Repeater");
-		inv_repeater_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_repeater_text.setOutlineThickness(0);
+	inv_repeater_text.setFont(*font);
+	inv_repeater_text.setString("Repeater");
+	inv_repeater_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_repeater_text.setOutlineThickness(0);
 
-		inv_bridge_text.setFont(*font);
-		inv_bridge_text.setString("Bridge");
-		inv_bridge_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_bridge_text.setOutlineThickness(0);
+	inv_bridge_text.setFont(*font);
+	inv_bridge_text.setString("Bridge");
+	inv_bridge_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_bridge_text.setOutlineThickness(0);
 
-		inv_lamp_text.setFont(*font);
-		inv_lamp_text.setString("Lamp");
-		inv_lamp_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_lamp_text.setOutlineThickness(0);
+	inv_lamp_text.setFont(*font);
+	inv_lamp_text.setString("Lamp");
+	inv_lamp_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_lamp_text.setOutlineThickness(0);
 
-		inv_button_text.setFont(*font);
-		inv_button_text.setString("Button");
-		inv_button_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_button_text.setOutlineThickness(0);
+	inv_button_text.setFont(*font);
+	inv_button_text.setString("Button");
+	inv_button_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_button_text.setOutlineThickness(0);
 
-		inv_switch_text.setFont(*font);
-		inv_switch_text.setString("Switch");
-		inv_switch_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_switch_text.setOutlineThickness(0);
+	inv_switch_text.setFont(*font);
+	inv_switch_text.setString("Switch");
+	inv_switch_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_switch_text.setOutlineThickness(0);
 
-		inv_not_text.setFont(*font);
-		inv_not_text.setString("NOT");
-		inv_not_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_not_text.setOutlineThickness(0);
+	inv_not_text.setFont(*font);
+	inv_not_text.setString("NOT");
+	inv_not_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_not_text.setOutlineThickness(0);
 
-		inv_or_text.setFont(*font);
-		inv_or_text.setString("OR");
-		inv_or_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_or_text.setOutlineThickness(0);
+	inv_or_text.setFont(*font);
+	inv_or_text.setString("OR");
+	inv_or_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_or_text.setOutlineThickness(0);
 
-		inv_nor_text.setFont(*font);
-		inv_nor_text.setString("NOR");
-		inv_nor_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_nor_text.setOutlineThickness(0);
+	inv_nor_text.setFont(*font);
+	inv_nor_text.setString("NOR");
+	inv_nor_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_nor_text.setOutlineThickness(0);
 
-		inv_xor_text.setFont(*font);
-		inv_xor_text.setString("XOR");
-		inv_xor_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_xor_text.setOutlineThickness(0);
+	inv_xor_text.setFont(*font);
+	inv_xor_text.setString("XOR");
+	inv_xor_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_xor_text.setOutlineThickness(0);
 
-		inv_xnor_text.setFont(*font);
-		inv_xnor_text.setString("XNOR");
-		inv_xnor_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_xnor_text.setOutlineThickness(0);
+	inv_xnor_text.setFont(*font);
+	inv_xnor_text.setString("XNOR");
+	inv_xnor_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_xnor_text.setOutlineThickness(0);
 
-		inv_and_text.setFont(*font);
-		inv_and_text.setString("AND");
-		inv_and_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_and_text.setOutlineThickness(0);
+	inv_and_text.setFont(*font);
+	inv_and_text.setString("AND");
+	inv_and_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_and_text.setOutlineThickness(0);
 
-		inv_nand_text.setFont(*font);
-		inv_nand_text.setString("NAND");
-		inv_nand_text.setFillColor(sf::Color(255, 255, 255, 255));
-		inv_nand_text.setOutlineThickness(0);
-
-
-		//buttons
-		inv_air_button.init();
-		inv_air_button.set_texture_inrect(240, 0, 16, 16);
-		inv_air_button.set_hoverover_texture_inrect(240, 0, 16, 16);
-		inv_air_button.set_pressed_texture_inrect(240, 0, 16, 16);
-		inv_air_button.set_function([&]() {
-			selected_item = item_list[AIR];
-			sim->gui.update_item_button_texture();
-			});
-
-		inv_wire_button.init();
-		inv_wire_button.set_texture_inrect(240, 16, 16, 16);
-		inv_wire_button.set_hoverover_texture_inrect(240, 16, 16, 16);
-		inv_wire_button.set_pressed_texture_inrect(240, 16, 16, 16);
-		inv_wire_button.set_function([&]() {
-			selected_item = item_list[WIRE];
-			sim->gui.update_item_button_texture();
-			});
-
-		inv_out_button.init();
-		inv_out_button.set_texture_inrect(240, 32, 16, 16);
-		inv_out_button.set_hoverover_texture_inrect(240, 32, 16, 16);
-		inv_out_button.set_pressed_texture_inrect(240, 32, 16, 16);
-		inv_out_button.set_function([&]() {
-			selected_item = item_list[OUT];
-			sim->gui.update_item_button_texture();
-			});
-
-		inv_battery_button.init();
-		inv_battery_button.set_texture_inrect(240, 48, 16, 16);
-		inv_battery_button.set_hoverover_texture_inrect(240, 48, 16, 16);
-		inv_battery_button.set_pressed_texture_inrect(240, 48, 16, 16);
-		inv_battery_button.set_function([&]() {
-			selected_item = item_list[BATTERY];
-			sim->gui.update_item_button_texture();
-			});
-
-		inv_repeater_button.init();
-		inv_repeater_button.set_texture_inrect(240, 64, 16, 16);
-		inv_repeater_button.set_hoverover_texture_inrect(240, 64, 16, 16);
-		inv_repeater_button.set_pressed_texture_inrect(240, 64, 16, 16);
-		inv_repeater_button.set_function([&]() {
-			selected_item = item_list[REPEATER];
-			sim->gui.update_item_button_texture();
-			});
-
-		inv_bridge_button.init();
-		inv_bridge_button.set_texture_inrect(240, 80, 16, 16);
-		inv_bridge_button.set_hoverover_texture_inrect(240, 80, 16, 16);
-		inv_bridge_button.set_pressed_texture_inrect(240, 80, 16, 16);
-		inv_bridge_button.set_function([&]() {
-			selected_item = item_list[BRIDGE];
-			sim->gui.update_item_button_texture();
-			});
-
-		inv_lamp_button.init();
-		inv_lamp_button.set_texture_inrect(240, 96, 16, 16);
-		inv_lamp_button.set_hoverover_texture_inrect(240, 96, 16, 16);
-		inv_lamp_button.set_pressed_texture_inrect(240, 96, 16, 16);
-		inv_lamp_button.set_function([&]() {
-			selected_item = item_list[LAMP];
-			sim->gui.update_item_button_texture();
-			});
-
-		inv_button_button.init();
-		inv_button_button.set_texture_inrect(240, 112, 16, 16);
-		inv_button_button.set_hoverover_texture_inrect(240, 112, 16, 16);
-		inv_button_button.set_pressed_texture_inrect(240, 112, 16, 16);
-		inv_button_button.set_function([&]() {
-			selected_item = item_list[BUTTON];
-			sim->gui.update_item_button_texture();
-			});
-
-		inv_switch_button.init();
-		inv_switch_button.set_texture_inrect(240, 128, 16, 16);
-		inv_switch_button.set_hoverover_texture_inrect(240, 128, 16, 16);
-		inv_switch_button.set_pressed_texture_inrect(240, 128, 16, 16);
-		inv_switch_button.set_function([&]() {
-			selected_item = item_list[SWITCH];
-			sim->gui.update_item_button_texture();
-			});
+	inv_nand_text.setFont(*font);
+	inv_nand_text.setString("NAND");
+	inv_nand_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_nand_text.setOutlineThickness(0);
 
 
-		inv_not_button.init();
-		inv_not_button.set_texture_inrect(240, 144, 16, 16);
-		inv_not_button.set_hoverover_texture_inrect(240, 144, 16, 16);
-		inv_not_button.set_pressed_texture_inrect(240, 144, 16, 16);
-		inv_not_button.set_function([&]() {
-			selected_item = item_list[NOT];
-			sim->gui.update_item_button_texture();
-			});
+	//buttons
+	inv_air_button.init();
+	inv_air_button.set_texture_inrect(240, 0, 16, 16);
+	inv_air_button.set_hoverover_texture_inrect(240, 0, 16, 16);
+	inv_air_button.set_pressed_texture_inrect(240, 0, 16, 16);
+	inv_air_button.set_function([&]() {
+		selected_item = item_list[AIR];
+		sim->gui.update_item_button_texture();
+		});
 
-		inv_or_button.init();
-		inv_or_button.set_texture_inrect(240, 160, 16, 16);
-		inv_or_button.set_hoverover_texture_inrect(240, 160, 16, 16);
-		inv_or_button.set_pressed_texture_inrect(240, 160, 16, 16);
-		inv_or_button.set_function([&]() {
-			selected_item = item_list[OR];
-			sim->gui.update_item_button_texture();
-			});
+	inv_wire_button.init();
+	inv_wire_button.set_texture_inrect(240, 16, 16, 16);
+	inv_wire_button.set_hoverover_texture_inrect(240, 16, 16, 16);
+	inv_wire_button.set_pressed_texture_inrect(240, 16, 16, 16);
+	inv_wire_button.set_function([&]() {
+		selected_item = item_list[WIRE];
+		sim->gui.update_item_button_texture();
+		});
 
-		inv_nor_button.init();
-		inv_nor_button.set_texture_inrect(240, 176, 16, 16);
-		inv_nor_button.set_hoverover_texture_inrect(240, 176, 16, 16);
-		inv_nor_button.set_pressed_texture_inrect(240, 176, 16, 16);
-		inv_nor_button.set_function([&]() {
-			selected_item = item_list[NOR];
-			sim->gui.update_item_button_texture();
-			});
+	inv_out_button.init();
+	inv_out_button.set_texture_inrect(240, 32, 16, 16);
+	inv_out_button.set_hoverover_texture_inrect(240, 32, 16, 16);
+	inv_out_button.set_pressed_texture_inrect(240, 32, 16, 16);
+	inv_out_button.set_function([&]() {
+		selected_item = item_list[OUTPUT];
+		sim->gui.update_item_button_texture();
+		});
 
-		inv_xor_button.init();
-		inv_xor_button.set_texture_inrect(240, 192, 16, 16);
-		inv_xor_button.set_hoverover_texture_inrect(240, 192, 16, 16);
-		inv_xor_button.set_pressed_texture_inrect(240, 192, 16, 16);
-		inv_xor_button.set_function([&]() {
-			selected_item = item_list[XOR];
-			sim->gui.update_item_button_texture();
-			});
+	inv_battery_button.init();
+	inv_battery_button.set_texture_inrect(240, 48, 16, 16);
+	inv_battery_button.set_hoverover_texture_inrect(240, 48, 16, 16);
+	inv_battery_button.set_pressed_texture_inrect(240, 48, 16, 16);
+	inv_battery_button.set_function([&]() {
+		selected_item = item_list[BATTERY];
+		sim->gui.update_item_button_texture();
+		});
 
-		inv_xnor_button.init();
-		inv_xnor_button.set_texture_inrect(240, 208, 16, 16);
-		inv_xnor_button.set_hoverover_texture_inrect(240, 208, 16, 16);
-		inv_xnor_button.set_pressed_texture_inrect(240, 208, 16, 16);
-		inv_xnor_button.set_function([&]() {
-			selected_item = item_list[XNOR];
-			sim->gui.update_item_button_texture();
-			});
+	inv_repeater_button.init();
+	inv_repeater_button.set_texture_inrect(240, 64, 16, 16);
+	inv_repeater_button.set_hoverover_texture_inrect(240, 64, 16, 16);
+	inv_repeater_button.set_pressed_texture_inrect(240, 64, 16, 16);
+	inv_repeater_button.set_function([&]() {
+		selected_item = item_list[REPEATER];
+		sim->gui.update_item_button_texture();
+		});
 
-		inv_and_button.init();
-		inv_and_button.set_texture_inrect(240, 224, 16, 16);
-		inv_and_button.set_hoverover_texture_inrect(240, 224, 16, 16);
-		inv_and_button.set_pressed_texture_inrect(240, 224, 16, 16);
-		inv_and_button.set_function([&]() {
-			selected_item = item_list[AND];
-			sim->gui.update_item_button_texture();
-			});
+	inv_bridge_button.init();
+	inv_bridge_button.set_texture_inrect(240, 80, 16, 16);
+	inv_bridge_button.set_hoverover_texture_inrect(240, 80, 16, 16);
+	inv_bridge_button.set_pressed_texture_inrect(240, 80, 16, 16);
+	inv_bridge_button.set_function([&]() {
+		selected_item = item_list[BRIDGE];
+		sim->gui.update_item_button_texture();
+		});
 
-		inv_nand_button.init();
-		inv_nand_button.set_texture_inrect(240, 240, 16, 16);
-		inv_nand_button.set_hoverover_texture_inrect(240, 240, 16, 16);
-		inv_nand_button.set_pressed_texture_inrect(240, 240, 16, 16);
-		inv_nand_button.set_function([&]() {
-			selected_item = item_list[NAND];
-			sim->gui.update_item_button_texture();
-			});
-	}
+	inv_lamp_button.init();
+	inv_lamp_button.set_texture_inrect(240, 96, 16, 16);
+	inv_lamp_button.set_hoverover_texture_inrect(240, 96, 16, 16);
+	inv_lamp_button.set_pressed_texture_inrect(240, 96, 16, 16);
+	inv_lamp_button.set_function([&]() {
+		selected_item = item_list[LAMP];
+		sim->gui.update_item_button_texture();
+		});
+
+	inv_button_button.init();
+	inv_button_button.set_texture_inrect(240, 112, 16, 16);
+	inv_button_button.set_hoverover_texture_inrect(240, 112, 16, 16);
+	inv_button_button.set_pressed_texture_inrect(240, 112, 16, 16);
+	inv_button_button.set_function([&]() {
+		selected_item = item_list[BUTTON];
+		sim->gui.update_item_button_texture();
+		});
+
+	inv_switch_button.init();
+	inv_switch_button.set_texture_inrect(240, 128, 16, 16);
+	inv_switch_button.set_hoverover_texture_inrect(240, 128, 16, 16);
+	inv_switch_button.set_pressed_texture_inrect(240, 128, 16, 16);
+	inv_switch_button.set_function([&]() {
+		selected_item = item_list[SWITCH];
+		sim->gui.update_item_button_texture();
+		});
+
+
+	inv_not_button.init();
+	inv_not_button.set_texture_inrect(240, 144, 16, 16);
+	inv_not_button.set_hoverover_texture_inrect(240, 144, 16, 16);
+	inv_not_button.set_pressed_texture_inrect(240, 144, 16, 16);
+	inv_not_button.set_function([&]() {
+		selected_item = item_list[NOT];
+		sim->gui.update_item_button_texture();
+		});
+
+	inv_or_button.init();
+	inv_or_button.set_texture_inrect(240, 160, 16, 16);
+	inv_or_button.set_hoverover_texture_inrect(240, 160, 16, 16);
+	inv_or_button.set_pressed_texture_inrect(240, 160, 16, 16);
+	inv_or_button.set_function([&]() {
+		selected_item = item_list[OR];
+		sim->gui.update_item_button_texture();
+		});
+
+	inv_nor_button.init();
+	inv_nor_button.set_texture_inrect(240, 176, 16, 16);
+	inv_nor_button.set_hoverover_texture_inrect(240, 176, 16, 16);
+	inv_nor_button.set_pressed_texture_inrect(240, 176, 16, 16);
+	inv_nor_button.set_function([&]() {
+		selected_item = item_list[NOR];
+		sim->gui.update_item_button_texture();
+		});
+
+	inv_xor_button.init();
+	inv_xor_button.set_texture_inrect(240, 192, 16, 16);
+	inv_xor_button.set_hoverover_texture_inrect(240, 192, 16, 16);
+	inv_xor_button.set_pressed_texture_inrect(240, 192, 16, 16);
+	inv_xor_button.set_function([&]() {
+		selected_item = item_list[XOR];
+		sim->gui.update_item_button_texture();
+		});
+
+	inv_xnor_button.init();
+	inv_xnor_button.set_texture_inrect(240, 208, 16, 16);
+	inv_xnor_button.set_hoverover_texture_inrect(240, 208, 16, 16);
+	inv_xnor_button.set_pressed_texture_inrect(240, 208, 16, 16);
+	inv_xnor_button.set_function([&]() {
+		selected_item = item_list[XNOR];
+		sim->gui.update_item_button_texture();
+		});
+
+	inv_and_button.init();
+	inv_and_button.set_texture_inrect(240, 224, 16, 16);
+	inv_and_button.set_hoverover_texture_inrect(240, 224, 16, 16);
+	inv_and_button.set_pressed_texture_inrect(240, 224, 16, 16);
+	inv_and_button.set_function([&]() {
+		selected_item = item_list[AND];
+		sim->gui.update_item_button_texture();
+		});
+
+	inv_nand_button.init();
+	inv_nand_button.set_texture_inrect(240, 240, 16, 16);
+	inv_nand_button.set_hoverover_texture_inrect(240, 240, 16, 16);
+	inv_nand_button.set_pressed_texture_inrect(240, 240, 16, 16);
+	inv_nand_button.set_function([&]() {
+		selected_item = item_list[NAND];
+		sim->gui.update_item_button_texture();
+		});
+
 }
 
 void Inventory::resize() {
