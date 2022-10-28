@@ -559,6 +559,8 @@ bool Simulationscreen::draw_to_board() {
 				}
 			}
 
+			delete[] structure_pointer;
+
 
 		}
 	}
@@ -725,6 +727,22 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
 				pasting = true;
 				paste_structure = copy_structure;
+			}
+		}
+		else if (ev.key.code == sf::Keyboard::X && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {//cut selection
+			if (selection_mode && selection_set) {
+				std::lock_guard<std::mutex> lock(draw_mutex);
+
+				Drawinstruction instruction;
+				instruction.data[0] = RECT;
+				instruction.data[1] = 1;
+				instruction.data[2] = item_list[AIR];
+				instruction.data[3] = selection_start_x;
+				instruction.data[4] = selection_start_y;
+				instruction.data[5] = selection_end_x;
+				instruction.data[6] = selection_end_y;
+				instruction.structure_pointer = nullptr;
+				drawinstruction_list.push_back(instruction);
 			}
 		}
 		else if (ev.key.code == sf::Keyboard::F) {//toggle fill_mode
@@ -952,21 +970,28 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 	else if (ev.type == sf::Event::MouseButtonReleased) {
 		if (ev.key.code == sf::Mouse::Left) {
 
+			//paste structure
 			if (pasting) {
 				pasting = false;
 
-				if (*(uint32_t*)&paste_structure[0] != 0 && *(uint32_t*)&paste_structure[4] != 0) {
-					std::lock_guard<std::mutex> lock(draw_mutex);
-					Drawinstruction instruction;
-					instruction.data[0] = STRUCTURE;
-					instruction.data[1] = brush_size;
-					instruction.data[2] = WIRE;
-					instruction.data[3] = floor(last_board_mouse.x);
-					instruction.data[4] = floor(last_board_mouse.y);
-					instruction.data[5] = paste_x;
-					instruction.data[6] = paste_y;
-					instruction.structure_pointer = paste_structure;
-					drawinstruction_list.push_back(instruction);
+				if (paste_structure != nullptr) {
+					if (*(uint32_t*)&paste_structure[0] != 0 && *(uint32_t*)&paste_structure[4] != 0) {
+						uint32_t size = 8 + (*(uint32_t*)&paste_structure[0] * *(uint32_t*)&paste_structure[4]) * 4;
+						uint8_t* structure = new uint8_t[size];
+						memcpy(&structure[0], &paste_structure[0], size);
+
+						std::lock_guard<std::mutex> lock(draw_mutex);
+						Drawinstruction instruction;
+						instruction.data[0] = STRUCTURE;
+						instruction.data[1] = brush_size;
+						instruction.data[2] = WIRE;
+						instruction.data[3] = floor(last_board_mouse.x);
+						instruction.data[4] = floor(last_board_mouse.y);
+						instruction.data[5] = paste_x;
+						instruction.data[6] = paste_y;
+						instruction.structure_pointer = structure;
+						drawinstruction_list.push_back(instruction);
+					}
 				}
 			}
 		}
@@ -1062,6 +1087,11 @@ void Simulationscreen::update() {
 
 	//paste mode
 	if (pasting) {
+		start_drawing_rectangle = false;
+		start_drawing_line = false;
+		drawing_line = false;
+		drawing_rectangle = false;
+
 
 		if(mouse_over_board){
 			paste_x = floor(board_mouse.x);
@@ -1079,7 +1109,8 @@ void Simulationscreen::update() {
 	else if (selection_mode) {
 		start_drawing_rectangle = false;
 		start_drawing_line = false;
-
+		drawing_line = false;
+		drawing_rectangle = false;
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			if (selection_part == 9) {//all
