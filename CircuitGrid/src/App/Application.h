@@ -6,6 +6,7 @@
 #include "../GUI/GUI_Item.h"
 #include "Screens/Homescreen.h"
 #include "Screens/Simulationscreen.h"
+#include "Screens/Settingsscreen.h"
 
 class Application
 {
@@ -18,6 +19,7 @@ private:
 	//Screens
 	Homescreen homescreen;
 	Simulationscreen simulationscreen;
+	Settingsscreen settingsscreen;
 
 	void create_window(unsigned int width, unsigned int height, bool fullscreen, int fps, std::string title);
 	void on_closing();

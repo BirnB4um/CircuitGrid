@@ -168,6 +168,7 @@ void Simulationscreen::init() {
 	memset(copy_structure, 0, 8);
 	pasting = false;
 	paste_structure = copy_structure;
+	show_gui = true;
 	
 
 	//debug stuff
@@ -681,6 +682,9 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			target_board_offset_y = float(board_height) / 2;
 			target_zoom_factor = 1;
 		}
+		else if (ev.key.code == sf::Keyboard::F1) {//toggle gui
+			show_gui = !show_gui;
+		}
 		else if (ev.key.code == sf::Keyboard::M && sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {//(un-)pause simulation
 			show_debug_info = !show_debug_info;
 		}
@@ -953,7 +957,10 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 				start_drawing_line = true;
 			}
 
-			gui.tps_slider.press(window_mouse.x, window_mouse.y);
+			//pressing tps_slider
+			if (show_gui) {
+				gui.tps_slider.press(window_mouse.x, window_mouse.y);
+			}
 		}
 
 		//start dragging board
@@ -1032,11 +1039,13 @@ void Simulationscreen::update() {
 	last_mouse_over_board = Utils::point_vs_rect(last_board_mouse.x, last_board_mouse.y, 0, 0, board_width, board_height);
 
 	//update GUI
-	gui.update();
-	infobox.update();
+	if (show_gui) {
+		gui.update();
+		infobox.update();
 
-	if (show_inventory) {
-		inventory.update();
+		if (show_inventory) {
+			inventory.update();
+		}
 	}
 
 	//update board_offset
@@ -1319,13 +1328,6 @@ void Simulationscreen::update() {
 void Simulationscreen::render(sf::RenderTarget& window) {
 	window.draw(render_rect, &board_shader);
 
-	//GUI
-	gui.render(window);
-
-	if (show_inventory) {
-		inventory.render(window);
-	}
-
 	if (drawing_rectangle) {
 		window.draw(drawing_rect_shape);
 	}
@@ -1341,16 +1343,25 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 		window.draw(paste_rect);
 	}
 
-	//infobox
-	infobox.render(window);
+	//GUI
+	if (show_gui) {
+		gui.render(window);
 
+		if (show_inventory) {
+			inventory.render(window);
+		}
 
-	//debug texts
-	if (show_debug_info) {
-		window.draw(upload_to_gpu_time_text);
-		window.draw(update_board_time_text);
-		window.draw(updates_number_text);
+		//infobox
+		infobox.render(window);
+
+		//debug texts
+		if (show_debug_info) {
+			window.draw(upload_to_gpu_time_text);
+			window.draw(update_board_time_text);
+			window.draw(updates_number_text);
+		}
 	}
+
 
 	//help menu
 	if (show_help_menu) {

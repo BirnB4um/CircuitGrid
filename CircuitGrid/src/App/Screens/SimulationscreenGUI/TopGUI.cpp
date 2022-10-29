@@ -139,7 +139,21 @@ void TopGUI::init() {
 			selection_button.set_hoverover_texture_inrect(116, 9, 9, 9);
 			selection_button.set_pressed_texture_inrect(116, 18, 9, 9);
 		}
-		});
+	});
+
+
+	//bottom gui
+
+	settings_button.init();
+	settings_button.set_texture_inrect(125, 0, 34, 9);
+	settings_button.set_hoverover_texture_inrect(125, 9, 34, 9);
+	settings_button.set_pressed_texture_inrect(125, 18,34, 9);
+	settings_button.set_function([&]() {
+		screen_id = SETTINGS;
+		sim->gui.pause_button.func();
+		std::cout << "settings" << std::endl;
+	});
+
 }
 
 void TopGUI::update_item_button_texture() {
@@ -219,6 +233,15 @@ void TopGUI::resize() {
 	y = detail_button.rect.getPosition().y + detail_button.rect.getSize().y * 1.1f * gui_scale;
 	selection_button.set_position(x, y);
 	selection_button.set_size(w, h);
+
+
+	//bottom gui
+	h = SCREEN_WIDTH * 0.02f;
+	w = h * (34.0f/9.0f);
+	x = 0;
+	y = SCREEN_HEIGHT - h;
+	settings_button.set_position(x,y);
+	settings_button.set_size(w,h);
 }
 
 void TopGUI::update() {
@@ -267,6 +290,11 @@ void TopGUI::update() {
 	}
 	selection_button.update(window_mouse.x, window_mouse.y);
 
+	if (settings_button.check_over_button(window_mouse.x, window_mouse.y)) {
+		sim->mouse_over_gui = true;
+	}
+	settings_button.update(window_mouse.x, window_mouse.y);
+
 	tps_text.setString("TPS:" + (board_tps == 10000000 ? "max" : std::to_string(int(board_tps))));
 }
 
@@ -274,13 +302,15 @@ void TopGUI::render(sf::RenderTarget &window) {
 	pause_button.render(window);
 	item_button.render(window);
 	tps_slider.render(window);
+	window.draw(tps_text);
 	edit_button.render(window);
 	fill_button.render(window);
 	reset_button.render(window);
 	grid_button.render(window);
 	detail_button.render(window);
 	selection_button.render(window);
-	window.draw(tps_text);
+
+	settings_button.render(window);
 }
 
 

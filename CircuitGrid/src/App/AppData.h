@@ -20,7 +20,7 @@ extern sf::Vector2i window_mouse;
 extern float gui_scale;
 extern int screen_id;
 extern enum SCREEN_ID {
-	HOMESCREEN, SIMULATION
+	HOMESCREEN, SIMULATION, SETTINGS, CREDITS
 };
 extern sf::Font* font;
 extern IO_DATA io_data;

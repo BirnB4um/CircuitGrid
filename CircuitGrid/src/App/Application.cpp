@@ -32,6 +32,7 @@ void Application::init() {
 	//init screens
 	homescreen.init();
 	simulationscreen.init();
+	settingsscreen.init();
 
 	on_resize();
 }
@@ -65,6 +66,7 @@ void Application::on_closing() {
 
 	homescreen.on_closing();
 	simulationscreen.on_closing();
+	settingsscreen.on_closing();
 
 	window.close();
 }
@@ -79,6 +81,7 @@ void Application::on_resize() {
 
 	homescreen.resize();
 	simulationscreen.resize();
+	settingsscreen.resize();
 }
 
 void Application::handle_events() {
@@ -109,6 +112,9 @@ void Application::handle_events() {
 		else if (screen_id == SIMULATION) {
 			simulationscreen.handle_events(sf_event);
 		}
+		else if (screen_id == SETTINGS) {
+			settingsscreen.handle_events(sf_event);
+		}
 	}
 }
 
@@ -118,6 +124,9 @@ void Application::update() {
 	}
 	else if (screen_id == SIMULATION) {
 		simulationscreen.update();
+	}
+	else if (screen_id == SETTINGS) {
+		settingsscreen.update();
 	}
 }
 
@@ -130,6 +139,9 @@ void Application::draw() {
 	}
 	else if (screen_id == SIMULATION) {
 		simulationscreen.render(window);
+	}
+	else if (screen_id == SETTINGS) {
+		settingsscreen.render(window);
 	}
 
 	window.display();

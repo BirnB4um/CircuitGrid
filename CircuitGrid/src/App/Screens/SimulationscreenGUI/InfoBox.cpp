@@ -29,7 +29,7 @@ void InfoBox::resize() {
 	h = SCREEN_HEIGHT * 0.15f;
 	w = h * 1.7f;
 	x = stroke_width;
-	y = SCREEN_HEIGHT - h - stroke_width;
+	y = SCREEN_HEIGHT - h - stroke_width - sim->gui.settings_button.rect.getSize().y;
 	bg_rect.setPosition(x, y);
 	bg_rect.setSize(sf::Vector2f(w, h));
 	bg_rect.setOutlineThickness(stroke_width);

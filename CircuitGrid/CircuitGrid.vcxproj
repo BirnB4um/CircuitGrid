@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\App\Screens\Settingsscreen.cpp" />
     <ClCompile Include="src\App\Screens\SimulationscreenGUI\InfoBox.cpp" />
     <ClCompile Include="src\App\Screens\SimulationscreenGUI\HelpMenu.cpp" />
     <ClCompile Include="src\App\Screens\SimulationscreenGUI\Inventory.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="src\App\Screens\SimulationscreenGUI\TopGUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\App\Screens\Settingsscreen.h" />
     <ClInclude Include="src\App\Screens\SimulationscreenGUI\InfoBox.h" />
     <ClInclude Include="src\App\Screens\SimulationscreenGUI\HelpMenu.h" />
     <ClInclude Include="src\App\Screens\SimulationscreenGUI\Inventory.h" />

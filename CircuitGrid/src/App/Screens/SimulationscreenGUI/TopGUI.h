@@ -24,6 +24,8 @@ public:
 	Button detail_button;
 	Button selection_button;
 
+	Button settings_button;
+
 	void init();
 	void update_item_button_texture();
 	void update();

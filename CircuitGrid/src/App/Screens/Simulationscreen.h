@@ -22,6 +22,8 @@ class Simulationscreen
 public:
 
 	//GUI
+	bool show_gui;
+
 	TopGUI gui;
 
 	Inventory inventory;

@@ -41,11 +41,11 @@ void Slider::update(int& mouse_x, int& mouse_y) {
 }
 
 void Slider::update_scale() {
-	nob_rect.setSize(sf::Vector2f(rect.getSize().y, rect.getSize().y));
-	nob_rect.setPosition(rect.getPosition().x + value * (rect.getSize().x - nob_rect.getSize().x), rect.getPosition().y);
+	nob_rect.setSize(sf::Vector2f(int(rect.getSize().y), int(rect.getSize().y)));
+	nob_rect.setPosition(int(rect.getPosition().x + value * (rect.getSize().x - nob_rect.getSize().x)), int(rect.getPosition().y));
 
-	line_rect.setSize(sf::Vector2f(rect.getSize().x - nob_rect.getSize().x, rect.getSize().y / 20));
-	line_rect.setPosition(rect.getPosition().x + nob_rect.getSize().x / 2, rect.getPosition().y + rect.getSize().y / 2 - line_rect.getSize().y);
+	line_rect.setSize(sf::Vector2f(int(rect.getSize().x - nob_rect.getSize().x), int(rect.getSize().y / 20)));
+	line_rect.setPosition(int(rect.getPosition().x + nob_rect.getSize().x / 2), int(rect.getPosition().y + rect.getSize().y / 2 - line_rect.getSize().y));
 }
 
 bool Slider::check_over_slider(int& x, int& y) {
@@ -53,7 +53,7 @@ bool Slider::check_over_slider(int& x, int& y) {
 		y >= rect.getPosition().y && y <= rect.getPosition().y + rect.getSize().y;
 }
 
-void Slider::set_position(float x, float y) {
+void Slider::set_position(int x, int y) {
 	rect.setPosition(x, y);
 
 	update_scale();
