@@ -31,6 +31,15 @@ float target_board_offset_x = 0, target_board_offset_y = 0;
 float zoom_factor, target_zoom_factor;
 
 //board data
+uint8_t board_version;
+
+sf::Shader* board_shader;
+sf::Texture* board_data_texture;
+sf::RectangleShape render_rect;
+sf::Texture* render_texture;
+sf::Texture* pixel_color_texture;
+sf::Texture* large_pixel_texture;
+
 int board_width = 0, board_height = 0, board_size = 0;
 uint8_t* this_board = nullptr;
 uint8_t* next_board = nullptr;

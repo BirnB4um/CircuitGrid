@@ -18,6 +18,11 @@ public:
 	Button back_button;
 
 	sf::Text board_text;
+	Button save_board_button;
+	Button load_board_button;
+
+	void load_board();
+	void save_board();
 
 	Settingsscreen();
 	~Settingsscreen();

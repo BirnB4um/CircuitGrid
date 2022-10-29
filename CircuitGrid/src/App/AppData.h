@@ -38,6 +38,15 @@ extern float target_board_offset_x, target_board_offset_y;
 extern float zoom_factor, target_zoom_factor;
 
 //board data
+extern uint8_t board_version;
+
+extern sf::Shader* board_shader;
+extern sf::Texture* board_data_texture;
+extern sf::RectangleShape render_rect;
+extern sf::Texture* render_texture;
+extern sf::Texture* pixel_color_texture;
+extern sf::Texture* large_pixel_texture;
+
 extern int board_width, board_height, board_size;
 extern uint8_t* this_board;
 extern uint8_t* next_board;

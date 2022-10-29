@@ -5,6 +5,12 @@ Simulationscreen::Simulationscreen() {
 	helpmenu.sim = this;
 	gui.sim = this;
 	infobox.sim = this;
+
+	board_shader = new sf::Shader();
+	board_data_texture = new sf::Texture();
+	render_texture = new sf::Texture();
+	pixel_color_texture = new sf::Texture();
+	large_pixel_texture = new sf::Texture();
 }
 
 Simulationscreen::~Simulationscreen() {
@@ -33,11 +39,11 @@ void Simulationscreen::load_resources() {
 
 	GUI_Item::gui_texture->loadFromFile("res/images/gui_texture.png");
 
-	if (!pixel_color_texture.loadFromFile("res/images/pixel_color_texture.png")) {
+	if (!pixel_color_texture->loadFromFile("res/images/pixel_color_texture.png")) {
 		std::cout << "ERROR: failed to load 'pixel_color_texture.png'!" << std::endl;
 	}
 
-	if (!large_pixel_texture.loadFromFile("res/images/large_pixel_texture.png")) {
+	if (!large_pixel_texture->loadFromFile("res/images/large_pixel_texture.png")) {
 		std::cout << "ERROR: failed to load 'large_pixel_texture.png'!" << std::endl;
 	}
 
@@ -46,24 +52,24 @@ void Simulationscreen::load_resources() {
 	//board shader
 	std::cout << "loading shader..." << std::endl;
 
-	if (!board_shader.loadFromFile("res/shader/board_shader.frag", sf::Shader::Fragment)) {
+	if (!board_shader->loadFromFile("res/shader/board_shader.frag", sf::Shader::Fragment)) {
 		std::cout << "ERROR: failed to load 'board_shader.frag'!" << std::endl;
 	}
-	board_shader.setUniform("pixel_color_texture", pixel_color_texture);
-	board_shader.setUniform("large_pixel_texture", large_pixel_texture);
-	board_shader.setUniform("offset_x", board_offset_x);
-	board_shader.setUniform("offset_y", board_offset_y);
-	board_shader.setUniform("zoom_factor", zoom_factor);
-	board_shader.setUniform("board_data_texture", board_data_texture);
-	board_shader.setUniform("board_width", board_width);
-	board_shader.setUniform("board_height", board_height);
-	board_shader.setUniform("screen_width", SCREEN_WIDTH);
-	board_shader.setUniform("screen_height", SCREEN_HEIGHT);
-	board_shader.setUniform("mouse_x", 0.0f);
-	board_shader.setUniform("mouse_y", 0.0f);
-	board_shader.setUniform("brush_size", 0.0f);
-	board_shader.setUniform("draw_grid", draw_grid);
-	board_shader.setUniform("draw_details", draw_details);
+	board_shader->setUniform("pixel_color_texture", *pixel_color_texture);
+	board_shader->setUniform("large_pixel_texture", *large_pixel_texture);
+	board_shader->setUniform("offset_x", board_offset_x);
+	board_shader->setUniform("offset_y", board_offset_y);
+	board_shader->setUniform("zoom_factor", zoom_factor);
+	board_shader->setUniform("board_data_texture", *board_data_texture);
+	board_shader->setUniform("board_width", board_width);
+	board_shader->setUniform("board_height", board_height);
+	board_shader->setUniform("screen_width", SCREEN_WIDTH);
+	board_shader->setUniform("screen_height", SCREEN_HEIGHT);
+	board_shader->setUniform("mouse_x", 0.0f);
+	board_shader->setUniform("mouse_y", 0.0f);
+	board_shader->setUniform("brush_size", 0.0f);
+	board_shader->setUniform("draw_grid", draw_grid);
+	board_shader->setUniform("draw_details", draw_details);
 }
 
 void Simulationscreen::init_update_functions() {
@@ -169,6 +175,7 @@ void Simulationscreen::init() {
 	pasting = false;
 	paste_structure = copy_structure;
 	show_gui = true;
+	board_version = 1;
 	
 
 	//debug stuff
@@ -211,9 +218,9 @@ void Simulationscreen::init() {
 
 	drawing_line_shape.setFillColor(sf::Color(255, 0, 0, 255));
 
-	render_texture.create(1, 1);
+	render_texture->create(1, 1);
 	render_rect.setPosition(0, 0);
-	render_rect.setTexture(&render_texture);
+	render_rect.setTexture(render_texture);
 
 	paste_rect.setFillColor(sf::Color::Transparent);
 	paste_rect.setOutlineColor(sf::Color(255,150,0,255));
@@ -243,43 +250,9 @@ void Simulationscreen::init() {
 	resize();
 }
 
-void Simulationscreen::load_board() {
-	std::string file_name = io_data.choose_open_file(1);
-	//TODO:
-}
-
-void Simulationscreen::save_board() {
-	/*
-	1 byte: VERSION
-	4 byte: WIDTH
-	4 byte: HEIGHT
-	x byte: DATA
-	*/
-
-	std::string file_name = io_data.choose_save_file(1);
-
-	std::lock_guard<std::mutex> lock(draw_mutex);
-
-	uint8_t version = 0x01;
-	uint32_t width = board_width;
-	uint32_t height = board_height;
-
-	uint64_t size = 9 + board_size * 4;
-	uint8_t* out_data = new uint8_t[size];
-
-	memcpy(&out_data[0], &version, 1);
-	memcpy(&out_data[1], &width, 4);
-	memcpy(&out_data[5], &height, 4);
-	memcpy(&out_data[9], this_board, board_size * 4);
-
-	io_data.save_to_file(file_name, (char*)out_data, size, false);
-
-	delete[] out_data;
-}
-
 void Simulationscreen::resize() {
-	board_shader.setUniform("screen_width", SCREEN_WIDTH);
-	board_shader.setUniform("screen_height", SCREEN_HEIGHT);
+	board_shader->setUniform("screen_width", SCREEN_WIDTH);
+	board_shader->setUniform("screen_height", SCREEN_HEIGHT);
 
 	render_rect.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 
@@ -318,25 +291,18 @@ void Simulationscreen::create_board(unsigned int width, unsigned int height) {
 	board_height = height;
 	board_size = board_width * board_height;
 
-	selection_start_x = -1;
-	selection_start_y = -1;
-	selection_end_x = -1;
-	selection_end_y = -1;
-
 	update_list.clear();
 	update_list.shrink_to_fit();
 	update_list.reserve(board_size);
 
 	if (update_list_copy != nullptr) {
 		delete[] update_list_copy;
-		update_list_copy = nullptr;
 	}
 	update_list_copy = new uint32_t[board_size];
 	memset(update_list_copy, 0, board_size * 4);
 
 	if (update_checklist != nullptr) {
 		delete[] update_checklist;
-		update_checklist = nullptr;
 	}
 	update_checklist = new bool[board_size];
 	memset(update_checklist, 0, board_size * sizeof(bool));
@@ -357,17 +323,16 @@ void Simulationscreen::create_board(unsigned int width, unsigned int height) {
 
 	if (next_board != nullptr) {
 		delete[] next_board;
-		next_board = nullptr;
 	}
 	next_board = new uint8_t[board_size * 4];
 	memset(next_board, 0, board_size * 4);
 
-	board_data_texture.create(board_width, board_height);
-	board_data_texture.update(this_board);
+	board_data_texture->create(board_width, board_height);
+	board_data_texture->update(this_board);
 
-	board_shader.setUniform("board_data_texture", board_data_texture);
-	board_shader.setUniform("board_width", board_width);
-	board_shader.setUniform("board_height", board_height);
+	board_shader->setUniform("board_data_texture", *board_data_texture);
+	board_shader->setUniform("board_width", board_width);
+	board_shader->setUniform("board_height", board_height);
 }
 
 void Simulationscreen::add_to_update_list(uint32_t i) {
@@ -619,7 +584,7 @@ void Simulationscreen::th_update_board() {
 
 		if (drawn_to_board || !simulation_paused) {
 			timer.start();
-			board_data_texture.update(this_board);
+			board_data_texture->update(this_board);
 			timer.stop();
 			upload_texture_to_gpu_time_taken = timer.get_duration();
 		}
@@ -770,9 +735,6 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::R) {//reset simulation
 			reset_simulation_bool = true;
 		}
-		else if (ev.key.code == sf::Keyboard::S && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {//save board
-			save_board();
-		}
 		else if (ev.key.code == sf::Keyboard::E) {//open/close inventory
 			gui.item_button.func();
 		}
@@ -836,10 +798,10 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			int new_brush_size = int(brush_size) + ev.mouseWheel.delta * (brush_size * 0.1f < 1.0f ? 1.0f : brush_size*0.1f);
 			brush_size = new_brush_size < 1 ? 1 : new_brush_size > board_width * 2 ? board_width * 2 : new_brush_size;
 			if (brush_size == 1) {
-				board_shader.setUniform("brush_size", 0.0f);
+				board_shader->setUniform("brush_size", 0.0f);
 			}
 			else {
-				board_shader.setUniform("brush_size", float(brush_size));
+				board_shader->setUniform("brush_size", float(brush_size));
 			}
 		}
 		else {//zoom
@@ -1032,8 +994,8 @@ void Simulationscreen::update() {
 	last_board_mouse = board_mouse;
 	board_mouse.x = (window_mouse.x - (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)) / zoom_factor;
 	board_mouse.y = (window_mouse.y - (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)) / zoom_factor;
-	board_shader.setUniform("mouse_x", board_mouse.x);
-	board_shader.setUniform("mouse_y", board_mouse.y);
+	board_shader->setUniform("mouse_x", board_mouse.x);
+	board_shader->setUniform("mouse_y", board_mouse.y);
 	mouse_over_gui = false;
 	mouse_over_board = Utils::point_vs_rect(board_mouse.x, board_mouse.y, 0, 0, board_width, board_height);
 	last_mouse_over_board = Utils::point_vs_rect(last_board_mouse.x, last_board_mouse.y, 0, 0, board_width, board_height);
@@ -1316,9 +1278,9 @@ void Simulationscreen::update() {
 	}
 
 	//update shader_data
-	board_shader.setUniform("offset_x", board_offset_x);
-	board_shader.setUniform("offset_y", board_offset_y);
-	board_shader.setUniform("zoom_factor", zoom_factor);
+	board_shader->setUniform("offset_x", board_offset_x);
+	board_shader->setUniform("offset_y", board_offset_y);
+	board_shader->setUniform("zoom_factor", zoom_factor);
 
 	//debug stuff
 	upload_to_gpu_time_text.setString("upload board to GPU (ms):" + std::to_string(upload_texture_to_gpu_time_taken));
@@ -1327,7 +1289,7 @@ void Simulationscreen::update() {
 }
 
 void Simulationscreen::render(sf::RenderTarget& window) {
-	window.draw(render_rect, &board_shader);
+	window.draw(render_rect, board_shader);
 
 	if (drawing_rectangle) {
 		window.draw(drawing_rect_shape);

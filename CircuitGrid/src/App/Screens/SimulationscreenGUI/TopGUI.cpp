@@ -89,7 +89,7 @@ void TopGUI::init() {
 	grid_button.set_pressed_texture_inrect(98, 18, 9, 9);
 	grid_button.set_function([&]() {
 		sim->draw_grid = !sim->draw_grid;
-		sim->board_shader.setUniform("draw_grid", sim->draw_grid);
+		board_shader->setUniform("draw_grid", sim->draw_grid);
 		if (sim->draw_grid) {
 			grid_button.set_texture_inrect(98, 18, 9, 9);
 			grid_button.set_hoverover_texture_inrect(98, 9, 9, 9);
@@ -108,7 +108,7 @@ void TopGUI::init() {
 	detail_button.set_pressed_texture_inrect(107, 18, 9, 9);
 	detail_button.set_function([&]() {
 		sim->draw_details = !sim->draw_details;
-		sim->board_shader.setUniform("draw_details", sim->draw_details);
+		board_shader->setUniform("draw_details", sim->draw_details);
 		if (sim->draw_details) {
 			detail_button.set_texture_inrect(107, 18, 9, 9);
 			detail_button.set_hoverover_texture_inrect(107, 9, 9, 9);
@@ -238,7 +238,7 @@ void TopGUI::resize() {
 
 
 	//bottom gui
-	h = SCREEN_WIDTH * 0.02f;
+	h = SCREEN_WIDTH * 0.03f;
 	w = h * (34.0f/9.0f);
 	x = 0;
 	y = SCREEN_HEIGHT - h;

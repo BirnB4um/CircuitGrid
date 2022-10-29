@@ -39,13 +39,6 @@ public:
 	sf::Text updates_number_text;
 
 
-	//stuff to render board
-	sf::Shader board_shader;
-	sf::Texture board_data_texture;
-	sf::RectangleShape render_rect;
-	sf::Texture render_texture;
-	sf::Texture pixel_color_texture;
-	sf::Texture large_pixel_texture;
 
 	//update stuff
 	std::thread update_board_thread;
@@ -106,9 +99,6 @@ public:
 	sf::RectangleShape selection_rect;
 
 	std::vector <bool(Simulationscreen::*)(uint32_t& i)> update_functions;
-
-	void load_board();
-	void save_board();
 
 	void reset_simulation();
 	void clear_board();
