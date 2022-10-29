@@ -25,6 +25,7 @@ void Application::init() {
 	WINDOWED_WIDTH = 800;
 	WINDOWED_HEIGHT = 600;
 	FPS = 40;
+	FOCUS = true;
 	FULLSCREEN_WIDTH = sf::VideoMode::getFullscreenModes()[0].width;
 	FULLSCREEN_HEIGHT = sf::VideoMode::getFullscreenModes()[0].height;
 	create_window(WINDOWED_WIDTH, WINDOWED_HEIGHT, false, FPS, TITLE);
@@ -86,8 +87,16 @@ void Application::on_resize() {
 
 void Application::handle_events() {
 	while (window.pollEvent(sf_event)) {
+		//gained focus
+		if (sf_event.type == sf::Event::GainedFocus	) {
+			FOCUS = true;
+		}
+		//lost focus
+		else if (sf_event.type == sf::Event::LostFocus) {
+			FOCUS = false;
+		}
 		//close window
-		if (sf_event.type == sf::Event::Closed) {
+		else if (sf_event.type == sf::Event::Closed) {
 			on_closing();
 			break;
 		}

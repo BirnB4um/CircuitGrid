@@ -15,6 +15,7 @@ extern float SCREEN_RATIO;
 extern std::string TITLE;
 extern bool FULLSCREEN;
 extern int FPS;
+extern bool FOCUS;
 extern bool closing;
 extern sf::Vector2i window_mouse;
 extern float gui_scale;

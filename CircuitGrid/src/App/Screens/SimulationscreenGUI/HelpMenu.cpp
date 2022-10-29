@@ -60,6 +60,7 @@ void HelpMenu::init() {
 		"X + R_CTRL - clear board\n"
 		"C + CTRL - copy selected area\n"
 		"V + CTRL - paste copied area\n"
+		"X + CTRL - clear selected area\n"
 		"\n=== Debug stuff ===\n"
 		"L - reload resources (shader/images/...)\n"
 		"CTRL + SHIFT + M - toggle debug info\n"

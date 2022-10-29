@@ -10,6 +10,7 @@ float SCREEN_RATIO = 0;
 std::string TITLE;
 bool FULLSCREEN = false;
 int FPS = 0;
+bool FOCUS = true;
 bool closing = false;
 sf::Vector2i window_mouse;
 float gui_scale = 1.0f;

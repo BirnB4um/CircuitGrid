@@ -137,6 +137,8 @@
     <ClCompile Include="src\App\Screens\SimulationscreenGUI\InfoBox.cpp" />
     <ClCompile Include="src\App\Screens\SimulationscreenGUI\HelpMenu.cpp" />
     <ClCompile Include="src\App\Screens\SimulationscreenGUI\Inventory.cpp" />
+    <ClCompile Include="src\GUI\NumberInputBox.cpp" />
+    <ClCompile Include="src\GUI\TextInputBox.cpp" />
     <ClCompile Include="src\Tools\IO_DATA.cpp" />
     <ClCompile Include="src\App\Screens\Homescreen.cpp" />
     <ClCompile Include="src\App\Screens\Simulationscreen.cpp" />
@@ -151,6 +153,7 @@
     <ClCompile Include="src\App\Screens\SimulationscreenGUI\TopGUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GUI\NumberInputBox.h" />
     <ClInclude Include="src\App\Screens\Settingsscreen.h" />
     <ClInclude Include="src\App\Screens\SimulationscreenGUI\InfoBox.h" />
     <ClInclude Include="src\App\Screens\SimulationscreenGUI\HelpMenu.h" />
@@ -167,6 +170,7 @@
     <ClInclude Include="src\Tools\Timer.h" />
     <ClInclude Include="src\Tools\Utils.h" />
     <ClInclude Include="src\App\Screens\SimulationscreenGUI\TopGUI.h" />
+    <ClInclude Include="src\GUI\TextInputBox.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\gui_texture.png" />

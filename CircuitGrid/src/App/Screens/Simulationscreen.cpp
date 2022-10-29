@@ -1038,6 +1038,7 @@ void Simulationscreen::update() {
 	mouse_over_board = Utils::point_vs_rect(board_mouse.x, board_mouse.y, 0, 0, board_width, board_height);
 	last_mouse_over_board = Utils::point_vs_rect(last_board_mouse.x, last_board_mouse.y, 0, 0, board_width, board_height);
 
+
 	//update GUI
 	if (show_gui) {
 		gui.update();

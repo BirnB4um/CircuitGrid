@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "../AppData.h"
+#include "../../GUI/Button.h"
 
 
 class Settingsscreen
@@ -11,6 +12,13 @@ private:
 
 
 public:
+
+	sf::RectangleShape middle_line;
+
+	Button back_button;
+
+	sf::Text board_text;
+
 	Settingsscreen();
 	~Settingsscreen();
 	void init();

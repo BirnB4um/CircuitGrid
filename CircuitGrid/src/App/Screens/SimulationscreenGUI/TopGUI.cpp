@@ -150,8 +150,10 @@ void TopGUI::init() {
 	settings_button.set_pressed_texture_inrect(125, 18,34, 9);
 	settings_button.set_function([&]() {
 		screen_id = SETTINGS;
-		sim->gui.pause_button.func();
-		std::cout << "settings" << std::endl;
+
+		if (!simulation_paused) {
+			sim->gui.pause_button.func();
+		}
 	});
 
 }
