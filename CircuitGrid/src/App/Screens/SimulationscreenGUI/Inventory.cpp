@@ -245,6 +245,85 @@ void Inventory::init() {
 		sim->gui.update_item_button_texture();
 		});
 
+
+
+	//structure gui
+	structure_bg_rect.setFillColor(sf::Color(10, 10, 10, 255));
+	structure_bg_rect.setOutlineColor(sf::Color(100, 100, 100, 255));
+
+	structure_text.setFont(*font);
+	structure_text.setString("Structure");
+	structure_text.setFillColor(sf::Color(255, 255, 255, 255));
+	structure_text.setOutlineThickness(0);
+
+	save_structure_button.init();
+	save_structure_button.set_texture_inrect(200, 0, 20, 9);
+	save_structure_button.set_hoverover_texture_inrect(200, 9, 20, 9);
+	save_structure_button.set_pressed_texture_inrect(200, 18, 20, 9);
+	save_structure_button.set_function([&]() {
+
+		if (sim->selection_mode && sim->selection_set) {
+			std::lock_guard<std::mutex> lock(sim->draw_mutex);
+
+			std::string file_name = io_data.choose_save_file(2);
+			if (file_name == "") {
+				return;
+			}
+
+			uint32_t width = sim->selection_end_x - sim->selection_start_x + 1;
+			uint32_t height = sim->selection_end_y - sim->selection_start_y + 1;
+			uint64_t size = 9 + width * height * 4;
+			uint8_t* data = new uint8_t[size];
+			data[0] = structure_version;
+			*(uint32_t*)&data[1] = width;
+			*(uint32_t*)&data[5] = height;
+
+			uint32_t i = 0;
+			for (uint32_t y = sim->selection_start_y; y <= sim->selection_end_y; y++) {
+				for (uint32_t x = sim->selection_start_x; x <= sim->selection_end_x; x++) {
+					memcpy(&data[9 + i * 4], &this_board[(y * board_width + x) * 4], 4);
+					i++;
+				}
+			}
+
+			io_data.save_to_file(file_name, (char*)data, size, false);
+
+			delete[] data;
+		}
+
+		});
+
+	load_structure_button.init();
+	load_structure_button.set_texture_inrect(178, 0, 22, 9);
+	load_structure_button.set_hoverover_texture_inrect(178, 9, 22, 9);
+	load_structure_button.set_pressed_texture_inrect(178, 18, 22, 9);
+	load_structure_button.set_function([&]() {
+
+		std::string file_name = io_data.choose_open_file(2);
+
+		std::vector<char> data;
+		data.reserve(1000000);
+		if (!io_data.read_from_file(file_name, data)) {
+			std::cout << "ERROR: couldnt read structure_file!" << std::endl;
+			return;
+		}
+		if (*(uint8_t*)&data[0] != structure_version) {
+			std::cout << "ERROR: structure_file version too old!" << std::endl;
+			return;
+		}
+
+		uint64_t size = (*(uint32_t*)&data[1]) * (*(uint32_t*)&data[5]);
+
+		if (sim->loaded_structure != nullptr) {
+			delete[] sim->loaded_structure;
+			sim->loaded_structure = nullptr;
+		}
+		sim->loaded_structure = new uint8_t[8 + size * 4];
+		memcpy(&(sim->loaded_structure[0]), &data[1], 8 + size * 4);
+
+		sim->paste_structure = sim->loaded_structure;
+
+		});
 }
 
 void Inventory::resize() {
@@ -451,11 +530,46 @@ void Inventory::resize() {
 		inv_nand_text.setPosition(x, y);
 		inv_nand_text.setCharacterSize(h);
 	}
+
+
+	//structure gui
+	stroke_width = 2;
+	h = SCREEN_HEIGHT * 0.12f;
+	w = h * 1.5f;
+	y = SCREEN_HEIGHT - h - stroke_width;
+	x = SCREEN_WIDTH - w - stroke_width * 2 - inventory_bg_rect.getSize().x;
+	structure_bg_rect.setPosition(x, y);
+	structure_bg_rect.setSize(sf::Vector2f(w, h));
+	structure_bg_rect.setOutlineThickness(stroke_width);
+
+	h = structure_bg_rect.getSize().y * 0.25f;
+	x = structure_bg_rect.getPosition().x + structure_bg_rect.getSize().x / 2 - structure_text.getGlobalBounds().width / 2;
+	y = structure_bg_rect.getPosition().y + h * 0.2f;
+	structure_text.setPosition(x, y);
+	structure_text.setCharacterSize(h);
+
+	h = structure_bg_rect.getSize().y * 0.3;
+	w = h * (float(save_structure_button.texture_width) / save_structure_button.texture_height);
+	x = structure_bg_rect.getPosition().x + structure_bg_rect.getSize().x / 2 - w * 1.01f;
+	y = structure_bg_rect.getPosition().y + structure_bg_rect.getSize().y * 0.5;
+	save_structure_button.set_position(x, y);
+	save_structure_button.set_size(w, h);
+
+	h = structure_bg_rect.getSize().y * 0.3;
+	w = h * (float(load_structure_button.texture_width) / load_structure_button.texture_height);
+	x = structure_bg_rect.getPosition().x + structure_bg_rect.getSize().x / 2 + w * 0.01f;
+	y = structure_bg_rect.getPosition().y + structure_bg_rect.getSize().y * 0.5;
+	load_structure_button.set_position(x, y);
+	load_structure_button.set_size(w, h);
+
+
 }
 
 void Inventory::update() {
 	if (Utils::point_vs_rect(window_mouse.x, window_mouse.y, inventory_bg_rect.getPosition().x, inventory_bg_rect.getPosition().y,
-		inventory_bg_rect.getSize().x, inventory_bg_rect.getSize().y)) {
+		inventory_bg_rect.getSize().x, inventory_bg_rect.getSize().y)  ||
+		Utils::point_vs_rect(window_mouse.x, window_mouse.y, structure_bg_rect.getPosition().x, structure_bg_rect.getPosition().y,
+			structure_bg_rect.getSize().x, structure_bg_rect.getSize().y)) {
 		sim->mouse_over_gui = true;
 
 		inv_air_button.update(window_mouse.x, window_mouse.y);
@@ -474,6 +588,10 @@ void Inventory::update() {
 		inv_xnor_button.update(window_mouse.x, window_mouse.y);
 		inv_and_button.update(window_mouse.x, window_mouse.y);
 		inv_nand_button.update(window_mouse.x, window_mouse.y);
+
+
+		save_structure_button.update(window_mouse.x, window_mouse.y);
+		load_structure_button.update(window_mouse.x, window_mouse.y);
 	}
 }
 
@@ -530,4 +648,12 @@ void Inventory::render(sf::RenderTarget& window) {
 	window.draw(inv_nand_text);
 
 	window.draw(inv_logic_gates_text);
+
+
+	//structure gui
+	window.draw(structure_bg_rect);
+	window.draw(structure_text);
+	save_structure_button.render(window);
+	load_structure_button.render(window);
+
 }

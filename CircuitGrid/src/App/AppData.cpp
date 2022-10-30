@@ -32,6 +32,7 @@ float zoom_factor, target_zoom_factor;
 
 //board data
 uint8_t board_version;
+uint8_t structure_version;
 
 sf::Shader* board_shader;
 sf::Texture* board_data_texture;

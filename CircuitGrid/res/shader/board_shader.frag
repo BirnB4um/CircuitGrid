@@ -12,7 +12,7 @@ uniform bool draw_grid;
 uniform bool draw_details;
 
 float grid_width = 2;//in pixels
-float box_width = 2;//in pixels
+float box_width = 2;//in half-pixels
 
 void main(){
     vec2 nCoords = gl_TexCoord[0].xy;
@@ -38,13 +38,13 @@ void main(){
             float factor = zoom_factor > 12 ? 1 : (zoom_factor-8)/4;
             if( abs((board_coords.x * board_width) - floor(board_coords.x * board_width)) <= grid_width/zoom_factor ||
                 abs((board_coords.y * board_height) - floor(board_coords.y * board_height)) <= grid_width/zoom_factor ){
-                pixel = vec4(0.1,0.1,0.1,1.0) * factor;
+                pixel = pixel * (1.0 - factor) + vec4(0.1,0.1,0.1,1.0) * factor;
             }
 
             //draw mouse-box
             if( ( abs( board_coords.x * board_width - (floor(mouse_x) + 0.5)) < 0.5 + box_width/zoom_factor && abs( board_coords.y * board_height - (floor(mouse_y) + 0.5)) < 0.5 + box_width/zoom_factor ) &&
-                ( abs(board_coords.x * board_width - (floor(mouse_x) + 0.5)) > 0.5 || abs(board_coords.y * board_height - (floor(mouse_y) + 0.5)) > 0.5 ) ){
-                pixel = vec4(1,1,1,1) * factor;
+                ( abs(board_coords.x * board_width - (floor(mouse_x) + 0.5)) > 0.5 - box_width/zoom_factor || abs(board_coords.y * board_height - (floor(mouse_y) + 0.5)) > 0.5 - box_width/zoom_factor ) ){
+                pixel = pixel * (1.0 - factor) + vec4(1,1,1,1) * factor;
             }
         }
         

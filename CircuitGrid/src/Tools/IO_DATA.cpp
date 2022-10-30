@@ -6,7 +6,7 @@
 /*
    nr_file_name: 0 = all*
 				 1 = board,all*
-				 2 = rec,all*
+				 2 = struct,all*
 				 3 = josefistdumm,all*
 */
 
@@ -40,8 +40,8 @@ std::string IO_DATA::choose_open_file(int nr_file_name = 0) {//returns path to f
 		openFileDialog.lpstrDefExt = "board";
 	}
 	else if (nr_file_name == 2) {
-		openFileDialog.lpstrFilter = "Recording (*.rec)\0*rec\0All Files (*.*)\0*.*\0";
-		openFileDialog.lpstrDefExt = "rec";
+		openFileDialog.lpstrFilter = "Structure (*.struct)\0*struct\0All Files (*.*)\0*.*\0";
+		openFileDialog.lpstrDefExt = "struct";
 	}
 	else if (nr_file_name == 3) {
 		openFileDialog.lpstrFilter = "Josef ist dumm! (*.josefistdumm)\0*josefistdumm\0All Files (*.*)\0*.*\0";
@@ -71,8 +71,8 @@ std::string IO_DATA::choose_save_file(int nr_file_name = 0) {
 		saveFileDialog.lpstrDefExt = "board";
 	}
 	else if (nr_file_name == 2) {
-		saveFileDialog.lpstrFilter = "Recording (*.rec)\0*rec\0All Files (*.*)\0*.*\0";
-		saveFileDialog.lpstrDefExt = "rec";
+		saveFileDialog.lpstrFilter = "Structure (*.struct)\0*struct\0All Files (*.*)\0*.*\0";
+		saveFileDialog.lpstrDefExt = "struct";
 	}
 	else if (nr_file_name == 3) {
 		saveFileDialog.lpstrFilter = "Josef ist dumm! (*.josefistdumm)\0*josefistdumm\0All Files (*.*)\0*.*\0";
@@ -88,7 +88,7 @@ std::string IO_DATA::choose_save_file(int nr_file_name = 0) {
 }
 
 
-bool IO_DATA::save_to_file(std::string file_name, const char *output_data, const int data_size, bool append_data) {
+bool IO_DATA::save_to_file(std::string file_name, const char *output_data, const size_t data_size, bool append_data) {
 	if (file_name == "")
 		return false;
 

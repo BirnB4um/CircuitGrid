@@ -10,6 +10,7 @@ Settingsscreen::~Settingsscreen() {
 void Settingsscreen::init() {
 	middle_line.setFillColor(sf::Color(255,255,255,255));
 	middle_line.setOutlineThickness(0);
+
 	
 
 	back_button.init();
@@ -39,6 +40,7 @@ void Settingsscreen::init() {
 	load_board_button.set_pressed_texture_inrect(178, 18, 22,9);
 	load_board_button.set_function([&]() {
 		load_board();
+		screen_id = SIMULATION;
 		});
 
 
@@ -216,7 +218,6 @@ void Settingsscreen::render(sf::RenderTarget& window) {
 	back_button.render(window);
 
 	window.draw(board_text);
-
 	save_board_button.render(window);
 	load_board_button.render(window);
 }

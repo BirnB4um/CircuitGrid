@@ -39,6 +39,7 @@ extern float zoom_factor, target_zoom_factor;
 
 //board data
 extern uint8_t board_version;
+extern uint8_t structure_version;
 
 extern sf::Shader* board_shader;
 extern sf::Texture* board_data_texture;

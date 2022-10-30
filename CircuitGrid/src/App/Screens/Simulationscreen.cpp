@@ -176,6 +176,8 @@ void Simulationscreen::init() {
 	paste_structure = copy_structure;
 	show_gui = true;
 	board_version = 1;
+	structure_version = 1;
+	loaded_structure = nullptr;
 	
 
 	//debug stuff
@@ -642,6 +644,14 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		if (ev.key.code == sf::Keyboard::L) {//load resources
 			load_resources();
 		}
+		else if (ev.key.code == sf::Keyboard::Escape) {
+			if (pasting) {//stop pasting
+				pasting = false;
+			}
+			if (selection_mode) {
+				gui.selection_button.func();
+			}
+		}		
 		else if (ev.key.code == sf::Keyboard::Num0) {//center screen
 			target_board_offset_x = float(board_width) / 2;
 			target_board_offset_y = float(board_height) / 2;
@@ -664,6 +674,10 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::C) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
 				if (selection_mode && selection_set) {//copy selected area
+					std::lock_guard<std::mutex> lock(draw_mutex);
+
+					pasting = false;
+
 					gui.selection_button.func();
 
 					long width = selection_end_x - selection_start_x + 1;
@@ -683,11 +697,12 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 					uint32_t i = 0;
 					for (uint32_t y = selection_start_y; y <= selection_end_y; y++) {
 						for (uint32_t x = selection_start_x; x <= selection_end_x; x++) {
-							//*(uint32_t*)&copy_structure[8 + i * 4] = *(uint32_t*)&this_board[(y * board_width + x) * 4];
 							memcpy(&copy_structure[8 + i * 4], &this_board[(y * board_width + x) * 4], 4);
 							i++;
 						}
 					}
+
+					paste_structure = copy_structure;
 
 				}
 			}
@@ -695,7 +710,10 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::V) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
 				pasting = true;
-				paste_structure = copy_structure;
+
+				if (selection_mode){
+					gui.selection_button.func();
+				}
 			}
 		}
 		else if (ev.key.code == sf::Keyboard::X && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {//cut selection
@@ -1088,71 +1106,74 @@ void Simulationscreen::update() {
 		drawing_line = false;
 		drawing_rectangle = false;
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			if (selection_part == 9) {//all
-				selection_end_x = floor(board_mouse.x) - selection_mouse_offset_x + (selection_end_x - selection_start_x);
-				selection_end_y = floor(board_mouse.y) - selection_mouse_offset_y + (selection_end_y - selection_start_y);
-				selection_start_x = floor(board_mouse.x) - selection_mouse_offset_x;
-				selection_start_y = floor(board_mouse.y) - selection_mouse_offset_y;
+		if (!mouse_over_gui) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				if (selection_part == 9) {//all
+					selection_end_x = floor(board_mouse.x) - selection_mouse_offset_x + (selection_end_x - selection_start_x);
+					selection_end_y = floor(board_mouse.y) - selection_mouse_offset_y + (selection_end_y - selection_start_y);
+					selection_start_x = floor(board_mouse.x) - selection_mouse_offset_x;
+					selection_start_y = floor(board_mouse.y) - selection_mouse_offset_y;
+				}
+				else if (selection_part == 1) {//top left
+					selection_start_x = floor(board_mouse.x);
+					selection_start_y = floor(board_mouse.y);
+				}
+				else if (selection_part == 2) {//top right
+					selection_end_x = floor(board_mouse.x);
+					selection_start_y = floor(board_mouse.y);
+				}
+				else if (selection_part == 3) {//bottom left
+					selection_start_x = floor(board_mouse.x);
+					selection_end_y = floor(board_mouse.y);
+				}
+				else if (selection_part == 4) {//bottom reight
+					selection_end_x = floor(board_mouse.x);
+					selection_end_y = floor(board_mouse.y);
+				}
+				else if (selection_part == 5) {//top
+					selection_start_y = floor(board_mouse.y);
+				}
+				else if (selection_part == 6) {//left
+					selection_start_x = floor(board_mouse.x);
+				}
+				else if (selection_part == 7) {//right
+					selection_end_x = floor(board_mouse.x);
+				}
+				else if (selection_part == 8) {//bottom
+					selection_end_y = floor(board_mouse.y);
+				}
 			}
-			else if (selection_part == 1) {//top left
-				selection_start_x = floor(board_mouse.x);
-				selection_start_y = floor(board_mouse.y);
-			}
-			else if (selection_part == 2) {//top right
-				selection_end_x = floor(board_mouse.x);
-				selection_start_y = floor(board_mouse.y);
-			}
-			else if (selection_part == 3) {//bottom left
-				selection_start_x = floor(board_mouse.x);
-				selection_end_y = floor(board_mouse.y);
-			}
-			else if (selection_part == 4) {//bottom reight
-				selection_end_x = floor(board_mouse.x);
-				selection_end_y = floor(board_mouse.y);
-			}
-			else if (selection_part == 5) {//top
-				selection_start_y = floor(board_mouse.y);
-			}
-			else if (selection_part == 6) {//left
-				selection_start_x = floor(board_mouse.x);
-			}
-			else if (selection_part == 7) {//right
-				selection_end_x = floor(board_mouse.x);
-			}
-			else if (selection_part == 8) {//bottom
-				selection_end_y = floor(board_mouse.y);
-			}
-		}
 
-		selection_start_x = selection_start_x < 0 ? 0 : selection_start_x > board_width - 1 ? board_width - 1 : selection_start_x;
-		selection_start_y = selection_start_y < 0 ? 0 : selection_start_y > board_height - 1 ? board_height - 1 : selection_start_y;
-		selection_end_x = selection_end_x < 0 ? 0 : selection_end_x > board_width - 1 ? board_width - 1 : selection_end_x;
-		selection_end_y = selection_end_y < 0 ? 0 : selection_end_y > board_height - 1 ? board_height - 1 : selection_end_y;
 
-		if (selection_start_x == 0) {
-			selection_mouse_offset_x = floor(board_mouse.x);
-		}
-		if (selection_start_y == 0) {
-			selection_mouse_offset_y = floor(board_mouse.y);
-		}
-		
-		//switch if not in order
-		if (selection_end_x < selection_start_x) {
-			long temp = selection_start_x;
-			selection_start_x = selection_end_x;
-			selection_end_x = temp;
-		}
-		if (selection_end_y < selection_start_y) {
-			long temp = selection_start_y;
-			selection_start_y = selection_end_y;
-			selection_end_y = temp;
-		}
+			selection_start_x = selection_start_x < 0 ? 0 : selection_start_x > board_width - 1 ? board_width - 1 : selection_start_x;
+			selection_start_y = selection_start_y < 0 ? 0 : selection_start_y > board_height - 1 ? board_height - 1 : selection_start_y;
+			selection_end_x = selection_end_x < 0 ? 0 : selection_end_x > board_width - 1 ? board_width - 1 : selection_end_x;
+			selection_end_y = selection_end_y < 0 ? 0 : selection_end_y > board_height - 1 ? board_height - 1 : selection_end_y;
 
-		//update drawing_rectangle_shape
-		selection_rect.setPosition((selection_start_x * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)),
-									(selection_start_y * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)));
-		selection_rect.setSize(sf::Vector2f((selection_end_x + 1 - selection_start_x) * zoom_factor, (selection_end_y + 1 - selection_start_y) * zoom_factor));
+			if (selection_start_x == 0) {
+				selection_mouse_offset_x = floor(board_mouse.x);
+			}
+			if (selection_start_y == 0) {
+				selection_mouse_offset_y = floor(board_mouse.y);
+			}
+
+			//switch if not in order
+			if (selection_end_x < selection_start_x) {
+				long temp = selection_start_x;
+				selection_start_x = selection_end_x;
+				selection_end_x = temp;
+			}
+			if (selection_end_y < selection_start_y) {
+				long temp = selection_start_y;
+				selection_start_y = selection_end_y;
+				selection_end_y = temp;
+			}
+
+			//update drawing_rectangle_shape
+			selection_rect.setPosition((selection_start_x * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)),
+				(selection_start_y * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)));
+			selection_rect.setSize(sf::Vector2f((selection_end_x + 1 - selection_start_x) * zoom_factor, (selection_end_y + 1 - selection_start_y) * zoom_factor));
+		}
 
 	}
 	else {

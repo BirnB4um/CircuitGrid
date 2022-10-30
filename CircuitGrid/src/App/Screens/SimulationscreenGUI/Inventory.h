@@ -49,6 +49,12 @@ public:
 	sf::Text inv_nand_text;
 	Button inv_nand_button;
 
+	//structure gui
+	sf::RectangleShape structure_bg_rect;
+	sf::Text structure_text;
+	Button save_structure_button;
+	Button load_structure_button;
+
 	void init();
 	void resize();
 	void update();

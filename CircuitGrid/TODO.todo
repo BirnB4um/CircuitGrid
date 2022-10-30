@@ -9,7 +9,7 @@ each pixel = 4 bytes
 
 
 ///// TODO /////
--save/load board + GUI
+-add undo function
 -added structure_list (list of all saved structures)
 -drawmode PIXELPERFECTLINE
 -change update_thread to run perfectly on time (exactly targeted tps)
