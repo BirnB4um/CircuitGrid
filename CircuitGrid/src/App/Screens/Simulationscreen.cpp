@@ -91,7 +91,7 @@ void Simulationscreen::init_update_functions() {
 	item_names.push_back("Battery");
 
 	update_functions.push_back(&Simulationscreen::update_repeater);
-	item_list.push_back(0x000A0104);
+	item_list.push_back(0x00030104);
 	item_names.push_back("Repeater");
 
 	update_functions.push_back(&Simulationscreen::update_bridge);
