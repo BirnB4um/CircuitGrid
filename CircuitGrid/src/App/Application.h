@@ -15,6 +15,7 @@ private:
 	sf::RenderWindow window;
 	sf::View normal_view;
 	sf::Event sf_event;
+	bool update_all;
 
 	//Screens
 	Homescreen homescreen;

@@ -125,6 +125,10 @@ void Settingsscreen::load_board() {
 	data.reserve(1000000);
 	io_data.read_from_file(file_name, data);
 
+	if (file_name == "") {
+		std::cout << "ERROR: couldnt read board_data!" << std::endl;
+		return;
+	}
 	if (data.size() == 0) {
 		std::cout << "ERROR: couldnt read board_data!" << std::endl;
 		return;

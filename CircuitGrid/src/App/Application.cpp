@@ -26,6 +26,7 @@ void Application::init() {
 	WINDOWED_HEIGHT = 600;
 	FPS = 40;
 	FOCUS = true;
+	update_all = true;
 	FULLSCREEN_WIDTH = sf::VideoMode::getFullscreenModes()[0].width;
 	FULLSCREEN_HEIGHT = sf::VideoMode::getFullscreenModes()[0].height;
 	create_window(WINDOWED_WIDTH, WINDOWED_HEIGHT, false, FPS, TITLE);
@@ -87,6 +88,7 @@ void Application::on_resize() {
 
 void Application::handle_events() {
 	while (window.pollEvent(sf_event)) {
+
 		//gained focus
 		if (sf_event.type == sf::Event::GainedFocus	) {
 			FOCUS = true;
@@ -94,6 +96,7 @@ void Application::handle_events() {
 		//lost focus
 		else if (sf_event.type == sf::Event::LostFocus) {
 			FOCUS = false;
+			update_all = false;
 		}
 		//close window
 		else if (sf_event.type == sf::Event::Closed) {
@@ -111,7 +114,14 @@ void Application::handle_events() {
 			}
 		}
 		else if (sf_event.type == sf::Event::MouseMoved) {
-			window_mouse = sf::Mouse::getPosition(window);
+		}
+
+
+		if (!update_all) {
+			if (sf_event.type == sf::Event::MouseButtonReleased) {
+				update_all = true;
+			}
+			continue;
 		}
 
 		// ===== SCREENS =====
@@ -128,6 +138,8 @@ void Application::handle_events() {
 }
 
 void Application::update() {
+	window_mouse = sf::Mouse::getPosition(window);//update mouse position
+
 	if (screen_id == HOMESCREEN) {
 		homescreen.update();
 	}
@@ -161,7 +173,9 @@ void Application::run() {
 	{
 		handle_events();
 
-		update();
+		if (update_all) {
+			update();
+		}
 
 		draw();
 	}
