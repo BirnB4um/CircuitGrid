@@ -413,37 +413,45 @@ bool Simulationscreen::draw_to_board() {
 			add_to_update_list(x + (y-1) * board_width);
 		}
 		else if (instruction_list[instruction_index].data[0] == LINE) {
-			uint32_t steps = 0;
 			uint32_t start_x = instruction_list[instruction_index].data[3];
 			uint32_t start_y = instruction_list[instruction_index].data[4];
 			uint32_t end_x = instruction_list[instruction_index].data[5];
 			uint32_t end_y = instruction_list[instruction_index].data[6];
-			long dx = long(instruction_list[instruction_index].data[5]) - long(instruction_list[instruction_index].data[3]);
-			long dy = long(instruction_list[instruction_index].data[6]) - long(instruction_list[instruction_index].data[4]);
-			steps = std::abs(dx) > std::abs(dy) ? std::abs(dx) : std::abs(dy);
+			//long dx = long(instruction_list[instruction_index].data[5]) - long(instruction_list[instruction_index].data[3]);
+			//long dy = long(instruction_list[instruction_index].data[6]) - long(instruction_list[instruction_index].data[4]);
 
-			double factor;
-			uint32_t x, y;
-			for (uint32_t i = 0; i < steps + 1; i++) {
-				factor = double(i) / steps;
-				x = start_x + uint32_t(factor * dx);
-				y = start_y + uint32_t(factor * dy);
+			//switch if greater
+			if (start_x > end_x) {
+				uint32_t temp = start_x;
+				start_x = end_x;
+				end_x = temp;
 
-				for (int _y = y - (brush_size - 1); _y < y + brush_size; _y++) {
-					for (int _x = x - (brush_size - 1); _x < x + brush_size; _x++) {
+				temp = start_y;
+				start_y = end_y;
+				end_y = temp;
+			}
 
-						if (_y >= 0 && _y < board_height && _x >= 0 && _x < board_width) {
-							if (sqrt((_x - x) * (_x - x) + (_y - y) * (_y - y)) <= brush_size - 1) {
-								*(uint32_t*)&this_board[(_x + _y * board_width) * 4] = instruction_list[instruction_index].data[2];
-								add_to_update_list(_x + _y * board_width);
-								add_to_update_list(_x + 1 + _y * board_width);
-								add_to_update_list(_x - 1 + _y * board_width);
-								add_to_update_list(_x + (_y + 1) * board_width);
-								add_to_update_list(_x + (_y - 1) * board_width);
-							}
-						}
+			long dx = long(end_x) - start_x;
+			double m = (double(end_y) - start_y) / ((dx==0)?1:dx);
+
+			uint32_t next_y = start_y;
+			uint32_t last_y = start_y;
+			uint32_t y;
+			for (uint32_t x = start_x; x <= end_x; x++) {
+
+				next_y = start_y + floor(m * (x - start_x + ((dx == 0)?1:0)));
+				
+				for (y = next_y; (next_y >= last_y && y >= last_y) || (next_y < last_y && y <= last_y); y += next_y >= last_y ? -1 : 1) {
+					if (y < board_height) {
+						*(uint32_t*)&this_board[(x + y * board_width) * 4] = instruction_list[instruction_index].data[2];
+						add_to_update_list(x + y * board_width);
+						add_to_update_list(x + 1 + y * board_width);
+						add_to_update_list(x - 1 + y * board_width);
+						add_to_update_list(x + (y + 1) * board_width);
+						add_to_update_list(x + (y - 1) * board_width);
 					}
 				}
+				last_y = next_y;
 
 			}
 		}
