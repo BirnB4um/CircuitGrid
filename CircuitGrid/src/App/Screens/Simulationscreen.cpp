@@ -54,7 +54,7 @@ void Simulationscreen::load_resources() {
 
 	if (!board_shader->loadFromFile("res/shader/board_shader.frag", sf::Shader::Fragment)) {
 		std::cout << "ERROR: failed to load 'board_shader.frag'!" << std::endl;
-	}
+	}	
 	board_shader->setUniform("pixel_color_texture", *pixel_color_texture);
 	board_shader->setUniform("large_pixel_texture", *large_pixel_texture);
 	board_shader->setUniform("offset_x", board_offset_x);
@@ -70,6 +70,7 @@ void Simulationscreen::load_resources() {
 	board_shader->setUniform("brush_size", 0.0f);
 	board_shader->setUniform("draw_grid", draw_grid);
 	board_shader->setUniform("draw_details", draw_details);
+
 }
 
 void Simulationscreen::init_update_functions() {
@@ -170,14 +171,17 @@ void Simulationscreen::init() {
 	selection_end_y = -1;
 	selection_set = false;
 	selection_part = 0;
-	copy_structure = new uint8_t[8];
-	memset(copy_structure, 0, 8);
+	copy_structure = new uint8_t[12];
+	memset(copy_structure, 0, 12);
+	*(uint32_t*)&copy_structure[0] = 1;
+	*(uint32_t*)&copy_structure[4] = 1;
 	pasting = false;
 	paste_structure = copy_structure;
 	show_gui = true;
 	board_version = 1;
 	structure_version = 1;
 	loaded_structure = nullptr;
+
 	
 
 	//debug stuff
@@ -417,6 +421,7 @@ bool Simulationscreen::draw_to_board() {
 			uint32_t start_y = instruction_list[instruction_index].data[4];
 			uint32_t end_x = instruction_list[instruction_index].data[5];
 			uint32_t end_y = instruction_list[instruction_index].data[6];
+			uint32_t _brush_size = instruction_list[instruction_index].data[1];
 			//long dx = long(instruction_list[instruction_index].data[5]) - long(instruction_list[instruction_index].data[3]);
 			//long dy = long(instruction_list[instruction_index].data[6]) - long(instruction_list[instruction_index].data[4]);
 
@@ -425,7 +430,7 @@ bool Simulationscreen::draw_to_board() {
 				uint32_t temp = start_x;
 				start_x = end_x;
 				end_x = temp;
-
+				
 				temp = start_y;
 				start_y = end_y;
 				end_y = temp;
@@ -437,7 +442,7 @@ bool Simulationscreen::draw_to_board() {
 			uint32_t next_y = start_y;
 			uint32_t last_y = start_y;
 			long y;
-			for (uint32_t x = start_x; x <= end_x; x++) {
+			for (long x = start_x; x <= end_x; x++) {
 
 				next_y = start_y + floor(m * (x - start_x + ((dx == 0)?1:0)));
 				
@@ -447,12 +452,29 @@ bool Simulationscreen::draw_to_board() {
 						break;
 
 					if (y < board_height) {
-						*(uint32_t*)&this_board[(x + y * board_width) * 4] = instruction_list[instruction_index].data[2];
-						add_to_update_list(x + y * board_width);
-						add_to_update_list(x + 1 + y * board_width);
-						add_to_update_list(x - 1 + y * board_width);
-						add_to_update_list(x + (y + 1) * board_width);
-						add_to_update_list(x + (y - 1) * board_width);
+						//*(uint32_t*)&this_board[(x + y * board_width) * 4] = instruction_list[instruction_index].data[2];
+						//add_to_update_list(x + y * board_width);
+						//add_to_update_list(x + 1 + y * board_width);
+						//add_to_update_list(x - 1 + y * board_width);
+						//add_to_update_list(x + (y + 1) * board_width);
+						//add_to_update_list(x + (y - 1) * board_width);
+
+						for (long _y = y - (_brush_size - 1); _y < y + _brush_size; _y++) {
+							for (long _x = x - (_brush_size - 1); _x < long(x + _brush_size); _x++) {
+
+								if (_y >= 0 && _y < board_height && _x >= 0 && _x < board_width) {
+									if (sqrt((_x - x) * (_x - x) + (_y - y) * (_y - y)) <= _brush_size - 1) {
+										*(uint32_t*)&this_board[(_x + _y * board_width) * 4] = instruction_list[instruction_index].data[2];
+										add_to_update_list(_x + _y * board_width);
+										add_to_update_list(_x + 1 + _y * board_width);
+										add_to_update_list(_x - 1 + _y * board_width);
+										add_to_update_list(_x + (_y + 1) * board_width);
+										add_to_update_list(_x + (_y - 1) * board_width);
+									}
+								}
+							}
+						}
+
 					}
 				}
 				last_y = next_y;
@@ -636,6 +658,7 @@ void Simulationscreen::update_board() {
 	this_board = next_board;
 	next_board = temp;
 }
+
 
 void Simulationscreen::handle_events(sf::Event& ev) {
 

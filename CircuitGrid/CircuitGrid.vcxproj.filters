@@ -140,6 +140,7 @@
   <ItemGroup>
     <None Include="res\shader\board_shader.frag" />
     <None Include="TODO.todo" />
+    <None Include="res\shader\preview_shader.frag" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="res\fonts\arial.ttf" />
