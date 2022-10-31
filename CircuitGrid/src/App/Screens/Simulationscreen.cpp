@@ -436,12 +436,16 @@ bool Simulationscreen::draw_to_board() {
 
 			uint32_t next_y = start_y;
 			uint32_t last_y = start_y;
-			uint32_t y;
+			long y;
 			for (uint32_t x = start_x; x <= end_x; x++) {
 
 				next_y = start_y + floor(m * (x - start_x + ((dx == 0)?1:0)));
 				
 				for (y = next_y; (next_y >= last_y && y >= last_y) || (next_y < last_y && y <= last_y); y += next_y >= last_y ? -1 : 1) {
+					
+					if (y < 0)
+						break;
+
 					if (y < board_height) {
 						*(uint32_t*)&this_board[(x + y * board_width) * 4] = instruction_list[instruction_index].data[2];
 						add_to_update_list(x + y * board_width);
@@ -1283,16 +1287,16 @@ void Simulationscreen::update() {
 					}
 				}
 				else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					if (mouse_over_board && last_mouse_over_board) {
+					if (mouse_over_board || last_mouse_over_board) {
 						std::lock_guard<std::mutex> draw_lock(draw_mutex);
 						Drawinstruction instruction;
 						instruction.data[0] = fill_mode ? FILL : LINE;
 						instruction.data[1] = brush_size;
 						instruction.data[2] = selected_item;
-						instruction.data[3] = floor(last_board_mouse.x);
-						instruction.data[4] = floor(last_board_mouse.y);
-						instruction.data[5] = floor(board_mouse.x);
-						instruction.data[6] = floor(board_mouse.y);
+						instruction.data[3] = Utils::constrain(floor(last_board_mouse.x), 0, board_width-1);
+						instruction.data[4] = Utils::constrain(floor(last_board_mouse.y), 0, board_height - 1);
+						instruction.data[5] = Utils::constrain(floor(board_mouse.x), 0, board_width - 1);
+						instruction.data[6] = Utils::constrain(floor(board_mouse.y), 0, board_height - 1);
 						instruction.structure_pointer = nullptr;
 						drawinstruction_list.push_back(instruction);
 
