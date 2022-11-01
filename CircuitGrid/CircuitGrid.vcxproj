@@ -133,6 +133,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\App\Screens\Settingsscreen.cpp" />
+    <ClCompile Include="src\App\Screens\SimulationscreenGUI\InfoBox.cpp" />
+    <ClCompile Include="src\App\Screens\SimulationscreenGUI\HelpMenu.cpp" />
+    <ClCompile Include="src\App\Screens\SimulationscreenGUI\Inventory.cpp" />
+    <ClCompile Include="src\GUI\NumberInputBox.cpp" />
+    <ClCompile Include="src\GUI\TextInputBox.cpp" />
+    <ClCompile Include="src\Tools\IO_DATA.cpp" />
     <ClCompile Include="src\App\Screens\Homescreen.cpp" />
     <ClCompile Include="src\App\Screens\Simulationscreen.cpp" />
     <ClCompile Include="src\App\AppData.cpp" />
@@ -143,8 +150,15 @@
     <ClCompile Include="src\GUI\Scrolllist.cpp" />
     <ClCompile Include="src\GUI\Slider.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\App\Screens\SimulationscreenGUI\TopGUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GUI\NumberInputBox.h" />
+    <ClInclude Include="src\App\Screens\Settingsscreen.h" />
+    <ClInclude Include="src\App\Screens\SimulationscreenGUI\InfoBox.h" />
+    <ClInclude Include="src\App\Screens\SimulationscreenGUI\HelpMenu.h" />
+    <ClInclude Include="src\App\Screens\SimulationscreenGUI\Inventory.h" />
+    <ClInclude Include="src\Tools\IO_DATA.h" />
     <ClInclude Include="src\App\Screens\Homescreen.h" />
     <ClInclude Include="src\App\Screens\Simulationscreen.h" />
     <ClInclude Include="src\App\AppData.h" />
@@ -155,13 +169,17 @@
     <ClInclude Include="src\GUI\Slider.h" />
     <ClInclude Include="src\Tools\Timer.h" />
     <ClInclude Include="src\Tools\Utils.h" />
+    <ClInclude Include="src\App\Screens\SimulationscreenGUI\TopGUI.h" />
+    <ClInclude Include="src\GUI\TextInputBox.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\gui_texture.png" />
+    <Image Include="res\images\large_pixel_texture.png" />
     <Image Include="res\images\pixel_color_texture.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\board_shader.frag" />
+    <None Include="res\shader\preview_shader.frag" />
     <None Include="TODO.todo" />
   </ItemGroup>
   <ItemGroup>

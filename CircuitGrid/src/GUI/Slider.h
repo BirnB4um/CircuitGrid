@@ -9,12 +9,12 @@ using namespace std;
 class Slider :GUI_Item
 {
 private:
-	sf::FloatRect bound_rect;
 	sf::RectangleShape line_rect;
 	sf::RectangleShape nob_rect;
 	std::function<void()> func;
 
 public:
+	sf::RectangleShape rect;
 	bool pressed = false;
 	float value = 0.0f;
 
@@ -24,7 +24,8 @@ public:
 	void update(int& mouse_x, int& mouse_y);
 	void update_scale();
 	void init();
-	void set_position(float x, float y);
+	bool check_over_slider(int& x, int& y);
+	void set_position(int x, int y);
 	void set_size(float w, float h);
 	void set_nob_texture_inrect(float x, float y, float w, float h);
 	void render(sf::RenderTarget& window);

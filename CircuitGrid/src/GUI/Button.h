@@ -20,7 +20,9 @@ public:
 	std::function<void()> func;
 
 	void init();
+	//returns true if button was pressed
 	bool update(int& mouse_x, int& mouse_y);
+	bool check_over_button(int& x, int& y);
 	void set_function(std::function<void()> f);
 	void set_position(float x, float y);
 	void set_size(float w, float h);

@@ -3,17 +3,14 @@
 void Slider::init() {
 	pressed = false;
 	value = 0.0f;
-	nob_rect.setFillColor(sf::Color::White);
-	//nob_rect.setTexture(gui_texture);
-	//nob_rect.setTextureRect(sf::IntRect(0, 0, 16, 16));
+	//nob_rect.setFillColor(sf::Color::White);
+	nob_rect.setTexture(gui_texture);
 	line_rect.setFillColor(sf::Color(255, 255, 255, 255));
 	line_rect.setOutlineColor(sf::Color::Transparent);
 	line_rect.setOutlineThickness(0);
 
-	bound_rect.top = 0;
-	bound_rect.left = 0;
-	bound_rect.width = 100;
-	bound_rect.height = 40;
+	rect.setPosition(0, 0);
+	rect.setSize(sf::Vector2f(100, 40));
 	update_scale();
 }
 
@@ -44,22 +41,25 @@ void Slider::update(int& mouse_x, int& mouse_y) {
 }
 
 void Slider::update_scale() {
-	nob_rect.setSize(sf::Vector2f(bound_rect.height, bound_rect.height));
-	nob_rect.setPosition(bound_rect.left + value * (bound_rect.width - nob_rect.getSize().x), bound_rect.top);
+	nob_rect.setSize(sf::Vector2f(int(rect.getSize().y), int(rect.getSize().y)));
+	nob_rect.setPosition(int(rect.getPosition().x + value * (rect.getSize().x - nob_rect.getSize().x)), int(rect.getPosition().y));
 
-	line_rect.setSize(sf::Vector2f(bound_rect.width - nob_rect.getSize().x, bound_rect.height / 20));
-	line_rect.setPosition(bound_rect.left + nob_rect.getSize().x / 2, bound_rect.top + bound_rect.height / 2 - line_rect.getSize().y);
+	line_rect.setSize(sf::Vector2f(int(rect.getSize().x - nob_rect.getSize().x), int(rect.getSize().y / 20)));
+	line_rect.setPosition(int(rect.getPosition().x + nob_rect.getSize().x / 2), int(rect.getPosition().y + rect.getSize().y / 2 - line_rect.getSize().y));
 }
 
-void Slider::set_position(float x, float y) {
-	bound_rect.left = x;
-	bound_rect.top = y;
+bool Slider::check_over_slider(int& x, int& y) {
+	return x >= rect.getPosition().x && x <= rect.getPosition().x + rect.getSize().x &&
+		y >= rect.getPosition().y && y <= rect.getPosition().y + rect.getSize().y;
+}
+
+void Slider::set_position(int x, int y) {
+	rect.setPosition(x, y);
 
 	update_scale();
 }
 void Slider::set_size(float w, float h) {
-	bound_rect.width = w;
-	bound_rect.height = h;
+	rect.setSize(sf::Vector2f(w, h));
 
 	update_scale();
 }

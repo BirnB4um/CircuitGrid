@@ -4,27 +4,29 @@
 each pixel = 4 bytes
 - 1b = id
 - 1b = elecricity
-- 1b = electricity II, repeatervalue
-- 1b = lightlevel
+- 1b = electricity II; repeater value
+- 1b = wall
 
 
 ///// TODO /////
--drawmode FILL
--tps slider
+-add undo function
+-added structure_list (list of all saved structures)
+-drawmode PIXELPERFECTLINE
+-change update_thread to run perfectly on time (exactly targeted tps)
+-add background tiles
 -delete[] lists
--reset_simulation() -> clear all elec. and put gates in updatelist
--if zoomed close -> pixel transition to texture instead of color
--copy/paste part of board
--save/load board + GUI
 -load configs from file (boardsize, tps, ...)
--compile with CMAKE
 
 
 
 ///// BUGS /////
+-large brushsize cant draw over board_edge (only top & left)
 -if tps is low (tps=5) -> drawing is updated too slow
+-in detail mode left edge is smaller than right one (probably float precision limit. maybe fix by making texture smaller, reduce from 256 to 16)
 
 
 ///// OPTIMIZE /////
--update_checklist -> each bool = 1 bit (reduce size x8 & faster to clear)
+-update_checklist -> each bool = 1 bit (reduce size x8 & faster to clear with memset)
 -memcpy only needed part of this_board to next_board. only from lowest update_index to highest update_index (faster to copy)
+
+
