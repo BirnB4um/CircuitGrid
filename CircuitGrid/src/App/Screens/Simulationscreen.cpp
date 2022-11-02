@@ -232,7 +232,7 @@ void Simulationscreen::init() {
 	paste_rect.setOutlineColor(sf::Color(255,150,0,255));
 	paste_rect.setOutlineThickness(4);
 
-	create_board(500, 500);
+	create_board(2000, 2000);
 
 	//load shader
 	load_resources();
@@ -342,10 +342,51 @@ void Simulationscreen::create_board(unsigned int width, unsigned int height) {
 }
 
 void Simulationscreen::add_to_update_list(uint32_t i) {
-	if (i < board_width || i > board_size - board_width || this_board[i*4] == AIR)
+	if (i < board_width || i > board_size - board_width + 1 || this_board[i*4] == AIR)
 		return;
 
 	if (update_checklist[i] == 0) {
+		update_checklist[i] = 1;
+		update_list.push_back(i);
+	}
+}
+
+void Simulationscreen::add_surroundings_to_update_list(uint32_t i) {
+
+	//up
+	if (i > board_width * 2) {
+		if (update_checklist[i - board_width] == 0 && this_board[(i - board_width) * 4] != AIR) {
+			update_checklist[i - board_width] = 1;
+			update_list.push_back(i - board_width);
+		}
+	}
+
+	//down
+	if (i < board_size - board_width * 2) {
+		if (update_checklist[i + board_width] == 0 && this_board[(i + board_width) * 4] != AIR) {
+			update_checklist[i + board_width] = 1;
+			update_list.push_back(i + board_width);
+		}
+	}
+
+	//left
+	if (i > board_width) {
+		if (update_checklist[i - 1] == 0 && this_board[(i - 1) * 4] != AIR) {
+			update_checklist[i - 1] = 1;
+			update_list.push_back(i - 1);
+		}
+	}
+
+	//right
+	if (i < board_size - board_width - 1) {
+		if (update_checklist[i + 1] == 0 && this_board[(i + 1) * 4] != AIR) {
+			update_checklist[i + 1] = 1;
+			update_list.push_back(i + 1);
+		}
+	}
+
+	//middle
+	if (update_checklist[i] == 0 && this_board[i * 4] != AIR) {
 		update_checklist[i] = 1;
 		update_list.push_back(i);
 	}
@@ -362,14 +403,14 @@ void Simulationscreen::reset_simulation() {
 			add_to_update_list(i - board_width);
 			add_to_update_list(i + board_width);
 		}
-		if (next_board[i * 4] == REPEATER) {
+		if (this_board[i * 4] == REPEATER) {
 			next_board[i * 4 + 1] = ((uint8_t*)&item_list[this_board[i * 4]])[1];
 			this_board[i * 4 + 1] = ((uint8_t*)&item_list[this_board[i * 4]])[1];
 		}
-		else if (next_board[i * 4] == BUTTON) {
+		else if (this_board[i * 4] == BUTTON) {
 
 		}
-		else if (next_board[i * 4] == SWITCH) {
+		else if (this_board[i * 4] == SWITCH) {
 
 		} else {
 			*(uint32_t*)&next_board[i * 4] = item_list[this_board[i * 4]];
@@ -452,13 +493,8 @@ bool Simulationscreen::draw_to_board() {
 						break;
 
 					if (y < board_height) {
-						//*(uint32_t*)&this_board[(x + y * board_width) * 4] = instruction_list[instruction_index].data[2];
-						//add_to_update_list(x + y * board_width);
-						//add_to_update_list(x + 1 + y * board_width);
-						//add_to_update_list(x - 1 + y * board_width);
-						//add_to_update_list(x + (y + 1) * board_width);
-						//add_to_update_list(x + (y - 1) * board_width);
 
+						//brushsize
 						for (long _y = y - (_brush_size - 1); _y < y + _brush_size; _y++) {
 							for (long _x = x - (_brush_size - 1); _x < long(x + _brush_size); _x++) {
 
@@ -576,7 +612,8 @@ void Simulationscreen::th_update_board() {
 	bool drawn_to_board = false;
 
 	while (true) {
-		if (closing)break;
+		if (closing)
+			break;
 
 		long long start_frame_time = timer.get_time();
 		//draw to texture
@@ -593,11 +630,18 @@ void Simulationscreen::th_update_board() {
 			drawn_to_board = true;
 		}
 
+		if (drawn_to_board) {
+			memcpy(&next_board[0], &this_board[0], board_size * 4);//update whole board
+		}
+
 		if (simulation_paused) {
 			if (one_simulations_step) {
 				one_simulations_step = false;
 
+				timer.start();
 				update_board();
+				timer.stop();
+				update_time_taken = timer.get_duration();
 
 				drawn_to_board = true;
 			}else if (!drawn_to_board) {
@@ -614,6 +658,7 @@ void Simulationscreen::th_update_board() {
 				update_time_taken = timer.get_duration();
 				int wait_time = int(1000.0f / board_tps - update_time_taken);
 				std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
+
 			}
 			drawn_to_board = true;
 		}
@@ -630,28 +675,31 @@ void Simulationscreen::th_update_board() {
 }
 
 void Simulationscreen::update_board() {
+
 	number_of_pixels_to_update = update_list.size();
-	if (number_of_pixels_to_update == 0)return;
+	if (number_of_pixels_to_update == 0)
+		return;
+	
+	for (uint32_t i = 0; i < number_of_pixels_to_update; i++) {
+		*(uint32_t*)&next_board[update_list[i] * 4] = *(uint32_t*)&this_board[update_list[i] * 4];//copy board
+		update_checklist[update_list[i]] = 0;//clear checklist marks
+	}
 
-	memcpy(next_board, this_board, board_size * 4);//copy board
-
-	memset(update_list_copy, 0, number_of_pixels_to_update * 4);
 	memcpy(update_list_copy, &update_list[0], number_of_pixels_to_update * 4);//copy update_list
 	update_list.clear();
-	memset(update_checklist, 0, board_size * sizeof(bool));//clear checklist marks
 
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < number_of_pixels_to_update; i++) {
 		index = update_list_copy[i];
 		if ((this->*update_functions[this_board[index * 4]])(index)) {
-			add_to_update_list(index);
-			add_to_update_list(index - board_width);
-			add_to_update_list(index + board_width);
-			add_to_update_list(index - 1);
-			add_to_update_list(index + 1);
+			//add_to_update_list(index);
+			//add_to_update_list(index - board_width);
+			//add_to_update_list(index + board_width);
+			//add_to_update_list(index - 1);
+			//add_to_update_list(index + 1);
+			add_surroundings_to_update_list(index);
 		}
 	}
-
 
 	//switch boards
 	uint8_t* temp = this_board;
@@ -801,7 +849,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 				uint32_t new_item = *(uint32_t*)&this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];
 				uint8_t value = ((uint8_t*)&new_item)[2];
 				
-				value++;
+				value += sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 10 : 1;
 				((uint8_t*)&new_item)[2] = value;
 
 				Drawinstruction instruction;
@@ -823,7 +871,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 				uint32_t new_item = *(uint32_t*)&this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];
 				uint8_t value = ((uint8_t*)&new_item)[2];
 				
-				value--;
+				value -= sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 10 : 1;
 				((uint8_t*)&new_item)[2] = value;
 
 				Drawinstruction instruction;
@@ -1106,7 +1154,7 @@ void Simulationscreen::update() {
 	}
 
 	//update zoom factor
-	target_zoom_factor = target_zoom_factor < 1 ? 1 : target_zoom_factor > 500 ? 500 : target_zoom_factor;
+	target_zoom_factor = target_zoom_factor < 0.1 ? 0.1 : target_zoom_factor > 500 ? 500 : target_zoom_factor;
 	if (std::abs(target_zoom_factor - zoom_factor) < 0.01f) {
 		zoom_factor = target_zoom_factor;
 	}

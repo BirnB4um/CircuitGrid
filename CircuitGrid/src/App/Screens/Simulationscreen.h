@@ -102,10 +102,10 @@ public:
 
 	std::vector <bool(Simulationscreen::*)(uint32_t& i)> update_functions;
 
-	void update_paste_preview_rect();
 	void reset_simulation();
 	void clear_board();
 	void add_to_update_list(uint32_t i);
+	void add_surroundings_to_update_list(uint32_t i);
 	bool draw_to_board();
 	void update_board();
 	void th_update_board();

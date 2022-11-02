@@ -124,7 +124,7 @@ void Settingsscreen::load_board() {
 	std::string file_name = io_data.choose_open_file(1);
 
 	std::vector<char> data;
-	data.reserve(1000000);
+	data.reserve(10000000);
 	io_data.read_from_file(file_name, data);
 
 	if (file_name == "") {
@@ -192,6 +192,7 @@ void Settingsscreen::load_board() {
 	board_shader->setUniform("board_data_texture", *board_data_texture);
 	board_shader->setUniform("board_width", board_width);
 	board_shader->setUniform("board_height", board_height);
+
 
 	//go back to simulation
 	screen_id = SIMULATION;
