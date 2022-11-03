@@ -181,7 +181,6 @@ void Simulationscreen::init() {
 	board_version = 1;
 	structure_version = 1;
 	loaded_structure = nullptr;
-
 	
 
 	//debug stuff
@@ -251,6 +250,12 @@ void Simulationscreen::init() {
 
 	//init inventory GUI
 	inventory.init();
+
+
+	paste_preview_texture.create(1, 1);
+	paste_preview_rect.setTexture(&paste_preview_texture);
+
+	pixel_color_image = pixel_color_texture->copyToImage();
 
 
 	resize();
@@ -707,6 +712,22 @@ void Simulationscreen::update_board() {
 	next_board = temp;
 }
 
+void Simulationscreen::update_paste_preview_texture() {
+	uint32_t width = *(uint32_t*)&paste_structure[0];
+	uint32_t height = *(uint32_t*)&paste_structure[4];
+
+	sf::Image img;
+	img.create(width, height);
+	for (uint32_t y = 0; y < height; y++) {
+		for (uint32_t x = 0; x < width; x++) {
+			sf::Color c = pixel_color_image.getPixel(paste_structure[8 + (y * width + x) * 4], paste_structure[8 + (y * width + x) * 4 + 1] > 1 ? 1 : 0);
+			img.setPixel(x, y, c);
+		}
+	}
+
+	paste_preview_texture.loadFromImage(img);
+	paste_preview_rect.setTextureRect(sf::IntRect(0,0, width, height));
+}
 
 void Simulationscreen::handle_events(sf::Event& ev) {
 
@@ -793,6 +814,8 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::V) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
 				pasting = true;
+
+				update_paste_preview_texture();
 
 				if (selection_mode){
 					gui.selection_button.func();
@@ -1181,6 +1204,9 @@ void Simulationscreen::update() {
 		paste_rect.setPosition((paste_x * zoom_factor + (float(SCREEN_WIDTH) / 2 - board_offset_x * zoom_factor)),
 			(paste_y * zoom_factor + (float(SCREEN_HEIGHT) / 2 - board_offset_y * zoom_factor)));
 		paste_rect.setSize(sf::Vector2f(width * zoom_factor, height * zoom_factor));
+
+		paste_preview_rect.setPosition(paste_rect.getPosition());
+		paste_preview_rect.setSize(paste_rect.getSize());
 	}
 	//selectionmode
 	else if (selection_mode) {
@@ -1412,6 +1438,7 @@ void Simulationscreen::render(sf::RenderTarget& window) {
 
 	if (pasting) {
 		window.draw(paste_rect);
+		window.draw(paste_preview_rect);
 	}
 
 	//GUI

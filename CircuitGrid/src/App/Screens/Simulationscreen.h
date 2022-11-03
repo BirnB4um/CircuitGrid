@@ -48,6 +48,10 @@ public:
 	uint8_t* paste_structure;
 	uint32_t paste_x, paste_y;
 
+	sf::RectangleShape paste_preview_rect;
+	sf::Texture paste_preview_texture;
+	sf::Image pixel_color_image;
+
 	uint8_t* loaded_structure;
 
 	uint8_t* copy_structure;
@@ -102,6 +106,7 @@ public:
 
 	std::vector <bool(Simulationscreen::*)(uint32_t& i)> update_functions;
 
+	void update_paste_preview_texture();
 	void reset_simulation();
 	void clear_board();
 	void add_to_update_list(uint32_t i);

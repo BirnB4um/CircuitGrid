@@ -17,6 +17,8 @@ private:
 	sf::Event sf_event;
 	bool update_all;
 
+	sf::Text focus_text;
+
 	//Screens
 	Homescreen homescreen;
 	Simulationscreen simulationscreen;

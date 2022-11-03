@@ -19,6 +19,10 @@ void Application::init() {
 		std::cout << "ERROR: couldnt load font 'arial.ttf'" << std::endl;
 	}
 
+	focus_text.setFont(*font);
+	focus_text.setString("click to focus!");
+	focus_text.setFillColor(sf::Color(150,150,150,100));
+
 	screen_id = HOMESCREEN;
 	closing = false;
 	TITLE = "Circuit-Grid";
@@ -80,6 +84,9 @@ void Application::on_resize() {
 
 	normal_view.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	normal_view.setCenter(float(SCREEN_WIDTH) / 2, float(SCREEN_HEIGHT) / 2);
+
+	focus_text.setCharacterSize(SCREEN_HEIGHT * 0.1f);
+	focus_text.setPosition(int(SCREEN_WIDTH / 2 - focus_text.getGlobalBounds().width/2), int(SCREEN_HEIGHT/2 - focus_text.getGlobalBounds().height / 2));
 
 	homescreen.resize();
 	simulationscreen.resize();
@@ -164,6 +171,9 @@ void Application::draw() {
 	else if (screen_id == SETTINGS) {
 		settingsscreen.render(window);
 	}
+
+	if(!update_all)
+		window.draw(focus_text);
 
 	window.display();
 }
