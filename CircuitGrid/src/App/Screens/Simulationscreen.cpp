@@ -231,7 +231,7 @@ void Simulationscreen::init() {
 	paste_rect.setOutlineColor(sf::Color(255,150,0,255));
 	paste_rect.setOutlineThickness(4);
 
-	create_board(2000, 2000);
+	create_board(board_width, board_height);
 
 	//load shader
 	load_resources();

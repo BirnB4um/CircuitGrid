@@ -826,7 +826,7 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 	}
 
 
-	if (surrounding_electricity_count == surrounding_count) {
+	if (surrounding_electricity_count != surrounding_count) {
 		next_board[this_i + 1] = 2;
 	}
 	else {

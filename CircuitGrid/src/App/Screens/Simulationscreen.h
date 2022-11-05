@@ -39,7 +39,6 @@ public:
 	sf::Text updates_number_text;
 
 
-
 	//update stuff
 	std::thread update_board_thread;
 
