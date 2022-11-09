@@ -8,33 +8,46 @@
 
 #define VERSION 0.1
 
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include "App/Application.h"
-#include "Tools/Timer.h"
 using namespace std;
 
-bool is_number(const std::string& s)
+bool is_number(char* str)
 {
-	std::string::const_iterator it = s.begin();
-	while (it != s.end() && std::isdigit(*it)) ++it;
-	return !s.empty() && it == s.end();
+	std::cout << str << std::endl;
+	int pos = 0;
+	
+	while (str[pos] != 0) {
+		if (!isdigit(str[pos])) {
+			return false;
+		}
+		pos++;
+	}
+	return true;
 }
 
 int main(int argc, char** argv) {
+
+
+	board_width = 4000;
+	board_height = 4000;
 
 	//for (int i = 0; i < argc; i++) {
 	//	if (argv[i][0] == "-"[0]) {//command
 	//		int len = strlen(argv[i]);
 	//		if (len > 1) {
-	//			if (argv[i][1] == "w"[0]) {
-	//				if (is_number(&argv[i][1])) {
-	//					int x = stoi(&argv[i][1]);
+	//			std::cout << argv[i] << std::endl;
+	//			if (argv[i][1] == "w"[0]) {//set width
+	//				if (is_number(&(argv[i][1]))) {
+	//					int x = stoi(&(argv[i][1]));
+	//					std::cout << "width: " << x << std::endl;
 	//					board_width = x;
 	//				}
-	//			}else if (argv[i][1] == "h"[0]) {
-	//				if (is_number(&argv[i][1])) {
-	//					int x = stoi(&argv[i][1]);
+	//			}
+	//			else if (argv[i][1] == "h"[0]) {//set height
+	//				if (is_number(&(argv[i][1]))) {
+	//					int x = stoi(&(argv[i][1]));
+	//					std::cout << "height: " << x << std::endl;
 	//					board_height = x;
 	//				}
 	//			}
@@ -42,9 +55,6 @@ int main(int argc, char** argv) {
 	//	}
 	//}
 
-
-	board_width = 500;
-	board_height = 500;
 
 	Application *app = new Application();
 	app->init();

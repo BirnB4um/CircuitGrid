@@ -13,6 +13,7 @@ public:
 
 	sf::RectangleShape bg_rect;
 	sf::Text info_text;
+	sf::Text coords_text;
 	sf::Text name_text;
 	sf::Text electricity_text;
 	sf::Text additional_data_text;

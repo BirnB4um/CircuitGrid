@@ -10,6 +10,9 @@ void InfoBox::init() {
 	info_text.setString("Info:");
 	info_text.setStyle(sf::Text::Bold);
 
+	coords_text.setFont(*font);
+	coords_text.setFillColor(sf::Color(255,255,255,255));
+
 	name_text.setFont(*font);
 	name_text.setFillColor(sf::Color(255,255,255,255));
 
@@ -36,9 +39,15 @@ void InfoBox::resize() {
 
 	x = bg_rect.getPosition().x + 10;
 	y = bg_rect.getPosition().y + bg_rect.getSize().y * 0.01f;
-	h = bg_rect.getSize().y * 0.2;
+	h = bg_rect.getSize().y * 0.2f;
 	info_text.setPosition(x, y);
 	info_text.setCharacterSize(h);
+
+	h = info_text.getCharacterSize() * 0.6f;
+	x = info_text.getPosition().x + info_text.getGlobalBounds().width * 1.4f;
+	y = info_text.getPosition().y + info_text.getCharacterSize() * 0.5f - h * 0.5f;
+	coords_text.setPosition(x, y);
+	coords_text.setCharacterSize(h);
 
 	x = bg_rect.getPosition().x + 10;
 	y = info_text.getPosition().y + info_text.getCharacterSize() * 1.1f;
@@ -66,14 +75,26 @@ void InfoBox::update() {
 	if (sim->mouse_over_board) {
 		std::string name = item_names[this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4]];
 		name_text.setString("Name: " + name);
-		electricity_text.setString((name == item_names[BRIDGE] ? "Electricity horizontal: " : "Electricity.: ") + std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 1]));
-		additional_data_text.setString( (name == item_names[REPEATER] ? "Delay Value: " : name == item_names[BRIDGE] ? "Electricity vertical: " : "Additional Data: ") + std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 2] + (name == item_names[REPEATER] ? -2 : 0)) + (name == item_names[REPEATER] ? " (+/-)" : ""));
+		
+		electricity_text.setString((name == item_names[BRIDGE] ? "Electricity horizontal: " : "Electricity.: ") 
+								+ std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 1]));
+		
+		additional_data_text.setString( (name == item_names[REPEATER] ? "Delay Value: " : 
+									name == item_names[BRIDGE] ? "Electricity vertical: " : "Additional Data: ")
+								+ std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 2] + 
+												(name == item_names[REPEATER] ? -2 : 0)) + (name == item_names[REPEATER] ? " (+/-)" : ""));
+		
 		last_additional_data_text.setString("Last Data: " + std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 3]));
+		
+		coords_text.setString(sim->selection_set ? "W:" + std::to_string(int(sim->selection_end_x - sim->selection_start_x + 1)) + 
+						" H:" + std::to_string(int(sim->selection_end_y - sim->selection_start_y + 1)) :
+							"X:" + std::to_string(int(floor(board_mouse.x))) + " Y:" + std::to_string(int(floor(board_mouse.y))));
 	}
 }
 void InfoBox::render(sf::RenderTarget &window) {
 	window.draw(bg_rect);
 	window.draw(info_text);
+	window.draw(coords_text);
 	window.draw(name_text);
 	window.draw(electricity_text);
 	window.draw(additional_data_text);

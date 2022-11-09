@@ -105,6 +105,8 @@ public:
 
 	std::vector <bool(Simulationscreen::*)(uint32_t& i)> update_functions;
 
+	void rotate_structure(uint8_t** structure, bool clockwise);
+	void mirror_structure(uint8_t** structure, bool vertical);
 	void update_paste_preview_texture();
 	void reset_simulation();
 	void clear_board();

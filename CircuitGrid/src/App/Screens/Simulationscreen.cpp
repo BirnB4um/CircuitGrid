@@ -856,8 +856,18 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::B) {//toggle edit mode
 			gui.edit_button.func();
 		}
-		else if (ev.key.code == sf::Keyboard::R) {//reset simulation
-			reset_simulation_bool = true;
+		else if (ev.key.code == sf::Keyboard::M) {
+			if (pasting) {//mirrow paste_structure
+				mirror_structure(&paste_structure, sf::Keyboard::isKeyPressed(sf::Keyboard::LShift));
+			}
+		}
+		else if (ev.key.code == sf::Keyboard::R) {
+			if (pasting) {//rotate paste_structure
+				rotate_structure(&paste_structure, !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift));
+			}
+			else {//reset simulation
+				reset_simulation_bool = true;
+			}
 		}
 		else if (ev.key.code == sf::Keyboard::E) {//open/close inventory
 			gui.item_button.func();
@@ -1104,6 +1114,72 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 	//Moved
 	else if (ev.type == sf::Event::MouseMoved) {
 	}
+}
+
+void Simulationscreen::rotate_structure(uint8_t** structure, bool clockwise) {
+	uint32_t width = *(uint32_t*)&(*structure)[0];
+	uint32_t height = *(uint32_t*)&(*structure)[4];
+
+	uint8_t* new_structure = new uint8_t[8 + width * height * 4];
+	*(uint32_t*)&new_structure[0] = height;
+	*(uint32_t*)&new_structure[4] = width;
+
+	if (clockwise) {
+		uint32_t i = 0;
+		for (int x = 0; x < width; x++) {
+			for (int y = height - 1; y >= 0; y--) {
+				*(uint32_t*)&new_structure[8 + i * 4] = *(uint32_t*)&(*structure)[8 + (x + y * width) * 4];
+				i++;
+			}
+		}
+	}
+	else {
+		uint32_t i = 0;
+		for (int x = width-1; x >= 0; x--) {
+			for (int y = 0; y < height; y++) {
+				*(uint32_t*)&new_structure[8 + i * 4] = *(uint32_t*)&(*structure)[8 + (x + y * width) * 4];
+				i++;
+			}
+		}
+	}
+
+	delete[] *structure;
+	*structure = new_structure;
+
+	update_paste_preview_texture();
+}
+
+void Simulationscreen::mirror_structure(uint8_t** structure, bool vertical) {
+	uint32_t width = *(uint32_t*)&(*structure)[0];
+	uint32_t height = *(uint32_t*)&(*structure)[4];
+
+	uint8_t* new_structure = new uint8_t[8 + width * height * 4];
+	*(uint32_t*)&new_structure[0] = width;
+	*(uint32_t*)&new_structure[4] = height;
+
+	if (vertical) {
+		uint32_t i = 0;
+		for (int y = height - 1; y >= 0; y--) {
+			for (int x = 0; x < width; x++) {
+				*(uint32_t*)&new_structure[8 + i * 4] = *(uint32_t*)&(*structure)[8 + (x + y * width) * 4];
+				i++;
+			}
+		}
+	}
+	else {
+		uint32_t i = 0;
+		for (int y = 0; y < height; y++) {
+			for (int x = width - 1; x >= 0; x--) {
+				*(uint32_t*)&new_structure[8 + i * 4] = *(uint32_t*)&(*structure)[8 + (x + y * width) * 4];
+				i++;
+			}
+		}
+	}
+
+	delete[] * structure;
+	*structure = new_structure;
+
+	update_paste_preview_texture();
 }
 
 void Simulationscreen::update() {
