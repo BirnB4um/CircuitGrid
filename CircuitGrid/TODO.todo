@@ -4,7 +4,7 @@
 each pixel = 4 bytes
 - 1b = id
 - 1b = elecricity
-- 1b = electricity II (BRIDGE); repeater value
+- 1b = electricity II (BRIDGE); repeater value; clock value
 - 1b = wall
 
 
