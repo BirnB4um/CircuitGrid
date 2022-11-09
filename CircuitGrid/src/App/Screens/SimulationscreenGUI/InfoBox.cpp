@@ -79,12 +79,16 @@ void InfoBox::update() {
 		electricity_text.setString((name == item_names[BRIDGE] ? "Electricity horizontal: " : "Electricity.: ") 
 								+ std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 1]));
 		
-		additional_data_text.setString( (name == item_names[REPEATER] ? "Delay Value: " : 
-									name == item_names[BRIDGE] ? "Electricity vertical: " : "Additional Data: ")
+		additional_data_text.setString( (name == item_names[REPEATER] ? "Delay Value: " :
+										name == item_names[BRIDGE] ? "Electricity vertical: " :
+										name == item_names[CLOCK] ? "Clock resettime: " :
+										"Additional Data: ")
 								+ std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 2] + 
-												(name == item_names[REPEATER] ? -2 : 0)) + (name == item_names[REPEATER] ? " (+/-)" : ""));
+												(name == item_names[REPEATER] ? -2 : 0)) + (name == item_names[REPEATER] || name == item_names[CLOCK] ? " (+/-)" : ""));
 		
-		last_additional_data_text.setString("Last Data: " + std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 3]));
+		last_additional_data_text.setString((name == item_names[CLOCK] ? "Current time: " :
+											"Additional Data: ") 
+			+ std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 3]));
 		
 		coords_text.setString(sim->selection_set ? "W:" + std::to_string(int(sim->selection_end_x - sim->selection_start_x + 1)) + 
 						" H:" + std::to_string(int(sim->selection_end_y - sim->selection_start_y + 1)) :

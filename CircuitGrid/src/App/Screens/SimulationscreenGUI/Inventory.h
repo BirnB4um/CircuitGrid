@@ -49,6 +49,9 @@ public:
 	sf::Text inv_nand_text;
 	Button inv_nand_button;
 
+	sf::Text inv_clock_text;
+	Button inv_clock_button;
+
 	//structure gui
 	sf::RectangleShape structure_bg_rect;
 	sf::Text structure_text;

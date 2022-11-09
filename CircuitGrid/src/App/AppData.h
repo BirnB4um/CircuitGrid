@@ -54,12 +54,14 @@ extern uint8_t* next_board;
 extern sf::Vector2f board_mouse;
 extern sf::Vector2f last_board_mouse;
 extern float board_tps;
+extern long long clock_time_last;
+extern uint32_t clock_time_difference;
 extern bool simulation_paused;
 extern uint32_t selected_item;
 extern std::vector<uint32_t> item_list;
 extern uint8_t item_count;
 extern enum ITEM {
-	AIR, WIRE, OUTPUT, BATTERY, REPEATER, BRIDGE, LAMP, BUTTON, SWITCH, NOT, OR, NOR, XOR, XNOR, AND, NAND
+	AIR, WIRE, OUTPUT, BATTERY, REPEATER, BRIDGE, LAMP, BUTTON, SWITCH, NOT, OR, NOR, XOR, XNOR, AND, NAND, CLOCK
 };
 extern std::vector<std::string> item_names;
 extern bool one_simulations_step;

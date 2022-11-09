@@ -98,6 +98,11 @@ void Inventory::init() {
 	inv_nand_text.setFillColor(sf::Color(255, 255, 255, 255));
 	inv_nand_text.setOutlineThickness(0);
 
+	inv_clock_text.setFont(*font);
+	inv_clock_text.setString("Clock");
+	inv_clock_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_clock_text.setOutlineThickness(0);
+
 
 	//buttons
 	inv_air_button.init();
@@ -242,6 +247,15 @@ void Inventory::init() {
 	inv_nand_button.set_pressed_texture_inrect(240, 240, 16, 16);
 	inv_nand_button.set_function([&]() {
 		selected_item = item_list[NAND];
+		sim->gui.update_item_button_texture();
+		});
+
+	inv_clock_button.init();
+	inv_clock_button.set_texture_inrect(224, 0, 16, 16);
+	inv_clock_button.set_hoverover_texture_inrect(224, 0, 16, 16);
+	inv_clock_button.set_pressed_texture_inrect(224, 0, 16, 16);
+	inv_clock_button.set_function([&]() {
+		selected_item = item_list[CLOCK];
 		sim->gui.update_item_button_texture();
 		});
 
@@ -423,6 +437,10 @@ void Inventory::resize() {
 		y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.5f + perc_w) * 6;
 		inv_nand_button.set_position(x, y);
 		inv_nand_button.set_size(w, h);
+
+		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
+		inv_clock_button.set_position(x, y);
+		inv_clock_button.set_size(w, h);
 	}
 
 	//logic_gates text
@@ -529,6 +547,12 @@ void Inventory::resize() {
 		y = inv_nand_button.rect.getPosition().y - h * 1.3f;
 		inv_nand_text.setPosition(x, y);
 		inv_nand_text.setCharacterSize(h);
+
+		h = inv_clock_button.rect.getSize().x * 0.35f;
+		x = inv_clock_button.rect.getPosition().x;
+		y = inv_clock_button.rect.getPosition().y - h * 1.3f;
+		inv_clock_text.setPosition(x, y);
+		inv_clock_text.setCharacterSize(h);
 	}
 
 
@@ -589,6 +613,8 @@ void Inventory::update() {
 		inv_and_button.update(window_mouse.x, window_mouse.y);
 		inv_nand_button.update(window_mouse.x, window_mouse.y);
 
+		inv_clock_button.update(window_mouse.x, window_mouse.y);
+
 
 		save_structure_button.update(window_mouse.x, window_mouse.y);
 		load_structure_button.update(window_mouse.x, window_mouse.y);
@@ -646,6 +672,9 @@ void Inventory::render(sf::RenderTarget& window) {
 
 	inv_nand_button.render(window);
 	window.draw(inv_nand_text);
+
+	inv_clock_button.render(window);
+	window.draw(inv_clock_text);
 
 	window.draw(inv_logic_gates_text);
 

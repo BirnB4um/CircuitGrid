@@ -20,6 +20,7 @@ class Simulationscreen
 {
 
 public:
+	Timer universal_timer;
 
 	//GUI
 	bool show_gui;
@@ -147,4 +148,5 @@ private:
 	bool update_xnor(uint32_t& i);
 	bool update_and(uint32_t& i);
 	bool update_nand(uint32_t& i);
+	bool update_clock(uint32_t& i);
 };

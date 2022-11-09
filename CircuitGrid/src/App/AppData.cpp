@@ -47,6 +47,8 @@ uint8_t* next_board = nullptr;
 sf::Vector2f board_mouse;
 sf::Vector2f last_board_mouse;
 float board_tps = 10;
+long long clock_time_last;
+uint32_t clock_time_difference;
 bool simulation_paused;
 uint32_t selected_item = 0;
 std::vector<uint32_t> item_list;

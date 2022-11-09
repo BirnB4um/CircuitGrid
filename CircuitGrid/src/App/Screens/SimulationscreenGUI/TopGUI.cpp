@@ -159,9 +159,11 @@ void TopGUI::init() {
 }
 
 void TopGUI::update_item_button_texture() {
-	item_button.set_texture_inrect(240, (selected_item & 0xFF) * 16, 16, 16);
-	item_button.set_hoverover_texture_inrect(240, (selected_item & 0xFF) * 16, 16, 16);
-	item_button.set_pressed_texture_inrect(240, (selected_item & 0xFF) * 16, 16, 16);
+	int x = (selected_item & 0xFF) > 15 ? 224 : 240;
+	int y = ((selected_item & 0xFF) % 16) * 16;
+	item_button.set_texture_inrect(x, y, 16, 16);
+	item_button.set_hoverover_texture_inrect(x, y, 16, 16);
+	item_button.set_pressed_texture_inrect(x, y, 16, 16);
 }
 
 void TopGUI::resize() {

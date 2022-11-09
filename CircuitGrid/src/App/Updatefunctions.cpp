@@ -836,3 +836,21 @@ bool Simulationscreen::update_nand(uint32_t& i) {
 	return *(uint32_t*)&this_board[this_i] != *(uint32_t*)&next_board[this_i];
 }
 
+bool Simulationscreen::update_clock(uint32_t& i) {
+	uint32_t this_i = i * 4;
+
+	int next_value = this_board[this_i + 3];
+	next_value -= clock_time_difference;
+	next_value = next_value < 0 ? 0 : next_value > 255 ? 255 : next_value;
+	if (next_value == 0) {
+		next_board[this_i + 1] = 2;
+		next_value = this_board[this_i + 2];
+	}
+	else {
+		next_board[this_i + 1] = 0;
+	}
+	next_board[this_i + 3] = next_value;
+
+	return true;
+}
+

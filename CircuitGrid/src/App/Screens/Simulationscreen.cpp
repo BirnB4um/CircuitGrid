@@ -139,6 +139,10 @@ void Simulationscreen::init_update_functions() {
 	item_list.push_back(0x0000000F);
 	item_names.push_back("NAND");
 
+	update_functions.push_back(&Simulationscreen::update_clock);
+	item_list.push_back(0x00000010);
+	item_names.push_back("Clock");
+
 	item_count = item_names.size();
 
 }
@@ -408,17 +412,22 @@ void Simulationscreen::reset_simulation() {
 			add_to_update_list(i - board_width);
 			add_to_update_list(i + board_width);
 		}
+
 		if (this_board[i * 4] == REPEATER) {
-			next_board[i * 4 + 1] = ((uint8_t*)&item_list[this_board[i * 4]])[1];
 			this_board[i * 4 + 1] = ((uint8_t*)&item_list[this_board[i * 4]])[1];
+		}
+		else if (this_board[i * 4] == CLOCK) {
+			this_board[i * 4 + 1] = ((uint8_t*)&item_list[this_board[i * 4]])[1];
+
+			this_board[i * 4 + 3] = ((uint8_t*)&item_list[this_board[i * 4]])[3];
 		}
 		else if (this_board[i * 4] == BUTTON) {
 
 		}
 		else if (this_board[i * 4] == SWITCH) {
 
-		} else {
-			*(uint32_t*)&next_board[i * 4] = item_list[this_board[i * 4]];
+		} 
+		else {
 			*(uint32_t*)&this_board[i * 4] = item_list[this_board[i * 4]];
 		}
 
@@ -693,6 +702,11 @@ void Simulationscreen::update_board() {
 	memcpy(update_list_copy, &update_list[0], number_of_pixels_to_update * 4);//copy update_list
 	update_list.clear();
 
+	clock_time_difference = (universal_timer.get_time()/10) - clock_time_last;
+	if (clock_time_difference) {
+		clock_time_last = universal_timer.get_time()/10;
+	}
+
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < number_of_pixels_to_update; i++) {
 		index = update_list_copy[i];
@@ -876,7 +890,8 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			one_simulations_step = true;
 		}
 		else if (ev.key.code == sf::Keyboard::Up) {
-			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER) {//increment repeater value
+			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER ||
+				this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == CLOCK) {//increment repeater/clock value
 				std::lock_guard<std::mutex> lock(draw_mutex);
 
 				uint32_t new_item = *(uint32_t*)&this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];
@@ -898,7 +913,8 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			}
 		}
 		else if (ev.key.code == sf::Keyboard::Down) {
-			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER) {//decrement repeater value
+			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER ||
+				this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == CLOCK) {//decrement repeater/clock value
 				std::lock_guard<std::mutex> lock(draw_mutex);
 
 				uint32_t new_item = *(uint32_t*)&this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];
