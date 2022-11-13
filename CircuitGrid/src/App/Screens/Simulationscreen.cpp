@@ -418,7 +418,6 @@ void Simulationscreen::reset_simulation() {
 		}
 		else if (this_board[i * 4] == CLOCK) {
 			this_board[i * 4 + 1] = ((uint8_t*)&item_list[this_board[i * 4]])[1];
-
 			this_board[i * 4 + 3] = ((uint8_t*)&item_list[this_board[i * 4]])[3];
 		}
 		else if (this_board[i * 4] == BUTTON) {

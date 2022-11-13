@@ -27,3 +27,6 @@ each pixel = 4 bytes
 -update_checklist -> each bool = 1 bit (reduce size x8 & faster to clear with memset)
 
 
+//// ROM ////
+-on: delay = number_of_repeaters * 2 + all repeater_values
+-off: delay = 4 + number_of_repeaters * 2 + all repeater_values
