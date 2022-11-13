@@ -4,18 +4,14 @@
 each pixel = 4 bytes
 - 1b = id
 - 1b = elecricity
-- 1b = electricity II (BRIDGE); repeater value; clock value
+- 1b = electricity II; repeater value; clock value
 - 1b = wall
 
 
 ///// TODO /////
 -add undo function
--added structure_list (list of all saved structures)
 -change update_thread to run perfectly on time (exactly targeted tps)
--add background tiles
 -delete[] lists
--load configs from file (boardsize, tps, ...)
-
 
 
 ///// BUGS /////
@@ -24,9 +20,5 @@ each pixel = 4 bytes
 
 
 ///// OPTIMIZE /////
--update_checklist -> each bool = 1 bit (reduce size x8 & faster to clear with memset)
+-update board on multiple threads
 
-
-//// ROM ////
--on: delay = number_of_repeaters * 2 + all repeater_values
--off: delay = 4 + number_of_repeaters * 2 + all repeater_values

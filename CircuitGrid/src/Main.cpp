@@ -29,8 +29,8 @@ bool is_number(char* str)
 int main(int argc, char** argv) {
 
 
-	board_width = 4000;
-	board_height = 4000;
+	board_width = 2000;
+	board_height = 2000;
 
 	//for (int i = 0; i < argc; i++) {
 	//	if (argv[i][0] == "-"[0]) {//command

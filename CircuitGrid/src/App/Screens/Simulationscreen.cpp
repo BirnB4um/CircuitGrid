@@ -693,6 +693,7 @@ void Simulationscreen::update_board() {
 	if (number_of_pixels_to_update == 0)
 		return;
 	
+	//TODO: in threads
 	for (uint32_t i = 0; i < number_of_pixels_to_update; i++) {
 		*(uint32_t*)&next_board[update_list[i] * 4] = *(uint32_t*)&this_board[update_list[i] * 4];//copy board
 		update_checklist[update_list[i]] = 0;//clear checklist marks
@@ -701,6 +702,7 @@ void Simulationscreen::update_board() {
 	memcpy(update_list_copy, &update_list[0], number_of_pixels_to_update * 4);//copy update_list
 	update_list.clear();
 
+	//update clock time
 	clock_time_difference = (universal_timer.get_time()/10) - clock_time_last;
 	if (clock_time_difference) {
 		clock_time_last = universal_timer.get_time()/10;
@@ -804,8 +806,9 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 						return;
 					}
 
-
-					delete[] copy_structure;
+					if (copy_structure != nullptr) {
+						//delete[] copy_structure;//TODO: bug here. maybe deleted somewhere else before here
+					}
 					copy_structure = new uint8_t[8 + (height * width) * 4];
 					
 					*(uint32_t*)&copy_structure[0] = width;
