@@ -30,8 +30,10 @@ void Simulationscreen::load_resources() {
 	//load fonts
 	std::cout << "load fonts..." << std::endl;
 
-	if (!font->loadFromFile("res/fonts/Pixel2.ttf")) {
-		std::cout << "ERROR: couldnt load font 'arial.ttf'" << std::endl;
+	if (!font->loadFromFile("res/fonts/pixelfont.ttf")) {
+		std::cout << "ERROR: couldnt load font 'pixelfont.ttf'" << std::endl;
+
+		font->loadFromFile("res/fonts/arial.ttf");//last option
 	}
 
 	//reload texture
