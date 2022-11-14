@@ -108,7 +108,7 @@ void HelpMenu::resize() {
 	help_hotkeys_text.setPosition(SCREEN_WIDTH - help_hotkeys_text.getGlobalBounds().width * 1.1f,
 										SCREEN_HEIGHT - help_hotkeys_text.getGlobalBounds().height);
 
-	help_close_text.setCharacterSize(sim->gui.item_button.rect.getSize().y * 0.8);
+	help_close_text.setCharacterSize(sim->gui.item_button.rect.getSize().y * 0.5);
 	help_close_text.setPosition(SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.7f);
 }
 

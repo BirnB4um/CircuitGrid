@@ -29,8 +29,8 @@ void InfoBox::resize() {
 	int x, y, w, h, stroke_width;
 
 	stroke_width = 2;
-	h = SCREEN_HEIGHT * 0.15f;
-	w = h * 1.7f;
+	h = SCREEN_HEIGHT * 0.13f;
+	w = h * 2.2f;
 	x = stroke_width;
 	y = SCREEN_HEIGHT - h - stroke_width - sim->gui.settings_button.rect.getSize().y;
 	bg_rect.setPosition(x, y);
@@ -43,30 +43,30 @@ void InfoBox::resize() {
 	info_text.setPosition(x, y);
 	info_text.setCharacterSize(h);
 
-	h = info_text.getCharacterSize() * 0.6f;
-	x = info_text.getPosition().x + info_text.getGlobalBounds().width * 1.4f;
-	y = info_text.getPosition().y + info_text.getCharacterSize() * 0.5f - h * 0.5f;
+	h = info_text.getCharacterSize() * 0.7f;
+	x = info_text.getPosition().x + info_text.getGlobalBounds().width * 1.2f;
+	y = info_text.getPosition().y + info_text.getCharacterSize() * 0.5f - h * 0.4f;
 	coords_text.setPosition(x, y);
 	coords_text.setCharacterSize(h);
 
 	x = bg_rect.getPosition().x + 10;
-	y = info_text.getPosition().y + info_text.getCharacterSize() * 1.1f;
-	h = bg_rect.getSize().y * 0.15f;
+	y = info_text.getPosition().y + info_text.getCharacterSize() * 1.4f;
+	h = bg_rect.getSize().y * 0.12f;
 	name_text.setPosition(x, y);
 	name_text.setCharacterSize(h);
 
 	x = bg_rect.getPosition().x + 10;
-	y = name_text.getPosition().y + name_text.getCharacterSize() * 1.1f;
+	y = name_text.getPosition().y + name_text.getCharacterSize() * 1.3f;
 	electricity_text.setPosition(x, y);
 	electricity_text.setCharacterSize(h);
 
 	x = bg_rect.getPosition().x + 10;
-	y = electricity_text.getPosition().y + electricity_text.getCharacterSize() * 1.1f;
+	y = electricity_text.getPosition().y + electricity_text.getCharacterSize() * 1.3f;
 	additional_data_text.setPosition(x, y);
 	additional_data_text.setCharacterSize(h);
 
 	x = bg_rect.getPosition().x + 10;
-	y = additional_data_text.getPosition().y + additional_data_text.getCharacterSize() * 1.1f;
+	y = additional_data_text.getPosition().y + additional_data_text.getCharacterSize() * 1.3f;
 	last_additional_data_text.setPosition(x, y);
 	last_additional_data_text.setCharacterSize(h);
 

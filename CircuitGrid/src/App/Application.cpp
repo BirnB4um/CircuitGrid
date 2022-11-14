@@ -15,8 +15,8 @@ void Application::init() {
 
 	//load Font
 	font = new sf::Font();
-	if (!font->loadFromFile("res/fonts/arial.ttf")) {
-		std::cout << "ERROR: couldnt load font 'arial.ttf'" << std::endl;
+	if (!font->loadFromFile("res/fonts/pixelfont.ttf")) {
+		std::cout << "ERROR: couldnt load font 'pixelfont.ttf'" << std::endl;
 	}
 
 	focus_text.setFont(*font);
@@ -85,7 +85,7 @@ void Application::on_resize() {
 	normal_view.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	normal_view.setCenter(float(SCREEN_WIDTH) / 2, float(SCREEN_HEIGHT) / 2);
 
-	focus_text.setCharacterSize(SCREEN_HEIGHT * 0.1f);
+	focus_text.setCharacterSize(SCREEN_HEIGHT * 0.08f);
 	focus_text.setPosition(int(SCREEN_WIDTH / 2 - focus_text.getGlobalBounds().width/2), int(SCREEN_HEIGHT/2 - focus_text.getGlobalBounds().height / 2));
 
 	homescreen.resize();

@@ -30,7 +30,7 @@ void Simulationscreen::load_resources() {
 	//load fonts
 	std::cout << "load fonts..." << std::endl;
 
-	if (!font->loadFromFile("res/fonts/arial.ttf")) {
+	if (!font->loadFromFile("res/fonts/Pixel2.ttf")) {
 		std::cout << "ERROR: couldnt load font 'arial.ttf'" << std::endl;
 	}
 
@@ -644,7 +644,7 @@ void Simulationscreen::th_update_board() {
 		}
 
 		if (drawn_to_board) {
-			memcpy(&next_board[0], &this_board[0], board_size * 4);//update whole board
+			memcpy(&next_board[0], &this_board[0], board_size * 4);//upload whole board to GPU
 		}
 
 		if (simulation_paused) {

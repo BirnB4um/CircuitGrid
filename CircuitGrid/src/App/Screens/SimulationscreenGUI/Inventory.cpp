@@ -14,7 +14,7 @@ void Inventory::init() {
 
 	inv_logic_gates_text.setFont(*font);
 	inv_logic_gates_text.setString("Logic Gates");
-	inv_logic_gates_text.setStyle(sf::Text::Bold);
+	inv_logic_gates_text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 	inv_logic_gates_text.setFillColor(sf::Color(255, 255, 255, 255));
 	inv_logic_gates_text.setOutlineThickness(0);
 
@@ -356,7 +356,7 @@ void Inventory::resize() {
 	x = inventory_bg_rect.getPosition().x + 15;
 	y = inventory_bg_rect.getPosition().y + 10;
 	w = 0;
-	h = inventory_bg_rect.getSize().y * 0.045f;
+	h = inventory_bg_rect.getSize().y * 0.038f;
 	inventory_text.setPosition(x, y);
 	inventory_text.setCharacterSize(h);
 
@@ -445,110 +445,110 @@ void Inventory::resize() {
 
 	//logic_gates text
 	x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * (1 - perc_w * 3) * 0.25f;
-	y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.5f + perc_w) * 3.1f;
-	h = inventory_bg_rect.getSize().x * 0.13f;
+	y = inventory_bg_rect.getPosition().y + inventory_bg_rect.getSize().y * offset_from_top + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.5f + perc_w) * 3.2f;
+	h = inventory_bg_rect.getSize().x * 0.1f;
 	inv_logic_gates_text.setPosition(x, y);
 	inv_logic_gates_text.setCharacterSize(h);
 
 	//items texts
 	{
-		h = inv_air_button.rect.getSize().x * 0.4f;
+		h = inv_air_button.rect.getSize().x * 0.3f;
 		x = inv_air_button.rect.getPosition().x;
 		y = inv_air_button.rect.getPosition().y - h * 1.3f;
 		inv_air_text.setPosition(x, y);
 		inv_air_text.setCharacterSize(h);
 
-		h = inv_wire_button.rect.getSize().x * 0.4f;
+		h = inv_wire_button.rect.getSize().x * 0.3f;
 		x = inv_wire_button.rect.getPosition().x;
 		y = inv_wire_button.rect.getPosition().y - h * 1.3f;
 		inv_wire_text.setPosition(x, y);
 		inv_wire_text.setCharacterSize(h);
 
-		h = inv_out_button.rect.getSize().x * 0.3f;
+		h = inv_out_button.rect.getSize().x * 0.2f;
 		x = inv_out_button.rect.getPosition().x;
 		y = inv_out_button.rect.getPosition().y - h * 1.3f;
 		inv_out_text.setPosition(x, y);
 		inv_out_text.setCharacterSize(h);
 
-		h = inv_battery_button.rect.getSize().x * 0.3f;
+		h = inv_battery_button.rect.getSize().x * 0.2f;
 		x = inv_battery_button.rect.getPosition().x;
 		y = inv_battery_button.rect.getPosition().y - h * 1.3f;
 		inv_battery_text.setPosition(x, y);
 		inv_battery_text.setCharacterSize(h);
 
-		h = inv_repeater_button.rect.getSize().x * 0.3f;
+		h = inv_repeater_button.rect.getSize().x * 0.18f;
 		x = inv_repeater_button.rect.getPosition().x;
 		y = inv_repeater_button.rect.getPosition().y - h * 1.3f;
 		inv_repeater_text.setPosition(x, y);
 		inv_repeater_text.setCharacterSize(h);
 
-		h = inv_bridge_button.rect.getSize().x * 0.3f;
+		h = inv_bridge_button.rect.getSize().x * 0.2f;
 		x = inv_bridge_button.rect.getPosition().x;
 		y = inv_bridge_button.rect.getPosition().y - h * 1.3f;
 		inv_bridge_text.setPosition(x, y);
 		inv_bridge_text.setCharacterSize(h);
 
-		h = inv_lamp_button.rect.getSize().x * 0.35f;
+		h = inv_lamp_button.rect.getSize().x * 0.25f;
 		x = inv_lamp_button.rect.getPosition().x;
 		y = inv_lamp_button.rect.getPosition().y - h * 1.3f;
 		inv_lamp_text.setPosition(x, y);
 		inv_lamp_text.setCharacterSize(h);
 
-		h = inv_button_button.rect.getSize().x * 0.35f;
+		h = inv_button_button.rect.getSize().x * 0.24f;
 		x = inv_button_button.rect.getPosition().x;
 		y = inv_button_button.rect.getPosition().y - h * 1.3f;
 		inv_button_text.setPosition(x, y);
 		inv_button_text.setCharacterSize(h);
 
-		h = inv_switch_button.rect.getSize().x * 0.35f;
+		h = inv_switch_button.rect.getSize().x * 0.25f;
 		x = inv_switch_button.rect.getPosition().x;
 		y = inv_switch_button.rect.getPosition().y - h * 1.3f;
 		inv_switch_text.setPosition(x, y);
 		inv_switch_text.setCharacterSize(h);
 
-		h = inv_not_button.rect.getSize().x * 0.4f;
+		h = inv_not_button.rect.getSize().x * 0.3f;
 		x = inv_not_button.rect.getPosition().x;
 		y = inv_not_button.rect.getPosition().y - h * 1.3f;
 		inv_not_text.setPosition(x, y);
 		inv_not_text.setCharacterSize(h);
 
-		h = inv_or_button.rect.getSize().x * 0.4f;
+		h = inv_or_button.rect.getSize().x * 0.3f;
 		x = inv_or_button.rect.getPosition().x;
 		y = inv_or_button.rect.getPosition().y - h * 1.3f;
 		inv_or_text.setPosition(x, y);
 		inv_or_text.setCharacterSize(h);
 
-		h = inv_nor_button.rect.getSize().x * 0.4f;
+		h = inv_nor_button.rect.getSize().x * 0.3f;
 		x = inv_nor_button.rect.getPosition().x;
 		y = inv_nor_button.rect.getPosition().y - h * 1.3f;
 		inv_nor_text.setPosition(x, y);
 		inv_nor_text.setCharacterSize(h);
 
-		h = inv_xor_button.rect.getSize().x * 0.4f;
+		h = inv_xor_button.rect.getSize().x * 0.3f;
 		x = inv_xor_button.rect.getPosition().x;
 		y = inv_xor_button.rect.getPosition().y - h * 1.3f;
 		inv_xor_text.setPosition(x, y);
 		inv_xor_text.setCharacterSize(h);
 
-		h = inv_xnor_button.rect.getSize().x * 0.35f;
+		h = inv_xnor_button.rect.getSize().x * 0.25f;
 		x = inv_xnor_button.rect.getPosition().x;
 		y = inv_xnor_button.rect.getPosition().y - h * 1.3f;
 		inv_xnor_text.setPosition(x, y);
 		inv_xnor_text.setCharacterSize(h);
 
-		h = inv_and_button.rect.getSize().x * 0.4f;
+		h = inv_and_button.rect.getSize().x * 0.3f;
 		x = inv_and_button.rect.getPosition().x;
 		y = inv_and_button.rect.getPosition().y - h * 1.3f;
 		inv_and_text.setPosition(x, y);
 		inv_and_text.setCharacterSize(h);
 
-		h = inv_nand_button.rect.getSize().x * 0.35f;
+		h = inv_nand_button.rect.getSize().x * 0.25f;
 		x = inv_nand_button.rect.getPosition().x;
 		y = inv_nand_button.rect.getPosition().y - h * 1.3f;
 		inv_nand_text.setPosition(x, y);
 		inv_nand_text.setCharacterSize(h);
 
-		h = inv_clock_button.rect.getSize().x * 0.35f;
+		h = inv_clock_button.rect.getSize().x * 0.25f;
 		x = inv_clock_button.rect.getPosition().x;
 		y = inv_clock_button.rect.getPosition().y - h * 1.3f;
 		inv_clock_text.setPosition(x, y);
@@ -566,8 +566,8 @@ void Inventory::resize() {
 	structure_bg_rect.setSize(sf::Vector2f(w, h));
 	structure_bg_rect.setOutlineThickness(stroke_width);
 
-	h = structure_bg_rect.getSize().y * 0.25f;
-	x = structure_bg_rect.getPosition().x + structure_bg_rect.getSize().x / 2 - structure_text.getGlobalBounds().width / 2;
+	h = structure_bg_rect.getSize().y * 0.2f;
+	x = structure_bg_rect.getPosition().x + structure_bg_rect.getSize().x * 0.1f;
 	y = structure_bg_rect.getPosition().y + h * 0.2f;
 	structure_text.setPosition(x, y);
 	structure_text.setCharacterSize(h);
