@@ -21,4 +21,4 @@ Press H for help menu.
 SFML for Graphics
 ##
 Demo video playing Bad Apple: https://www.youtube.com/watch?v=16tisvwK9hQ  
-Pixel art font by Smoking Drum (http://www.smokingdrum.com)
+Pixel art font by Smoking Drum
