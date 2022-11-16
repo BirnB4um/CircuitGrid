@@ -281,11 +281,11 @@ void Simulationscreen::resize() {
 	//inventory GUI
 	inventory.resize();
 
-	//help menu
-	helpmenu.resize();
-
 	//infobox
 	infobox.resize();
+
+	//help menu
+	helpmenu.resize();
 
 
 	//debug info
@@ -809,7 +809,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 					}
 
 					if (copy_structure != nullptr) {
-						//delete[] copy_structure;//TODO: bug here. maybe deleted somewhere else before here
+						delete[] copy_structure;//TODO: bug here. maybe deleted somewhere else before here
 					}
 					copy_structure = new uint8_t[8 + (height * width) * 4];
 					
@@ -893,7 +893,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::Right) {//one step
 			one_simulations_step = true;
 		}
-		else if (ev.key.code == sf::Keyboard::Up) {
+		else if (ev.key.code == sf::Keyboard::Up || ev.key.code == sf::Keyboard::Add) {
 			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER ||
 				this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == CLOCK) {//increment repeater/clock value
 				std::lock_guard<std::mutex> lock(draw_mutex);
@@ -916,7 +916,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 				drawinstruction_list.push_back(instruction);
 			}
 		}
-		else if (ev.key.code == sf::Keyboard::Down) {
+		else if (ev.key.code == sf::Keyboard::Down || ev.key.code == sf::Keyboard::Subtract) {
 			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER ||
 				this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == CLOCK) {//decrement repeater/clock value
 				std::lock_guard<std::mutex> lock(draw_mutex);

@@ -21,6 +21,7 @@ public:
 	sf::Text help_selection_button_text;
 	sf::Text help_item_button_text;
 	sf::Text help_hotkeys_text;
+	sf::Text help_infobox_text;
 	sf::Text help_close_text;
 
 

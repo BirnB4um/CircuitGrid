@@ -6,7 +6,7 @@
 #pragma comment(linker,"/SUBSYSTEM:WINDOWS")
 #endif
 
-#define VERSION 0.1
+#define VERSION 1.0
 
 #include <iostream>
 #include "App/Application.h"

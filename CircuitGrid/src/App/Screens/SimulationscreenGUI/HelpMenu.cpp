@@ -39,11 +39,16 @@ void HelpMenu::init() {
 	help_close_text.setString("Press H to exit this menu");
 	help_close_text.setFillColor(sf::Color(255, 255, 255, 255));
 
+	help_infobox_text.setFont(*font);
+	help_infobox_text.setString("< change values for specific Tiles with UP/DOWN");
+	help_infobox_text.setFillColor(sf::Color(255, 255, 255, 255));
+
 	help_hotkeys_text.setFont(*font);
 	help_hotkeys_text.setString("W/A/S/D - move board\n"
 		"H - show help menu\n"
 		"E - open/close inventory\n"
 		"SPACE - pause simulation\n"
+		"RIGHT - one step\n"
 		"B - toggle edit-mode\n"
 		"F - toggle fill-mode\n"
 		"R - reset simulation\n"
@@ -108,6 +113,10 @@ void HelpMenu::resize() {
 	help_hotkeys_text.setPosition(SCREEN_WIDTH - help_hotkeys_text.getGlobalBounds().width * 1.1f,
 										SCREEN_HEIGHT - help_hotkeys_text.getGlobalBounds().height);
 
+	help_infobox_text.setCharacterSize(sim->gui.item_button.rect.getSize().y * 0.3);
+	help_infobox_text.setPosition(sim->infobox.bg_rect.getPosition().x + sim->infobox.bg_rect.getSize().x * 1.02f,
+		sim->infobox.bg_rect.getPosition().y + sim->infobox.bg_rect.getSize().y * 0.5f);
+
 	help_close_text.setCharacterSize(sim->gui.item_button.rect.getSize().y * 0.5);
 	help_close_text.setPosition(SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.7f);
 }
@@ -128,5 +137,6 @@ void HelpMenu::render(sf::RenderTarget &window) {
 	window.draw(help_selection_button_text);
 	window.draw(help_item_button_text);
 	window.draw(help_hotkeys_text);
+	window.draw(help_infobox_text);
 	window.draw(help_close_text);
 }
