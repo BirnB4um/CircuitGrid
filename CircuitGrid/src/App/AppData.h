@@ -25,6 +25,7 @@ extern enum SCREEN_ID {
 };
 extern sf::Font* font;
 extern IO_DATA io_data;
+extern std::string version_str;
 
 //========== SIMULATION SCREEN ==========
 

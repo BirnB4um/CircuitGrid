@@ -6,8 +6,6 @@
 #pragma comment(linker,"/SUBSYSTEM:WINDOWS")
 #endif
 
-#define VERSION 1.0
-
 #include <iostream>
 #include "App/Application.h"
 using namespace std;

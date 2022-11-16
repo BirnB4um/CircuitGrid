@@ -8,6 +8,7 @@ class Homescreen
 private:
 	Button startbutton;
 	sf::RectangleShape logo;
+	sf::Text version_text;
 
 public:
 	Homescreen();

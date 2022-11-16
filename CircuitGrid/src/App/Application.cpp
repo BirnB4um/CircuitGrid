@@ -9,6 +9,8 @@ Application::~Application() {
 }
 
 void Application::init() {
+	version_str = "Version 1.0";
+
 	//load textures
 	GUI_Item::gui_texture = new sf::Texture;
 	GUI_Item::gui_texture->loadFromFile("res/images/gui_texture.png");

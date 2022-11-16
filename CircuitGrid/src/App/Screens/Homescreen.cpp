@@ -16,7 +16,11 @@ void Homescreen::init() {
 		});
 
 	logo.setTexture(GUI_Item::gui_texture);
-	logo.setTextureRect(sf::IntRect(0,224, 130, 32));
+	logo.setTextureRect(sf::IntRect(0,231, 130, 25));
+
+	version_text.setFont(*font);
+	version_text.setString(version_str);
+	version_text.setFillColor(sf::Color(150,150,150,255));
 }
 
 void Homescreen::resize() {
@@ -35,6 +39,12 @@ void Homescreen::resize() {
 	y = SCREEN_HEIGHT / 2 - h / 2;
 	startbutton.set_position(x, y);
 	startbutton.set_size(w, h);
+
+	h = SCREEN_HEIGHT * 0.02f;
+	x = h * 0.5f;
+	y = SCREEN_HEIGHT - h * 1.5f;
+	version_text.setCharacterSize(h);
+	version_text.setPosition(x, y);
 }
 
 void Homescreen::on_closing() {
@@ -49,5 +59,6 @@ void Homescreen::update() {
 
 void Homescreen::render(sf::RenderTarget& window) {
 	startbutton.render(window);
+	window.draw(version_text);
 	window.draw(logo);
 }
