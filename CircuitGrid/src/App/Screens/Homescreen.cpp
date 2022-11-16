@@ -16,7 +16,7 @@ void Homescreen::init() {
 		});
 
 	logo.setTexture(GUI_Item::gui_texture);
-	logo.setTextureRect(sf::IntRect(0,231, 130, 25));
+	logo.setTextureRect(sf::IntRect(0,224, 130, 32));
 }
 
 void Homescreen::resize() {
