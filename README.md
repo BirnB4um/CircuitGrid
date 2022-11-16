@@ -1,10 +1,10 @@
 # CircuitGrid
 
 A step-based electronic simulation.  
-Open "CircuitGrid.exe" in the same directory as folder "res"
+Open "CircuitGrid.exe" in the same directory as folder "res".  
 Press H for help menu.  
 
-=== Items ===
+## Items
  - Air (used to remove tiles)
  - Wire (conducts electricity)
  - Output (used to get the output signal from logic-based tiles *[Button/Switch, Logic gates, Clock]* )
@@ -17,8 +17,8 @@ Press H for help menu.
  - NOT, OR, NOR, XOR, XNOR, AND, NAND (Input: up to all 4 surrounding tiles / outputs signal to **OUT** tile)
  - Clock (timervalue in centiseconds; outputs signal with length 1 every cycle)
 
-=== Library ===  
+## Library
 SFML for Graphics
-
-
+##
+Demo video playing Bad Apple: https://www.youtube.com/watch?v=16tisvwK9hQ  
 Pixel art font by Smoking Drum (http://www.smokingdrum.com)
