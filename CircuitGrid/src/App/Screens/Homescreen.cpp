@@ -14,13 +14,23 @@ void Homescreen::init() {
 	startbutton.set_function([&]() {
 		screen_id = SIMULATION;
 		});
+
+	logo.setTexture(GUI_Item::gui_texture);
+	logo.setTextureRect(sf::IntRect(0,231, 130, 25));
 }
 
 void Homescreen::resize() {
 	int x, y, w, h;
 
-	w = SCREEN_WIDTH * 0.2;
-	h = w * (float(startbutton.texture_height) / startbutton.texture_width);
+	h = SCREEN_HEIGHT * 0.15f;
+	w = h * (float(logo.getTextureRect().width) / logo.getTextureRect().height);
+	x = SCREEN_WIDTH / 2 - w / 2;
+	y = SCREEN_HEIGHT / 4;
+	logo.setSize(sf::Vector2f(w, h));
+	logo.setPosition(x, y);
+
+	h = SCREEN_HEIGHT * 0.1f;
+	w = h * (float(startbutton.texture_width) / startbutton.texture_height);
 	x = SCREEN_WIDTH / 2 - w / 2;
 	y = SCREEN_HEIGHT / 2 - h / 2;
 	startbutton.set_position(x, y);
@@ -39,4 +49,5 @@ void Homescreen::update() {
 
 void Homescreen::render(sf::RenderTarget& window) {
 	startbutton.render(window);
+	window.draw(logo);
 }

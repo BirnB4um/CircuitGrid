@@ -7,6 +7,7 @@ class Homescreen
 {
 private:
 	Button startbutton;
+	sf::RectangleShape logo;
 
 public:
 	Homescreen();
