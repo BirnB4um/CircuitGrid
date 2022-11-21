@@ -809,7 +809,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 					}
 
 					if (copy_structure != nullptr) {
-						delete[] copy_structure;//TODO: bug here. maybe deleted somewhere else before here
+						//delete[] copy_structure;//TODO: bug here. maybe deleted somewhere else before here
 					}
 					copy_structure = new uint8_t[8 + (height * width) * 4];
 					
