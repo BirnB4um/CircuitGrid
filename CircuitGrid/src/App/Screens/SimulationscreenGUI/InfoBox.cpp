@@ -79,12 +79,12 @@ void InfoBox::update() {
 		electricity_text.setString((name == item_names[BRIDGE] ? "Electricity horizontal: " : "Electricity.: ") 
 								+ std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 1]));
 		
-		additional_data_text.setString( (name == item_names[REPEATER] ? "Delay Value: " :
+		additional_data_text.setString( (name == item_names[DELAY] ? "Delay Value: " :
 										name == item_names[BRIDGE] ? "Electricity vertical: " :
 										name == item_names[CLOCK] ? "Clock resettime: " :
 										"Additional Data: ")
 								+ std::to_string(this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4 + 2] + 
-												(name == item_names[REPEATER] ? -2 : 0)) + (name == item_names[REPEATER] || name == item_names[CLOCK] ? " (+/-)" : ""));
+												(name == item_names[DELAY] ? -2 : 0)) + (name == item_names[DELAY] || name == item_names[CLOCK] ? " (+/-)" : ""));
 		
 		last_additional_data_text.setString((name == item_names[CLOCK] ? "Current time: " :
 											"Additional Data: ") 

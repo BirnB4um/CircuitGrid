@@ -136,7 +136,7 @@ private:
 	bool update_wire(uint32_t& i);
 	bool update_out(uint32_t& i);
 	bool update_battery(uint32_t& i);
-	bool update_repeater(uint32_t& i);
+	bool update_delay(uint32_t& i);
 	bool update_bridge(uint32_t& i);
 	bool update_button(uint32_t& i);
 	bool update_switch(uint32_t& i);

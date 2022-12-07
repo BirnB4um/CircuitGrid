@@ -22,7 +22,7 @@ void Settingsscreen::init() {
 		});
 
 	board_text.setFont(*font);
-	board_text.setString("Board settings");
+	board_text.setString("Board");
 	board_text.setStyle(sf::Text::Bold);
 
 
@@ -118,6 +118,60 @@ void Settingsscreen::save_board() {
 	io_data.save_to_file(file_name, (char*)out_data, size, false);
 
 	delete[] out_data;
+}
+
+void Settingsscreen::create_board(int width, int height) {
+
+	board_width = width;
+	board_height = height;
+	board_size = board_width * board_height;
+
+	update_list.clear();
+	update_list.shrink_to_fit();
+	update_list.reserve(board_size);
+
+	if (update_list_copy != nullptr) {
+		delete[] update_list_copy;
+	}
+	update_list_copy = new uint32_t[board_size];
+	memset(update_list_copy, 0, board_size * 4);
+
+	if (update_checklist != nullptr) {
+		delete[] update_checklist;
+	}
+	update_checklist = new bool[board_size];
+	memset(update_checklist, 0, board_size * sizeof(bool));
+
+	target_board_offset_x = float(board_width) / 2;
+	board_offset_x = target_board_offset_x;
+	target_board_offset_y = float(board_height) / 2;
+	board_offset_y = target_board_offset_y;
+	target_zoom_factor = 1;
+	zoom_factor = 0.01f;
+
+	if (this_board != nullptr) {
+		delete[] this_board;
+	}
+	this_board = new uint8_t[board_size * 4];
+	memset(this_board, 0, board_size * 4);
+
+	if (next_board != nullptr) {
+		delete[] next_board;
+	}
+	next_board = new uint8_t[board_size * 4];
+	memset(next_board, 0, board_size * 4);
+
+
+	board_data_texture->create(board_width, board_height);
+	board_data_texture->update(this_board);
+
+	board_shader->setUniform("board_data_texture", *board_data_texture);
+	board_shader->setUniform("board_width", board_width);
+	board_shader->setUniform("board_height", board_height);
+
+
+	//go back to simulation
+	screen_id = SIMULATION;
 }
 
 void Settingsscreen::load_board() {

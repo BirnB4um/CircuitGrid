@@ -21,8 +21,8 @@ public:
 	Button inv_out_button;
 	sf::Text inv_battery_text;
 	Button inv_battery_button;
-	sf::Text inv_repeater_text;
-	Button inv_repeater_button;
+	sf::Text inv_delay_text;
+	Button inv_delay_button;
 	sf::Text inv_bridge_text;
 	Button inv_bridge_button;
 	sf::Text inv_lamp_text;

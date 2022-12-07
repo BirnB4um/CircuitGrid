@@ -4,7 +4,7 @@
 	1  -  Wire
 	2  -  Out
 	3  -  Battery
-	4  -  Repeater
+	4  -  Delay
 	5  -  Bridge
 
 	6  -  Lamp
@@ -132,7 +132,7 @@ bool Simulationscreen::update_battery(uint32_t& i) {
 	return false;
 }
 
-bool Simulationscreen::update_repeater(uint32_t& i) {
+bool Simulationscreen::update_delay(uint32_t& i) {
 	uint32_t this_i = i * 4;
 	uint32_t i_up = (i - board_width) * 4;
 	uint32_t i_down = (i + board_width) * 4;

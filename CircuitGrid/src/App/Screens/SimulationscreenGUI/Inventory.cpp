@@ -38,10 +38,10 @@ void Inventory::init() {
 	inv_battery_text.setFillColor(sf::Color(255, 255, 255, 255));
 	inv_battery_text.setOutlineThickness(0);
 
-	inv_repeater_text.setFont(*font);
-	inv_repeater_text.setString("Repeater");
-	inv_repeater_text.setFillColor(sf::Color(255, 255, 255, 255));
-	inv_repeater_text.setOutlineThickness(0);
+	inv_delay_text.setFont(*font);
+	inv_delay_text.setString("Delay");
+	inv_delay_text.setFillColor(sf::Color(255, 255, 255, 255));
+	inv_delay_text.setOutlineThickness(0);
 
 	inv_bridge_text.setFont(*font);
 	inv_bridge_text.setString("Bridge");
@@ -141,12 +141,12 @@ void Inventory::init() {
 		sim->gui.update_item_button_texture();
 		});
 
-	inv_repeater_button.init();
-	inv_repeater_button.set_texture_inrect(240, 64, 16, 16);
-	inv_repeater_button.set_hoverover_texture_inrect(240, 64, 16, 16);
-	inv_repeater_button.set_pressed_texture_inrect(240, 64, 16, 16);
-	inv_repeater_button.set_function([&]() {
-		selected_item = item_list[REPEATER];
+	inv_delay_button.init();
+	inv_delay_button.set_texture_inrect(240, 64, 16, 16);
+	inv_delay_button.set_hoverover_texture_inrect(240, 64, 16, 16);
+	inv_delay_button.set_pressed_texture_inrect(240, 64, 16, 16);
+	inv_delay_button.set_function([&]() {
+		selected_item = item_list[DELAY];
 		sim->gui.update_item_button_texture();
 		});
 
@@ -385,8 +385,8 @@ void Inventory::resize() {
 		inv_battery_button.set_size(w, h);
 
 		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 2 + perc_w);
-		inv_repeater_button.set_position(x, y);
-		inv_repeater_button.set_size(w, h);
+		inv_delay_button.set_position(x, y);
+		inv_delay_button.set_size(w, h);
 
 		x = inventory_bg_rect.getPosition().x + inventory_bg_rect.getSize().x * ((1 - perc_w * 3) * 0.25f * 3 + perc_w * 2);
 		inv_bridge_button.set_position(x, y);
@@ -476,11 +476,11 @@ void Inventory::resize() {
 		inv_battery_text.setPosition(x, y);
 		inv_battery_text.setCharacterSize(h);
 
-		h = inv_repeater_button.rect.getSize().x * 0.18f;
-		x = inv_repeater_button.rect.getPosition().x;
-		y = inv_repeater_button.rect.getPosition().y - h * 1.3f;
-		inv_repeater_text.setPosition(x, y);
-		inv_repeater_text.setCharacterSize(h);
+		h = inv_delay_button.rect.getSize().x * 0.18f;
+		x = inv_delay_button.rect.getPosition().x;
+		y = inv_delay_button.rect.getPosition().y - h * 1.3f;
+		inv_delay_text.setPosition(x, y);
+		inv_delay_text.setCharacterSize(h);
 
 		h = inv_bridge_button.rect.getSize().x * 0.2f;
 		x = inv_bridge_button.rect.getPosition().x;
@@ -600,7 +600,7 @@ void Inventory::update() {
 		inv_wire_button.update(window_mouse.x, window_mouse.y);
 		inv_out_button.update(window_mouse.x, window_mouse.y);
 		inv_battery_button.update(window_mouse.x, window_mouse.y);
-		inv_repeater_button.update(window_mouse.x, window_mouse.y);
+		inv_delay_button.update(window_mouse.x, window_mouse.y);
 		inv_bridge_button.update(window_mouse.x, window_mouse.y);
 		inv_button_button.update(window_mouse.x, window_mouse.y);
 		inv_switch_button.update(window_mouse.x, window_mouse.y);
@@ -637,8 +637,8 @@ void Inventory::render(sf::RenderTarget& window) {
 	inv_battery_button.render(window);
 	window.draw(inv_battery_text);
 
-	inv_repeater_button.render(window);
-	window.draw(inv_repeater_text);
+	inv_delay_button.render(window);
+	window.draw(inv_delay_text);
 
 	inv_bridge_button.render(window);
 	window.draw(inv_bridge_text);

@@ -93,9 +93,9 @@ void Simulationscreen::init_update_functions() {
 	item_list.push_back(0x00000203);
 	item_names.push_back("Battery");
 
-	update_functions.push_back(&Simulationscreen::update_repeater);
+	update_functions.push_back(&Simulationscreen::update_delay);
 	item_list.push_back(0x00030104);
-	item_names.push_back("Repeater");
+	item_names.push_back("Delay");
 
 	update_functions.push_back(&Simulationscreen::update_bridge);
 	item_list.push_back(0x00010105);
@@ -415,7 +415,7 @@ void Simulationscreen::reset_simulation() {
 			add_to_update_list(i + board_width);
 		}
 
-		if (this_board[i * 4] == REPEATER) {
+		if (this_board[i * 4] == DELAY) {
 			this_board[i * 4 + 1] = ((uint8_t*)&item_list[this_board[i * 4]])[1];
 		}
 		else if (this_board[i * 4] == CLOCK) {
@@ -894,8 +894,8 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			one_simulations_step = true;
 		}
 		else if (ev.key.code == sf::Keyboard::Up || ev.key.code == sf::Keyboard::Add) {
-			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER ||
-				this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == CLOCK) {//increment repeater/clock value
+			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == DELAY ||
+				this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == CLOCK) {//increment DELAY/clock value
 				std::lock_guard<std::mutex> lock(draw_mutex);
 
 				uint32_t new_item = *(uint32_t*)&this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];
@@ -917,8 +917,8 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 			}
 		}
 		else if (ev.key.code == sf::Keyboard::Down || ev.key.code == sf::Keyboard::Subtract) {
-			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == REPEATER ||
-				this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == CLOCK) {//decrement repeater/clock value
+			if (this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == DELAY ||
+				this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4] == CLOCK) {//decrement DELAY/clock value
 				std::lock_guard<std::mutex> lock(draw_mutex);
 
 				uint32_t new_item = *(uint32_t*)&this_board[long(floor(board_mouse.y) * board_width + floor(board_mouse.x)) * 4];

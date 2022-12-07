@@ -9,7 +9,7 @@ Press H for help menu.
  - Wire (conducts electricity)
  - Output (used to get the output signal from logic-based tiles *[Button/Switch, Logic gates, Clock]* )
  - Battery 
- - Repeater (delays signal by its delayvalue & reduces signallength by its delayvalue)
+ - Delay (delays signal by its delayvalue & reduces signallength by its delayvalue)
  - Bridge (used to cross wires)
  - Lamp 
  - Button (activate by clicking on it in interaction-mode)
