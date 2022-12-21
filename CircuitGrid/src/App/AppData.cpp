@@ -64,3 +64,5 @@ uint32_t number_of_pixels_to_update;
 std::vector<uint32_t> update_list;
 bool* update_checklist = nullptr;
 uint32_t* update_list_copy = nullptr;
+
+float board_texture_update_time;

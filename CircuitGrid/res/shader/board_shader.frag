@@ -26,10 +26,10 @@ void main(){
 
         float large_pixels_factor = draw_details ? zoom_factor < 16 ? 0 : zoom_factor >= 16 ?  zoom_factor < 32 ?  (zoom_factor-16.0)/16 : 1 : 0 : 0;
         if(texture2D(board_data_texture, board_coords).g > 1.0/255.0){//if electricity
-            pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0.5)) * (1.0 - large_pixels_factor) +
+            pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r + 0.0001, 0.5)) * (1.0 - large_pixels_factor) +
                     texture2D(large_pixel_texture, vec2(texture2D(board_data_texture, board_coords).r + pixel_coords.x, pixel_coords.y + 0.5)) * large_pixels_factor;
         }else{
-            pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r, 0)) * (1.0 - large_pixels_factor) + 
+            pixel = texture2D(pixel_color_texture, vec2(texture2D(board_data_texture, board_coords).r + 0.0001, 0)) * (1.0 - large_pixels_factor) + 
                     texture2D(large_pixel_texture, vec2(texture2D(board_data_texture, board_coords).r + pixel_coords.x, pixel_coords.y)) * large_pixels_factor;
         }
 

@@ -73,3 +73,5 @@ extern uint32_t number_of_pixels_to_update;
 extern std::vector<uint32_t> update_list;
 extern bool* update_checklist;
 extern uint32_t* update_list_copy;
+
+extern float board_texture_update_time;

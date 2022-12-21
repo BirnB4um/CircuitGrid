@@ -187,6 +187,7 @@ void Simulationscreen::init() {
 	board_version = 1;
 	structure_version = 1;
 	loaded_structure = nullptr;
+	board_texture_update_time = 1000.0f / 20.0f;//20 updates pro sec
 	
 
 	//debug stuff
@@ -665,7 +666,7 @@ void Simulationscreen::th_update_board() {
 			}
 		}
 		else {
-			while (timer.get_time() - start_frame_time < 1000.0f / FPS)
+			while (timer.get_time() - start_frame_time < board_texture_update_time)
 			{
 				timer.start();
 				update_board();
@@ -685,7 +686,7 @@ void Simulationscreen::th_update_board() {
 			upload_texture_to_gpu_time_taken = timer.get_duration();
 		}
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(int(1000.0f / FPS - (timer.get_time() - start_frame_time))));
+		std::this_thread::sleep_for(std::chrono::milliseconds(int(board_texture_update_time - (timer.get_time() - start_frame_time))));
 	}
 }
 

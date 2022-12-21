@@ -53,6 +53,15 @@ int main(int argc, char** argv) {
 	//	}
 	//}
 
+	if (argc == 3) {
+		if (is_number(argv[1])) {
+			board_width = std::stoi(argv[1]);
+		}
+		if (is_number(argv[2])) {
+			board_height = std::stoi(argv[2]);
+		}
+	}
+
 
 	Application *app = new Application();
 	app->init();
