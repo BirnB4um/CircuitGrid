@@ -19,6 +19,9 @@
 	14 -  And
 	15 -  Nand
 
+	16 - Clock
+	17 - Debug
+
 */
 
 bool Simulationscreen::update_air(uint32_t& i) {
@@ -852,5 +855,52 @@ bool Simulationscreen::update_clock(uint32_t& i) {
 	next_board[this_i + 3] = next_value;
 
 	return true;
+}
+
+bool Simulationscreen::update_debug(uint32_t& i) {
+	uint32_t this_i = i * 4;
+	uint32_t i_up = (i - board_width) * 4;
+	uint32_t i_down = (i + board_width) * 4;
+	uint32_t i_left = (i - 1) * 4;
+	uint32_t i_right = (i + 1) * 4;
+
+	uint8_t surrounding_electricity_count = 0;
+
+	//up
+	if (this_board[i_up] > AIR && this_board[i_up] <= BRIDGE && this_board[i_up] != OUTPUT) {
+		if (this_board[i_up + (this_board[i_up] == BRIDGE ? 2 : 1)] == 2) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//down
+	if (this_board[i_down] > AIR && this_board[i_down] <= BRIDGE && this_board[i_down] != OUTPUT) {
+		if (this_board[i_down + (this_board[i_down] == BRIDGE ? 2 : 1)] == 2) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//left
+	if (this_board[i_left] > AIR && this_board[i_left] <= BRIDGE && this_board[i_left] != OUTPUT) {
+		if (this_board[i_left + 1] == 2) {
+			surrounding_electricity_count++;
+		}
+	}
+
+	//right
+	if (this_board[i_right] > AIR && this_board[i_right] <= BRIDGE && this_board[i_right] != OUTPUT) {
+		if (this_board[i_right + 1] == 2) {
+			surrounding_electricity_count++;
+		}
+	}
+
+
+	if (surrounding_electricity_count > 0) {
+		if(!simulation_paused)
+			gui.pause_button.func();
+		return true;
+	}
+
+	return false;
 }
 

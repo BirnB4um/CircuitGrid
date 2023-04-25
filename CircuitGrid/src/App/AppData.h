@@ -62,7 +62,7 @@ extern uint32_t selected_item;
 extern std::vector<uint32_t> item_list;
 extern uint8_t item_count;
 extern enum ITEM {
-	AIR, WIRE, OUTPUT, BATTERY, DELAY, BRIDGE, LAMP, BUTTON, SWITCH, NOT, OR, NOR, XOR, XNOR, AND, NAND, CLOCK
+	AIR, WIRE, OUTPUT, BATTERY, DELAY, BRIDGE, LAMP, BUTTON, SWITCH, NOT, OR, NOR, XOR, XNOR, AND, NAND, CLOCK, DEBUG
 };
 extern std::vector<std::string> item_names;
 extern bool one_simulations_step;

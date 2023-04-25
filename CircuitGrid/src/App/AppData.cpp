@@ -26,7 +26,7 @@ bool show_debug_info;
 
 //navigation
 float move_speed;
-float zoom_speed = 0.1f;
+float zoom_speed;
 float board_offset_x = 0, board_offset_y = 0;
 float target_board_offset_x = 0, target_board_offset_y = 0;
 float zoom_factor, target_zoom_factor;

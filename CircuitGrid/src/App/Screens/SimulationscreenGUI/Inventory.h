@@ -51,6 +51,8 @@ public:
 
 	sf::Text inv_clock_text;
 	Button inv_clock_button;
+	sf::Text inv_debug_text;
+	Button inv_debug_button;
 
 	//structure gui
 	sf::RectangleShape structure_bg_rect;

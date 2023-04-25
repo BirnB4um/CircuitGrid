@@ -145,11 +145,16 @@ void Simulationscreen::init_update_functions() {
 	item_list.push_back(0x00000010);
 	item_names.push_back("Clock");
 
+	update_functions.push_back(&Simulationscreen::update_debug);
+	item_list.push_back(0x00000011);
+	item_names.push_back("Debug");
+
 	item_count = item_names.size();
 
 }
 
 void Simulationscreen::init() {
+	save_board_as_file = false;
 	brush_size = 1;
 	can_drag_with_keyboard = true;
 	show_debug_info = false;
@@ -157,6 +162,7 @@ void Simulationscreen::init() {
 	upload_texture_to_gpu_time_taken = 0;
 	number_of_pixels_to_update = 0;
 	move_speed = 16;
+	zoom_speed = 0.08f;
 	zoom_factor = 1;
 	target_zoom_factor = 1;
 	clear_board_bool = false;
@@ -631,6 +637,18 @@ void Simulationscreen::th_update_board() {
 		if (closing)
 			break;
 
+		if (save_board_as_file) {
+			save_board_as_file = false;
+			sf::Image img(board_data_texture->copyToImage());
+			for (int y = 0; y < img.getSize().y; y++) {
+				for (int x = 0; x < img.getSize().x; x++) {
+					img.setPixel(x, y, pixel_color_image.getPixel(img.getPixel(x, y).r, img.getPixel(x, y).g > 1 ? 1 : 0));
+				}
+			}
+			img.saveToFile("board_image.png");
+			std::cout << "Saved Board as Image!" << std::endl;
+		}
+
 		long long start_frame_time = timer.get_time();
 		//draw to texture
 		drawn_to_board = draw_to_board();
@@ -666,7 +684,7 @@ void Simulationscreen::th_update_board() {
 			}
 		}
 		else {
-			while (timer.get_time() - start_frame_time < board_texture_update_time)
+			while (timer.get_time() - start_frame_time < board_texture_update_time && !simulation_paused)
 			{
 				timer.start();
 				update_board();
@@ -765,6 +783,9 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 	else if (ev.type == sf::Event::KeyReleased) {
 		if (ev.key.code == sf::Keyboard::L) {//load resources
 			load_resources();
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && ev.key.code == sf::Keyboard::O) {//save board as image
+			save_board_as_file = true;
 		}
 		else if (ev.key.code == sf::Keyboard::Escape) {
 			if (pasting) {//stop pasting
