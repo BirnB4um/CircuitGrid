@@ -51,7 +51,7 @@ void main(){
         //draw brush
         if(sqrt((board_coords.x*board_width - mouse_x) * (board_coords.x*board_width - mouse_x) + 
                 (board_coords.y*board_height - mouse_y) * (board_coords.y*board_height - mouse_y)) <= brush_size){
-            pixel = pixel + 0.02;
+            pixel = pixel + 0.1;
         }
 
     }
