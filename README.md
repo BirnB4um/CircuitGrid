@@ -16,6 +16,7 @@ Press H for help menu.
  - Switch (toggle by clicking on it in interaction-mode)
  - NOT, OR, NOR, XOR, XNOR, AND, NAND (Input: up to all 4 surrounding tiles / outputs signal to **OUT** tile)
  - Clock (timervalue in centiseconds; outputs signal with length 1 every cycle)
+ - Debug (pauses the simulation if activated)
 
 ## Library
 SFML for Graphics
