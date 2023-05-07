@@ -456,6 +456,7 @@ bool Simulationscreen::draw_to_board() {
 	//get instructions
 	Drawinstruction* instruction_list;
 	size_t list_size = 0;
+
 	{
 		std::lock_guard<std::mutex> draw_lock(draw_mutex);
 
@@ -464,8 +465,9 @@ bool Simulationscreen::draw_to_board() {
 		memcpy(instruction_list, &drawinstruction_list[0], list_size * (7 * 4 + sizeof(uint8_t*)));
 		drawinstruction_list.clear();
 	}
+	
 
-	//draw to board
+		//draw to board
 	for (int instruction_index = 0; instruction_index < list_size; instruction_index++) {
 		if (instruction_list[instruction_index].data[0] == POINT) {
 			int index = instruction_list[instruction_index].data[5] + instruction_list[instruction_index].data[6] * board_width;
@@ -474,10 +476,10 @@ bool Simulationscreen::draw_to_board() {
 			int x = instruction_list[instruction_index].data[5];
 			int y = instruction_list[instruction_index].data[6];
 			add_to_update_list(x + y * board_width);
-			add_to_update_list(x+1 + y * board_width);
-			add_to_update_list(x-1 + y * board_width);
-			add_to_update_list(x + (y+1) * board_width);
-			add_to_update_list(x + (y-1) * board_width);
+			add_to_update_list(x + 1 + y * board_width);
+			add_to_update_list(x - 1 + y * board_width);
+			add_to_update_list(x + (y + 1) * board_width);
+			add_to_update_list(x + (y - 1) * board_width);
 		}
 		else if (instruction_list[instruction_index].data[0] == LINE) {
 			uint32_t start_x = instruction_list[instruction_index].data[3];
@@ -493,24 +495,24 @@ bool Simulationscreen::draw_to_board() {
 				uint32_t temp = start_x;
 				start_x = end_x;
 				end_x = temp;
-				
+
 				temp = start_y;
 				start_y = end_y;
 				end_y = temp;
 			}
 
 			long dx = long(end_x) - start_x;
-			double m = (double(end_y) - start_y) / ((dx==0)?1:dx);
+			double m = (double(end_y) - start_y) / ((dx == 0) ? 1 : dx);
 
 			uint32_t next_y = start_y;
 			uint32_t last_y = start_y;
 			long y;
 			for (long x = start_x; x <= end_x; x++) {
 
-				next_y = start_y + floor(m * (x - start_x + ((dx == 0)?1:0)));
-				
+				next_y = start_y + floor(m * (x - start_x + ((dx == 0) ? 1 : 0)));
+
 				for (y = next_y; (next_y >= last_y && y >= last_y) || (next_y < last_y && y <= last_y); y += next_y >= last_y ? -1 : 1) {
-					
+
 					if (y < 0)
 						break;
 
@@ -562,8 +564,8 @@ bool Simulationscreen::draw_to_board() {
 				}
 			}
 
-			for (uint32_t y = (long(start_y)-1) < 0 ? 0 : start_y-1; y <= ((end_y+1)>= board_height ? board_height-1 : end_y+1); y++) {
-				for (uint32_t x = (long(start_x)-1) < 0 ? 0 : start_x-1; x <= ((end_x+1) >= board_width ? board_width-1 : end_x+1); x++) {
+			for (uint32_t y = (long(start_y) - 1) < 0 ? 0 : start_y - 1; y <= ((end_y + 1) >= board_height ? board_height - 1 : end_y + 1); y++) {
+				for (uint32_t x = (long(start_x) - 1) < 0 ? 0 : start_x - 1; x <= ((end_x + 1) >= board_width ? board_width - 1 : end_x + 1); x++) {
 					add_to_update_list(x + y * board_width);
 				}
 			}
@@ -586,15 +588,15 @@ bool Simulationscreen::draw_to_board() {
 				test_list.pop_back();
 				if (this_board[next_i * 4] == item_to_override) {
 					memcpy(&this_board[next_i * 4], &instruction_list[instruction_index].data[2], 4);
-					
-					if(next_i > 0)
-						test_list.push_back(next_i - 1 );
-					if(next_i < board_size-1)
-						test_list.push_back(next_i + 1 );
+
+					if (next_i > 0)
+						test_list.push_back(next_i - 1);
+					if (next_i < board_size - 1)
+						test_list.push_back(next_i + 1);
 					if (next_i < board_size - board_width)
-						test_list.push_back(next_i + board_width );
+						test_list.push_back(next_i + board_width);
 					if (next_i >= board_width)
-						test_list.push_back(next_i - board_width );
+						test_list.push_back(next_i - board_width);
 				}
 			}
 
@@ -623,6 +625,7 @@ bool Simulationscreen::draw_to_board() {
 
 
 		}
+
 	}
 
 	delete[] instruction_list;
@@ -665,7 +668,7 @@ void Simulationscreen::th_update_board() {
 		}
 
 		if (drawn_to_board) {
-			memcpy(&next_board[0], &this_board[0], board_size * 4);//upload whole board to GPU
+			memcpy(&next_board[0], &this_board[0], board_size * 4);
 		}
 
 		if (simulation_paused) {
@@ -817,6 +820,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 		else if (ev.key.code == sf::Keyboard::C) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
 				if (selection_mode && selection_set) {//copy selected area
+					
 					std::lock_guard<std::mutex> lock(draw_mutex);
 
 					pasting = false;
@@ -831,7 +835,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 					}
 
 					if (copy_structure != nullptr) {
-						//delete[] copy_structure;//TODO: bug here. maybe deleted somewhere else before here
+						delete[] copy_structure;
 					}
 					copy_structure = new uint8_t[8 + (height * width) * 4];
 					
@@ -960,10 +964,6 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 				instruction.structure_pointer = nullptr;
 				drawinstruction_list.push_back(instruction);
 			}
-		}
-		else if (ev.key.code == sf::Keyboard::I) {//print info about pixel
-			uint32_t i = (int(board_mouse.x) + int(board_mouse.y) * board_width)*4;
-			std::cout << "id:" << int(this_board[i]) << ", elec:" << int(this_board[i + 1]) << ", 3rd:" << int(this_board[i + 2]) << ", light:" << int(this_board[i + 3]) << std::endl;
 		}
 	}
 
@@ -1123,6 +1123,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 					if (*(uint32_t*)&paste_structure[0] != 0 && *(uint32_t*)&paste_structure[4] != 0) {
 						uint32_t size = 8 + (*(uint32_t*)&paste_structure[0] * *(uint32_t*)&paste_structure[4]) * 4;
 						uint8_t* structure = new uint8_t[size];
+
 						memcpy(&structure[0], &paste_structure[0], size);
 
 						std::lock_guard<std::mutex> lock(draw_mutex);
@@ -1138,6 +1139,7 @@ void Simulationscreen::handle_events(sf::Event& ev) {
 						drawinstruction_list.push_back(instruction);
 					}
 				}
+
 			}
 		}
 		else if (ev.key.code == sf::Mouse::Right) {
@@ -1185,7 +1187,11 @@ void Simulationscreen::rotate_structure(uint8_t** structure, bool clockwise) {
 		}
 	}
 
-	delete[] *structure;
+	if (copy_structure == *structure) {
+		copy_structure = new_structure;
+	}
+
+	delete[] (*structure);
 	*structure = new_structure;
 
 	update_paste_preview_texture();
@@ -1218,7 +1224,11 @@ void Simulationscreen::mirror_structure(uint8_t** structure, bool vertical) {
 		}
 	}
 
-	delete[] * structure;
+	if (copy_structure == *structure) {
+		copy_structure = new_structure;
+	}
+
+	delete[] (*structure);
 	*structure = new_structure;
 
 	update_paste_preview_texture();

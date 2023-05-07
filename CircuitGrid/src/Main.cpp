@@ -63,9 +63,9 @@ int main(int argc, char** argv) {
 	}
 
 
-	Application *app = new Application();
-	app->init();
-	app->run();
+	Application app;
+	app.init();
+	app.run();
 
 	return 0;
 }
