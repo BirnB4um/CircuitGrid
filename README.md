@@ -19,7 +19,7 @@ Press H for help menu.
  - Debug (pauses the simulation if activated)
 
 ## Library
-SFML for Graphics
+SFML for Graphics, Input and Window handling
 ##
 Demo video playing Bad Apple: https://www.youtube.com/watch?v=16tisvwK9hQ  
 Pixel art font by Smoking Drum
